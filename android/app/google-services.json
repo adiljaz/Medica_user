@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "218332612587",
+    "project_id": "login-page-f743f",
+    "storage_bucket": "login-page-f743f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:218332612587:android:ee7fe5ff30b4b273ba3bae",
+        "android_client_info": {
+          "package_name": "com.example.fire_login"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCc4xDpYIjHyvQarB2l_jYK0Wzih9HE6Jw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
