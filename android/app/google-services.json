@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "218332612587",
-    "project_id": "login-page-f743f",
-    "storage_bucket": "login-page-f743f.appspot.com"
+    "project_number": "1006499750145",
+    "project_id": "medica-146ad",
+    "storage_bucket": "medica-146ad.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:218332612587:android:ee7fe5ff30b4b273ba3bae",
+        "mobilesdk_app_id": "1:1006499750145:android:e87bd659765b8c67e63b00",
         "android_client_info": {
           "package_name": "com.example.fire_login"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCc4xDpYIjHyvQarB2l_jYK0Wzih9HE6Jw"
+          "current_key": "AIzaSyDUMjSG1X3jeqBOdYEjRhx6PUhSNJG9i1U"
         }
       ],
       "services": {

@@ -23,3 +23,6 @@ class SignupEvent extends AuthEvent{
 
   SignupEvent ({required this.user}); 
 }
+
+
+class LogoutEvent extends AuthEvent{}

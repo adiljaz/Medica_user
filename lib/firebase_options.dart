@@ -41,49 +41,49 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyDX2WwPApfemU3hwi2w1-X7pzs8MtcrXRw',
-    appId: '1:218332612587:web:1f36001874c9603eba3bae',
-    messagingSenderId: '218332612587',
-    projectId: 'login-page-f743f',
-    authDomain: 'login-page-f743f.firebaseapp.com',
-    storageBucket: 'login-page-f743f.appspot.com',
-    measurementId: 'G-HW6QMC9X2D',
+    apiKey: 'AIzaSyAjUWPXuOGMDqmQSkuxSQ3zIDZrAbO2skw',
+    appId: '1:1006499750145:web:06775c8e357b5f70e63b00',
+    messagingSenderId: '1006499750145',
+    projectId: 'medica-146ad',
+    authDomain: 'medica-146ad.firebaseapp.com',
+    storageBucket: 'medica-146ad.appspot.com',
+    measurementId: 'G-JD00MHQ852',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCc4xDpYIjHyvQarB2l_jYK0Wzih9HE6Jw',
-    appId: '1:218332612587:android:ee7fe5ff30b4b273ba3bae',
-    messagingSenderId: '218332612587',
-    projectId: 'login-page-f743f',
-    storageBucket: 'login-page-f743f.appspot.com',
+    apiKey: 'AIzaSyDUMjSG1X3jeqBOdYEjRhx6PUhSNJG9i1U',
+    appId: '1:1006499750145:android:e87bd659765b8c67e63b00',
+    messagingSenderId: '1006499750145',
+    projectId: 'medica-146ad',
+    storageBucket: 'medica-146ad.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDMuhycSd6bHBz-ryxSYkWvqtEGwHVJo4Y',
-    appId: '1:218332612587:ios:810a6615f50e01ccba3bae',
-    messagingSenderId: '218332612587',
-    projectId: 'login-page-f743f',
-    storageBucket: 'login-page-f743f.appspot.com',
+    apiKey: 'AIzaSyBx7iD8NL9Its08RZOoY47sMXEpsgXeMgw',
+    appId: '1:1006499750145:ios:5d835159982609d2e63b00',
+    messagingSenderId: '1006499750145',
+    projectId: 'medica-146ad',
+    storageBucket: 'medica-146ad.appspot.com',
     iosBundleId: 'com.example.fireLogin',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyDMuhycSd6bHBz-ryxSYkWvqtEGwHVJo4Y',
-    appId: '1:218332612587:ios:810a6615f50e01ccba3bae',
-    messagingSenderId: '218332612587',
-    projectId: 'login-page-f743f',
-    storageBucket: 'login-page-f743f.appspot.com',
+    apiKey: 'AIzaSyBx7iD8NL9Its08RZOoY47sMXEpsgXeMgw',
+    appId: '1:1006499750145:ios:5d835159982609d2e63b00',
+    messagingSenderId: '1006499750145',
+    projectId: 'medica-146ad',
+    storageBucket: 'medica-146ad.appspot.com',
     iosBundleId: 'com.example.fireLogin',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyDX2WwPApfemU3hwi2w1-X7pzs8MtcrXRw',
-    appId: '1:218332612587:web:a42308554f3b55f3ba3bae',
-    messagingSenderId: '218332612587',
-    projectId: 'login-page-f743f',
-    authDomain: 'login-page-f743f.firebaseapp.com',
-    storageBucket: 'login-page-f743f.appspot.com',
-    measurementId: 'G-GT92XRHYKY',
+    apiKey: 'AIzaSyAjUWPXuOGMDqmQSkuxSQ3zIDZrAbO2skw',
+    appId: '1:1006499750145:web:c0de23558be2d9a3e63b00',
+    messagingSenderId: '1006499750145',
+    projectId: 'medica-146ad',
+    authDomain: 'medica-146ad.firebaseapp.com',
+    storageBucket: 'medica-146ad.appspot.com',
+    measurementId: 'G-WNNEBXM3G3',
   );
 
 }

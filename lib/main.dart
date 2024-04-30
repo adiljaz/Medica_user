@@ -12,7 +12,7 @@ void main() async{
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatelessWidget { 
   const MyApp({super.key});
 
   @override
@@ -21,6 +21,7 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(create: (context)=>AuthBloc()..add(CheckLoginStatusEvent()),child: const SplashScreen(),),
         BlocProvider(  create: (context) => NextpageBloc(),),
+        
          
         
       ],
