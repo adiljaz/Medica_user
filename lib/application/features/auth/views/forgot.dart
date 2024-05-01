@@ -9,6 +9,7 @@ class ForgotPassword extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // ignore: no_leading_underscores_for_local_identifiers
     TextEditingController _emailController =TextEditingController();
     MediaQueryData mediaQuery = MediaQuery.of(context);
     return Scaffold(
@@ -29,6 +30,12 @@ class ForgotPassword extends StatelessWidget {
                     SizedBox(height: mediaQuery.size.height*0.03),
              
               CutomTextFormField(
+                // ignore: body_might_complete_normally_nullable
+                value: (value){
+                  if(value==null|| value.isEmpty){
+                    return 'Enter your email';
+                  }
+                },
                 controller:_emailController ,
                 icons: Icon(Icons.email,color: Colormanager.iconscolor,),
                 Textcolor: Colormanager.grayText,
