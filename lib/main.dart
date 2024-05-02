@@ -1,8 +1,8 @@
 import 'package:fire_login/application/features/auth/auth_bloc/bloc/auth_bloc.dart';
 import 'package:fire_login/application/features/auth/introScreens/bloc/nextpage_bloc.dart';
 import 'package:fire_login/application/features/auth/splash/splash_view.dart';
+import 'package:fire_login/application/features/auth/views/ForgotPassword/ForgotBloc/forgot_password_bloc.dart';
 import 'package:fire_login/application/features/auth/views/Googlebloc/google_auth_bloc.dart';
-import 'package:fire_login/application/features/auth/views/Googlebloc/repo.dart';
 import 'package:fire_login/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -32,9 +32,12 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => GoogleAuthBloc(),
           child: Container(),
+        ),
+        BlocProvider(
+          create: (context) => ForgotPasswordBloc(),
+          child: Container(),
         )
         
-         
         
       ],
 

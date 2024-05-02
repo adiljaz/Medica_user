@@ -26,6 +26,7 @@ class CutomTextFormField extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(left: 20, right: 20),
       child: TextFormField(
+        
                 autovalidateMode: AutovalidateMode.onUserInteraction,
         validator: value,
         controller: controller,
