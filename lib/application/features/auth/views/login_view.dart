@@ -1,7 +1,7 @@
 import 'package:fire_login/application/features/auth/auth_bloc/bloc/auth_bloc.dart';
 import 'package:fire_login/application/features/auth/home/widgets/home.dart';
 import 'package:fire_login/application/features/auth/views/Googlebloc/google_auth_bloc.dart';
-import 'package:fire_login/application/features/auth/views/forgot.dart';
+import 'package:fire_login/application/features/auth/views/ForgotPassword/forgot.dart';
 import 'package:fire_login/application/features/auth/views/user_signup.dart';
 import 'package:fire_login/application/features/auth/views/widgets/signin.dart';
 import 'package:fire_login/application/features/auth/views/widgets/textformfield.dart';
@@ -254,6 +254,7 @@ class LoginPage extends StatelessWidget {
                                             image: AssetImage(
                                               'assets/images/googleLogo.png',
                                             ),
+
                                             fit: BoxFit.cover,
                                             height: 35,
                                           ),

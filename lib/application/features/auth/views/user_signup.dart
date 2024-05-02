@@ -21,41 +21,39 @@ class _SignUpState extends State<SignUp> {
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
 
-  GlobalKey<FormState> _formkey =GlobalKey<FormState>(); 
-
-
-
+  GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build( BuildContext context) {
     final authbloc = BlocProvider.of<AuthBloc>(context);
 
     MediaQueryData mediaQuery = MediaQuery.of(context);
 
     return BlocConsumer<AuthBloc, AuthState>(
-
-        listener: (context, state) {
+      listener: (context, state) {
         if (state is AuthenticatedError) {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            margin: EdgeInsets.all(5),
-            
-            behavior:SnackBarBehavior.floating ,
-           
-            content: Center(
-              child: Text(
-                'Enter correct email and password',
-                style: TextStyle( fontWeight: FontWeight.w400,  color: Color.fromARGB(255, 255, 255, 255,)),
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              margin: EdgeInsets.all(5),
+              behavior: SnackBarBehavior.floating,
+              content: Center(
+                child: Text(
+                  'Enter correct email and password',
+                  style: TextStyle(
+                      fontWeight: FontWeight.w400,
+                      color: Color.fromARGB(
+                        255,
+                        255,
+                        255,
+                        255,
+                      )),
+                ),
               ),
+              backgroundColor: Color.fromARGB(255, 0, 0, 0),
             ),
-            backgroundColor: Color.fromARGB(255, 0, 0, 0),  
-            
-          ),
-          
           );
         }
       },
-
-
       builder: (context, state) {
         if (state is Authenticated) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -64,8 +62,6 @@ class _SignUpState extends State<SignUp> {
                 (route) => false);
           });
         }
-
-        
 
         return Scaffold(
             body: Container(
@@ -82,7 +78,6 @@ class _SignUpState extends State<SignUp> {
             child: SingleChildScrollView(
               child: Form(
                 key: _formkey,
-
                 child: Column(
                   children: [
                     Image.asset(
@@ -96,13 +91,13 @@ class _SignUpState extends State<SignUp> {
                           textStyle: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 25)),
                     ),
-                
+
                     // emial
-                
+
                     SizedBox(
                       height: mediaQuery.size.width * 0.04,
                     ),
-                
+
                     CutomTextFormField(
                       // ignore: body_might_complete_normally_nullable
                       value: (value) {
@@ -120,11 +115,11 @@ class _SignUpState extends State<SignUp> {
                         color: Colormanager.iconscolor,
                       ),
                     ),
-                
+
                     SizedBox(
                       height: mediaQuery.size.width * 0.04,
                     ),
-                
+
                     CutomTextFormField(
                       // ignore: body_might_complete_normally_nullable
                       value: (value) {
@@ -142,13 +137,13 @@ class _SignUpState extends State<SignUp> {
                         color: Colormanager.iconscolor,
                       ),
                     ),
-                
+
                     SizedBox(
                       height: mediaQuery.size.width * 0.04,
                     ),
-                
+
                     //password
-                
+
                     CutomTextFormField(
                       value: (value) {
                         if (value == null || value.isEmpty) {
@@ -170,23 +165,22 @@ class _SignUpState extends State<SignUp> {
                         color: Colormanager.blackIcon,
                       ),
                     ),
-                
+
                     SizedBox(
                       height: mediaQuery.size.width * 0.04,
                     ),
-                
-                // reginster button
-                
+
+                    // reginster button
+
                     GestureDetector(
                       onTap: () {
-                        if(_formkey.currentState!
-                        .validate()){
+                        if (_formkey.currentState!.validate()) {
                           UserModel user = UserModel(
-                          email: _emailController.text,
-                          password: _passwordController.text.trim(),
-                          userName: _usernameController.text.trim(),
-                        );
-                        authbloc.add(SignupEvent(user: user));
+                            email: _emailController.text,
+                            password: _passwordController.text.trim(),
+                            userName: _usernameController.text.trim(),
+                          );
+                          authbloc.add(SignupEvent(user: user));
                         }
                       },
                       child: Padding(
@@ -208,28 +202,28 @@ class _SignUpState extends State<SignUp> {
                         ),
                       ),
                     ),
-                
+
                     // GestureDetector(
                     //     onTap: () {
-                
+
                     //         print('navigationg-----------------');
                     //       UserModel user = UserModel(
                     //         email: _emailController.text,
                     //         password: _passwordController.text,
                     //         userName: _usernameController.text,
                     //       );
-                
+
                     //       authbloc.add(SignupEvent(user: user));
                     //     },
                     //     child: Signin(
                     //       mediaQuery: mediaQuery,
                     //       buttontype: 'Sign up',
                     //     )),
-                
+
                     SizedBox(
                       height: mediaQuery.size.width * 0.06,
                     ),
-                
+
                     Padding(
                       padding: const EdgeInsets.only(left: 10, right: 0),
                       child: Row(
@@ -238,7 +232,8 @@ class _SignUpState extends State<SignUp> {
                             child: Divider(),
                           ),
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
                             child: Text(
                               'or continue with',
                               style: TextStyle(
@@ -252,11 +247,11 @@ class _SignUpState extends State<SignUp> {
                         ],
                       ),
                     ),
-                
+
                     SizedBox(
                       height: mediaQuery.size.width * 0.05,
                     ),
-                
+
                     Padding(
                       padding: const EdgeInsets.only(left: 20, right: 20),
                       child: Container(
@@ -297,7 +292,7 @@ class _SignUpState extends State<SignUp> {
                     SizedBox(
                       height: mediaQuery.size.width * 0.03,
                     ),
-                
+
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
