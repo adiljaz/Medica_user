@@ -56,7 +56,7 @@ class SplashScreen extends StatelessWidget {
               ],
             ),
             Spacer(),
-            Lottie.asset('assets/lottie/blue.json',
+            Lottie.asset('assets/lottie/loading.json',
                 fit: BoxFit.cover,
                 width: mediaQuery.size.height * 0.15,
                 height: mediaQuery.size.height * 0.15)

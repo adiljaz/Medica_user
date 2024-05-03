@@ -1,3 +1,4 @@
+import 'package:fire_login/application/features/auth/home/widgets/home.dart';
 import 'package:fire_login/application/features/auth/introScreens/bloc/nextpage_bloc.dart';
 import 'package:fire_login/application/features/auth/introScreens/second_intro.dart';
 import 'package:fire_login/application/features/auth/introScreens/third_into.dart';
@@ -31,7 +32,7 @@ class WelcomeScreen extends StatelessWidget {
                     if (index == 2) {
                       BlocProvider.of<NextpageBloc>(context)
                           .add(CheckNextClickEvent(pageTwo: true));
-                    }else{
+                    } else {
                       BlocProvider.of<NextpageBloc>(context)
                           .add(CheckNextClickEvent(pageTwo: false));
                     }
@@ -54,10 +55,17 @@ class WelcomeScreen extends StatelessWidget {
                 builder: (context, state) {
                   print(state);
                   if (state is OnclickDone) {
-                    return Text('Done',
-                        style: TextStyle(
-                          color: Colormanager.titleText,
-                        ));
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute(builder: (context) => LoginPage()),
+                            (route) => false);
+                      },
+                      child: Text('Done',
+                          style: TextStyle(
+                            color: Colormanager.titleText,
+                          )),
+                    );
                   }
                   return Text('Skip',
                       style: TextStyle(

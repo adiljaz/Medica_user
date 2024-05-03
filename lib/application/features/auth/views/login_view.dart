@@ -18,7 +18,7 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController _usernameController = TextEditingController();
+   
     TextEditingController _passwordController = TextEditingController();
     TextEditingController _emailController = TextEditingController();
 
@@ -55,6 +55,7 @@ class LoginPage extends StatelessWidget {
       },
       builder: (context, state) {
         if (state is Authenticated) {
+          FocusScope.of(context).unfocus(); 
           WidgetsBinding.instance.addPostFrameCallback((_) {
             Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(builder: (_) => const Home()),

@@ -8,21 +8,23 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        actions: [IconButton(onPressed: () {
-
-
-              final authBloc =BlocProvider.of<AuthBloc>(context);
-              authBloc.add(LogoutEvent());
-
-              Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder:(context)=>LoginPage() ), (route) => false);
-
-
-        }, icon: Icon(Icons.logout))],
-      ),
-      body: Column(
-        children: [Text('Home page')],
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          actions: [IconButton(onPressed: () {
+      
+      
+                final authBloc =BlocProvider.of<AuthBloc>(context);
+                authBloc.add(LogoutEvent());
+      
+                Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder:(context)=>LoginPage() ), (route) => false);
+      
+      
+          }, icon: Icon(Icons.logout))],
+        ),
+        body: Column(
+          children: [Text('Home page')],
+        ),
       ),
     );
   }

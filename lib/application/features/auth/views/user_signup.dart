@@ -1,6 +1,7 @@
 import 'package:fire_login/application/features/auth/auth_bloc/bloc/auth_bloc.dart';
 import 'package:fire_login/application/features/auth/home/widgets/home.dart';
 import 'package:fire_login/application/features/auth/models/user_model.dart';
+import 'package:fire_login/application/features/auth/views/Googlebloc/google_auth_bloc.dart';
 import 'package:fire_login/application/features/auth/views/login_view.dart';
 import 'package:fire_login/application/features/auth/views/widgets/textformfield.dart';
 import 'package:fire_login/colors/colormanager.dart';
@@ -24,7 +25,7 @@ class _SignUpState extends State<SignUp> {
   GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
   @override
-  Widget build( BuildContext context) {
+  Widget build(BuildContext context) {
     final authbloc = BlocProvider.of<AuthBloc>(context);
 
     MediaQueryData mediaQuery = MediaQuery.of(context);
@@ -40,13 +41,14 @@ class _SignUpState extends State<SignUp> {
                 child: Text(
                   'Enter correct email and password',
                   style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      color: Color.fromARGB(
-                        255,
-                        255,
-                        255,
-                        255,
-                      )),
+                    fontWeight: FontWeight.w400,
+                    color: Color.fromARGB(
+                      255,
+                      255,
+                      255,
+                      255,
+                    ),
+                  ),
                 ),
               ),
               backgroundColor: Color.fromARGB(255, 0, 0, 0),
@@ -56,6 +58,7 @@ class _SignUpState extends State<SignUp> {
       },
       builder: (context, state) {
         if (state is Authenticated) {
+          FocusScope.of(context).unfocus(); 
           WidgetsBinding.instance.addPostFrameCallback((_) {
             Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(builder: (context) => Home()),
@@ -175,6 +178,7 @@ class _SignUpState extends State<SignUp> {
                     GestureDetector(
                       onTap: () {
                         if (_formkey.currentState!.validate()) {
+                          
                           UserModel user = UserModel(
                             email: _emailController.text,
                             password: _passwordController.text.trim(),
@@ -254,38 +258,96 @@ class _SignUpState extends State<SignUp> {
 
                     Padding(
                       padding: const EdgeInsets.only(left: 20, right: 20),
-                      child: Container(
-                        height: mediaQuery.size.height * 0.06,
-                        width: mediaQuery.size.width,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colormanager.whiteContainer,
-                            border: Border.all(
-                                width: 0.5, color: Colormanager.iconscolor)),
-                        child: Row(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(left: 8),
-                              child: Image(
-                                image: AssetImage(
-                                  'assets/images/googleLogo.png',
-                                ),
-                                fit: BoxFit.cover,
-                                height: 35,
+                      child: GestureDetector(
+                        onTap: () {
+                          context.read<GoogleAuthBloc>().add(SigninEvent());
+                        },
+                        child: BlocBuilder<GoogleAuthBloc, GoogleAuthState>(
+                          builder: (context, state) {
+                            if (state is GoogleAuthPendingn) {
+                              Stack(
+                                children: [
+                                  Container(
+                                    height: mediaQuery.size.height * 0.06,
+                                    width: mediaQuery.size.width,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: Colormanager.whiteContainer,
+                                        border: Border.all(
+                                            width: 0.5,
+                                            color: Colormanager.iconscolor)),
+                                    child: Row(
+                                      children: [
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 8),
+                                          child: Image(
+                                            image: AssetImage(
+                                              'assets/images/googleLogo.png',
+                                            ),
+                                            fit: BoxFit.cover,
+                                            height: 35,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: mediaQuery.size.width * 0.14,
+                                        ),
+                                        Center(
+                                            child: Text(
+                                          'Sign in with Google',
+                                          style: TextStyle(
+                                              color: Colormanager.blackText,
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 15),
+                                        )),
+                                        Spacer(),
+                                      ],
+                                    ),
+                                  ),
+                                  Center(
+                                      child: CircularProgressIndicator(
+                                    color: Colormanager.blueContainer,
+                                  )),
+                                ],
+                              );
+                            }
+
+                            return Container(
+                              height: mediaQuery.size.height * 0.06,
+                              width: mediaQuery.size.width,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Colormanager.whiteContainer,
+                                  border: Border.all(
+                                      width: 0.5,
+                                      color: Colormanager.iconscolor)),
+                              child: Row(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 8),
+                                    child: Image(
+                                      image: AssetImage(
+                                        'assets/images/googleLogo.png',
+                                      ),
+                                      fit: BoxFit.cover,
+                                      height: 35,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: mediaQuery.size.width * 0.14,
+                                  ),
+                                  Center(
+                                      child: Text(
+                                    'Sign in with Google',
+                                    style: TextStyle(
+                                        color: Colormanager.blackText,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 15),
+                                  )),
+                                ],
                               ),
-                            ),
-                            SizedBox(
-                              width: mediaQuery.size.width * 0.14,
-                            ),
-                            Center(
-                                child: Text(
-                              'Sign in with Google',
-                              style: TextStyle(
-                                  color: Colormanager.blackText,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 15),
-                            )),
-                          ],
+                            );
+                          },
                         ),
                       ),
                     ),
