@@ -1,7 +1,7 @@
 import 'package:fire_login/blocs/auth/auth_bloc.dart';
 import 'package:fire_login/screens/home/home.dart';
 import 'package:fire_login/blocs/Google/google_auth_bloc.dart';
-import 'package:fire_login/screens/ForgotPassword/forgot.dart';
+import 'package:fire_login/screens/authentication/ForgotPassword/forgot.dart';
 import 'package:fire_login/screens/authentication/signup/user_signup.dart';
 import 'package:fire_login/widgets/signin/signin.dart';
 import 'package:fire_login/widgets/textformfield/textformfield.dart';
