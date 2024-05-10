@@ -158,7 +158,7 @@ class _EditProfileState extends State<EditProfile> {
                   fonrmtype: 'Gender ',
                   formColor: Colormanager.wittextformfield,
                   textcolor: Colormanager.grayText,
-                  controller: _mobilecontroler,
+                  controller: _gendercontroller,
                   value: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Add Name ';
@@ -174,7 +174,7 @@ class _EditProfileState extends State<EditProfile> {
                   fonrmtype: 'Mobile ',
                   formColor: Colormanager.wittextformfield,
                   textcolor: Colormanager.grayText,
-                  controller: _gendercontroller,
+                  controller: _mobilecontroler,
                   value: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Add Mobile number';

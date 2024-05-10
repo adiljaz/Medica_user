@@ -79,19 +79,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         //     .doc(user!.photoURL)
         //     .get();
 
+        // final snap =await FirebaseFirestore.instance.collection('users').doc(user!.phoneNumber).get() ;
 
-            // final snap =await FirebaseFirestore.instance.collection('users').doc(user!.phoneNumber).get() ;
-             
+        //    if(snap.exists){
 
-            //    if(snap.exists){
+        //     emit(Authenticated(user));
 
-            //     emit(Authenticated(user));
+        //    }else{
+        //     emit(UnAuthenticated());
+        //    }
 
-            //    }else{
-            //     emit(UnAuthenticated());
-            //    }
-        
-       
         if (user != null) {
           emit(Authenticated(user));
         } else {
