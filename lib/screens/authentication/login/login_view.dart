@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:fire_login/blocs/auth/auth_bloc.dart';
 import 'package:fire_login/screens/bottomnav/home.dart';
 import 'package:fire_login/blocs/Google/google_auth_bloc.dart';
@@ -52,6 +54,9 @@ class LoginPage extends StatelessWidget {
               backgroundColor: Color.fromARGB(255, 0, 0, 0),
             ),
           );
+        }
+        if(state is UseralreadyExisting){
+          log("user already exist");
         }
       },
       builder: (context, state) {

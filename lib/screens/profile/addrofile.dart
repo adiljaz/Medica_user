@@ -1,4 +1,4 @@
-import 'package:fire_login/blocs/profile/AddUser/add_user_bloc.dart';
+import 'package:fire_login/blocs/profile/addUser/add_user_bloc.dart';
 import 'package:fire_login/blocs/profile/ImageAdding/image_adding_bloc.dart';
 import 'package:fire_login/screens/bottomnav/home.dart';
 import 'package:fire_login/screens/profile/widget/userimage.dart';
@@ -90,7 +90,7 @@ class AddProfile extends StatelessWidget {
                         height: mediaquery.size.height * 0.02,
                       ),
                       ProfileTextFormField(
-                        keyboardtype: TextInputType.name,
+                          keyboardtype: TextInputType.name,
                           fonrmtype: 'Name ',
                           formColor: Colormanager.wittextformfield,
                           textcolor: Colormanager.grayText,
@@ -106,7 +106,7 @@ class AddProfile extends StatelessWidget {
                         height: mediaquery.size.height * 0.02,
                       ),
                       ProfileTextFormField(
-                        keyboardtype: TextInputType.number,
+                          keyboardtype: TextInputType.number,
                           fonrmtype: 'Age ',
                           formColor: Colormanager.wittextformfield,
                           textcolor: Colormanager.grayText,
@@ -122,7 +122,7 @@ class AddProfile extends StatelessWidget {
                         height: mediaquery.size.height * 0.02,
                       ),
                       ProfileTextFormField(
-                             keyboardtype: TextInputType.number,
+                          keyboardtype: TextInputType.number,
                           fonrmtype: 'Date of Birth',
                           formColor: Colormanager.wittextformfield,
                           textcolor: Colormanager.grayText,
@@ -138,7 +138,7 @@ class AddProfile extends StatelessWidget {
                         height: mediaquery.size.height * 0.02,
                       ),
                       ProfileTextFormField(
-                             keyboardtype: TextInputType.text,
+                          keyboardtype: TextInputType.text,
                           fonrmtype: 'Gender ',
                           formColor: Colormanager.wittextformfield,
                           textcolor: Colormanager.grayText,
@@ -154,7 +154,7 @@ class AddProfile extends StatelessWidget {
                         height: mediaquery.size.height * 0.02,
                       ),
                       ProfileTextFormField(
-                              keyboardtype: TextInputType.number,
+                          keyboardtype: TextInputType.number,
                           fonrmtype: 'Mobile Number ',
                           formColor: Colormanager.wittextformfield,
                           textcolor: Colormanager.grayText,
@@ -170,7 +170,7 @@ class AddProfile extends StatelessWidget {
                         height: mediaquery.size.height * 0.02,
                       ),
                       ProfileTextFormField(
-                              keyboardtype: TextInputType.text,
+                          keyboardtype: TextInputType.text,
                           fonrmtype: 'Location',
                           formColor: Colormanager.wittextformfield,
                           textcolor: Colormanager.grayText,
@@ -191,7 +191,17 @@ class AddProfile extends StatelessWidget {
                       ),
                       GestureDetector(
                         onTap: () {
-                          if (_formkey.currentState!.validate()) {
+                          if (imageUrl.isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                    'Failed to upload image. Please try again.'),
+                              ),
+                            );
+                          }
+
+                          if (_formkey.currentState!.validate() &&
+                              imageUrl.isNotEmpty) {
                             Navigator.of(context).pop();
                             FocusScope.of(context).unfocus();
                             final name = _nameController.text;
@@ -212,18 +222,12 @@ class AddProfile extends StatelessWidget {
                                 location: location,
                                 mobile: mbobilecontroller,
                               ));
-                              Navigator.of(context).pushAndRemoveUntil(
-                                  MaterialPageRoute(
-                                      builder: (context) => Bottomnav()),
-                                  (route) => false);
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                      'Failed to upload image. Please try again.'),
-                                ),
-                              );
                             }
+
+                            Navigator.of(context).pushAndRemoveUntil(
+                                MaterialPageRoute(
+                                    builder: (context) => Bottomnav()),
+                                (route) => false);
                           }
                         },
                         child: Container(

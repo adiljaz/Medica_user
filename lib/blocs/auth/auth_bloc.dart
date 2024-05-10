@@ -74,17 +74,24 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             email: event.email, password: event.password);
 
         final user = userCredential.user;
-        final userSnap = await FirebaseFirestore.instance
-            .collection("users")
-            .doc(user!.uid)
-            .get();
+        // final userSnap = await FirebaseFirestore.instance
+        //     .collection("users")
+        //     .doc(user!.photoURL)
+        //     .get();
 
-        if (userSnap.exists) {
-          emit(UseralreadyExisting());
-        } else {
-          emit(UsrarisNotExisting());
-        }
 
+            // final snap =await FirebaseFirestore.instance.collection('users').doc(user!.phoneNumber).get() ;
+             
+
+            //    if(snap.exists){
+
+            //     emit(Authenticated(user));
+
+            //    }else{
+            //     emit(UnAuthenticated());
+            //    }
+        
+       
         if (user != null) {
           emit(Authenticated(user));
         } else {
