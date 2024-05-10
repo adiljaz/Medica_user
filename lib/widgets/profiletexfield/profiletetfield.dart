@@ -1,14 +1,16 @@
+import 'package:fire_login/utils/colors/colormanager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class CustomTextFormField extends StatelessWidget {
+class ProfileTextFormField extends StatelessWidget {
   // ignore: prefer_const_constructors_in_immutables
-  CustomTextFormField({
+  ProfileTextFormField({
     required this.fonrmtype,
     required this.formColor,
-    required this.Textcolor,
+    required this.textcolor,
     required this.controller,
     required this.value,
+    required this.keyboardtype, 
     this.icons,
     this.suficon,
   });
@@ -18,8 +20,10 @@ class CustomTextFormField extends StatelessWidget {
   final Color formColor;
   final Icon? icons;
   final Icon? suficon;
-  final Color Textcolor;
+  final Color textcolor;
   final TextEditingController controller;
+
+  final TextInputType keyboardtype;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +31,7 @@ class CustomTextFormField extends StatelessWidget {
       padding: const EdgeInsets.only(left: 20, right: 20),
       child: TextFormField(
         
-        
+        keyboardType: keyboardtype,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
         validator: value,
         controller: controller,
@@ -36,12 +40,12 @@ class CustomTextFormField extends StatelessWidget {
           suffixIcon: suficon,
           labelText: fonrmtype,
           labelStyle: TextStyle(
-            color: Textcolor,
+            color: textcolor,
             fontWeight: FontWeight.w400,
           ),
           fillColor: formColor,
           filled: true,
-          contentPadding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 10.0),
+          contentPadding:  const EdgeInsets.symmetric(vertical: 14.0, horizontal: 10.0),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10.0),
             borderSide: BorderSide(
@@ -52,10 +56,7 @@ class CustomTextFormField extends StatelessWidget {
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide(
-              color: Color.fromARGB(255, 220, 219, 219),
-              width: 1,
-            ),
+            borderSide:BorderSide.none,
           ),
           errorBorder: OutlineInputBorder(
             // Define border style for validation error
@@ -69,7 +70,7 @@ class CustomTextFormField extends StatelessWidget {
             // Define border style for focused validation error
             borderRadius: BorderRadius.circular(10),
             borderSide: BorderSide(
-              color: Colors.red, // Red border for focused validation error
+              color: Colormanager.blueContainer, // Red border for focused validation error
               width: 1,
             ),
           ),

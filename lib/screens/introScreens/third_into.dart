@@ -1,7 +1,5 @@
 import 'package:fire_login/utils/colors/colormanager.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ThirdIntro extends StatelessWidget {
@@ -25,36 +23,36 @@ class ThirdIntro extends StatelessWidget {
               alignment: Alignment.bottomCenter,
               child: Container(
                 width: mediaQuery.size.width,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                     color: Colormanager.whiteContainer,
                     borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(50),
                         topRight: Radius.circular(50))),
                 child: Column(
                   children: [
-                    Spacer(),
+                    const Spacer(),
                     Text(" Let's start living",
                         style: GoogleFonts.firaSans(
-                          textStyle: TextStyle(
+                          textStyle: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 35,
                               color: Colormanager.titleText),
                         )),
                     Text('healthy and well',
                         style: GoogleFonts.firaSans(
-                          textStyle: TextStyle(
+                          textStyle: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 35,
                               color: Colormanager.titleText),
                         )),
                     Text('With us right now!',
                         style: GoogleFonts.firaSans(
-                          textStyle: TextStyle(
+                          textStyle: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 35,
                               color: Colormanager.titleText),
                         )),
-                    Spacer(),
+                    const Spacer(),
                   ],
                 ),
                 height: mediaQuery.size.height * 0.35,

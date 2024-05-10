@@ -20,6 +20,13 @@ class AuthenticatedError extends AuthState{
   
 }
 
+class UseralreadyExisting  extends AuthState{}
+
+class UsrarisNotExisting extends AuthState{}
+
+
+
+
 
 
 

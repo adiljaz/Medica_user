@@ -52,7 +52,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           };
 
           await FirebaseFirestore.instance
-              .collection('users')
+              .collection('users auth')
               .doc(user.uid)
               .set(userData);
           emit(Authenticated(user)); // Emit success with user data
@@ -74,6 +74,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             email: event.email, password: event.password);
 
         final user = userCredential.user;
+        final userSnap = await FirebaseFirestore.instance
+            .collection("users")
+            .doc(user!.uid)
+            .get();
+
+        if (userSnap.exists) {
+          emit(UseralreadyExisting());
+        } else {
+          emit(UsrarisNotExisting());
+        }
+
         if (user != null) {
           emit(Authenticated(user));
         } else {

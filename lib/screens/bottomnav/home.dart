@@ -1,3 +1,4 @@
+
 import 'package:fire_login/blocs/auth/auth_bloc.dart';
 import 'package:fire_login/blocs/bottomnav/landing_state_bloc.dart';
 import 'package:fire_login/screens/authentication/login/login_view.dart';
@@ -7,8 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconly/iconly.dart';
 
-class Home extends StatelessWidget {
-  const Home({super.key});
+class Bottomnav extends StatelessWidget {
+   Bottomnav({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,20 +26,20 @@ class Home extends StatelessWidget {
         builder: (context, state) {
           return Scaffold(
             backgroundColor:Colormanager.scaffold,
-            // appBar: AppBar(
-            //   actions: [
-            //     IconButton(
-            //         onPressed: () {
-            //           final authBloc = BlocProvider.of<AuthBloc>(context);
-            //           authBloc.add(LogoutEvent());
+            appBar: AppBar(
+              actions: [
+                IconButton(
+                    onPressed: () {
+                      final authBloc = BlocProvider.of<AuthBloc>(context);
+                      authBloc.add(LogoutEvent());
 
-            //           Navigator.of(context).pushAndRemoveUntil(
-            //               MaterialPageRoute(builder: (context) => LoginPage()),
-            //               (route) => false);
-            //         },
-            //         icon: Icon(Icons.logout))
-            //   ],
-            // ),
+                      Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(builder: (context) => LoginPage()),
+                          (route) => false);
+                    },
+                    icon: Icon(Icons.logout))
+              ],
+            ),
             
             body: bottomNavScren.elementAt(state.tabindex),
             bottomNavigationBar: ClipRRect(

@@ -17,7 +17,7 @@ class ForgotPassword extends StatelessWidget {
 
     MediaQueryData mediaQuery = MediaQuery.of(context);
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 255, 255, 255),
+      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       body: Form(
         key: _formkey,
         child: BlocConsumer<ForgotPasswordBloc, ForgotPasswordState>(
@@ -37,8 +37,6 @@ class ForgotPassword extends StatelessWidget {
               // Optionally, navigate away after success
               Navigator.of(context).pop();
             }
-
-           
 
             if (state is ForgotpasswordError) {
               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -64,11 +62,11 @@ class ForgotPassword extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Spacer(),
+                    const Spacer(),
                     Text(
                       'Forgot Password',
                       style: GoogleFonts.poppins(
-                          textStyle: TextStyle(
+                          textStyle: const TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 32)),
                     ),
                     SizedBox(height: mediaQuery.size.height * 0.03),
@@ -76,12 +74,12 @@ class ForgotPassword extends StatelessWidget {
                       '''Enter your Email and we will send you a 
                 password reset link !''',
                       style: GoogleFonts.poppins(
-                          textStyle: TextStyle(
+                          textStyle: const TextStyle(
                               fontWeight: FontWeight.w400,
                               color: Colormanager.grayText)),
                     ),
                     SizedBox(height: mediaQuery.size.height * 0.03),
-                    CutomTextFormField(
+                    CustomTextFormField(
                       // ignore: body_might_complete_normally_nullable
                       value: (value) {
                         if (value == null || value.isEmpty) {
@@ -89,7 +87,7 @@ class ForgotPassword extends StatelessWidget {
                         }
                       },
                       controller: _emailController,
-                      icons: Icon(
+                      icons: const Icon(
                         Icons.email,
                         color: Colormanager.iconscolor,
                       ),
@@ -97,9 +95,9 @@ class ForgotPassword extends StatelessWidget {
                       fonrmtype: 'Enter email',
                       formColor: Colormanager.whiteContainer,
                     ),
-                    Spacer(),
+                    const Spacer(),
                     Image.asset('assets/images/forgot.png'),
-                    Spacer(),
+                    const Spacer(),
                     Padding(
                       padding: const EdgeInsets.only(left: 20, right: 20),
                       child: GestureDetector(
@@ -116,7 +114,7 @@ class ForgotPassword extends StatelessWidget {
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
                               color: Colormanager.blueContainer),
-                          child: Center(
+                          child: const Center(
                               child: Text(
                             'Continue',
                             style: TextStyle(

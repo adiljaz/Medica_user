@@ -22,7 +22,7 @@ class GoogleAuthBloc extends Bloc<GoogleAuthEvent, GoogleAuthState> {
     final user = await authrepository.signinWithGoogle();
     if (user != null) {
       final name = user.email?.split('@').first;
-      FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+      FirebaseFirestore.instance.collection('users auth').doc(user.uid).set({
         'uid': user.uid,
         'email': user.email,
         'name': name,

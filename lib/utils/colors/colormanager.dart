@@ -5,6 +5,9 @@ class Colormanager {
   static const Color blackText = Colors.black;
   static const Color grayText = Colors.grey;
   static const Color whiteText = Colors.white;
+ static const Color wittextformfield = Colors.white;
+
+
 
   static const Color blueContainer = Color.fromARGB(255, 0, 85, 232);
   static const Color whiteContainer = Colors.white;
@@ -15,6 +18,6 @@ class Colormanager {
 
 
 
-  static const Color scaffold = Color.fromARGB(255, 233, 233, 233);
+  static const Color scaffold = Color.fromARGB(255, 235, 235, 235);
     static const Color blueicon = Color.fromARGB(255, 0, 85, 232);
 }

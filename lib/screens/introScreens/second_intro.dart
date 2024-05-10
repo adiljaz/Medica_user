@@ -1,7 +1,5 @@
 import 'package:fire_login/utils/colors/colormanager.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class SecondIntro extends StatelessWidget {
@@ -26,37 +24,39 @@ class SecondIntro extends StatelessWidget {
               alignment: Alignment.bottomCenter,
               child: Container(
                 width: mediaQuery.size.width,
-                
-                
-                decoration: BoxDecoration(
+                height: mediaQuery.size.height * 0.35,
+                decoration: const BoxDecoration(
                     color: Colormanager.whiteContainer,
                     borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(50),
                         topRight: Radius.circular(50))),
                 child: Column(
                   children: [
-                    Spacer(),
-                    Text(
-                      'Thousands of',
-                      style: GoogleFonts.firaSans(textStyle:  TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 35,
-                          color: Colormanager.titleText),)
-                    ),
+                    const Spacer(),
+                    Text('Thousands of',
+                        style: GoogleFonts.firaSans(
+                          textStyle: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 35,
+                              color: Colormanager.titleText),
+                        )),
                     Text('Doctors & Experts to',
-                       style: GoogleFonts.firaSans(textStyle:  TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 35,
-                          color: Colormanager.titleText),)),
+                        style: GoogleFonts.firaSans(
+                          textStyle: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 35,
+                              color: Colormanager.titleText),
+                        )),
                     Text('help your Health !',
-                        style: GoogleFonts.firaSans (textStyle:  TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 35,
-                          color: Colormanager.titleText),) ),
-                    Spacer(),
+                        style: GoogleFonts.firaSans(
+                          textStyle: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 35,
+                              color: Colormanager.titleText),
+                        )),
+                    const Spacer(),
                   ],
                 ),
-                height: mediaQuery.size.height * 0.35,
               ))
         ],
       ),

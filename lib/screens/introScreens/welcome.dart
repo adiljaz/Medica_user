@@ -39,8 +39,8 @@ class WelcomeScreen extends StatelessWidget {
                   },
                   children: [
                     WelcomePageView(controller: controller),
-                    SecondIntro(),
-                    ThirdIntro(),
+                    const SecondIntro(),
+                    const ThirdIntro(),
                   ],
                 ),
               ],
@@ -61,13 +61,13 @@ class WelcomeScreen extends StatelessWidget {
                             MaterialPageRoute(builder: (context) => LoginPage()),
                             (route) => false);
                       },
-                      child: Text('Done',
+                      child: const Text('Done',
                           style: TextStyle(
                             color: Colormanager.titleText,
                           )),
                     );
                   }
-                  return Text('Skip',
+                  return const Text('Skip',
                       style: TextStyle(
                         color: Colormanager.titleText,
                       ));
@@ -76,7 +76,7 @@ class WelcomeScreen extends StatelessWidget {
               SmoothPageIndicator(
                 controller: controller,
                 count: 3,
-                effect: WormEffect(
+                effect: const WormEffect(
                   dotWidth: 10,
                   dotHeight: 10,
                 ),
@@ -84,10 +84,10 @@ class WelcomeScreen extends StatelessWidget {
               GestureDetector(
                 onTap: () {
                   controller.nextPage(
-                      duration: Duration(milliseconds: 500),
+                      duration: const Duration(milliseconds: 500),
                       curve: Curves.easeIn);
                 },
-                child: Text(
+                child: const Text(
                   'Next',
                   style: TextStyle(color: Colormanager.titleText),
                 ),
@@ -105,15 +105,15 @@ class WelcomeScreen extends StatelessWidget {
             child: Container(
               width: mediaQuery.size.width * 0.8,
               height: mediaQuery.size.height * 0.053,
-              child: Center(
+              decoration: BoxDecoration(
+                  color: Colormanager.blueContainer,
+                  borderRadius: BorderRadius.circular(5)),
+              child: const Center(
                   child: Text(
                 'Get Started',
                 style: TextStyle(
                     color: Colormanager.whiteText, fontWeight: FontWeight.bold),
               )),
-              decoration: BoxDecoration(
-                  color: Colormanager.blueContainer,
-                  borderRadius: BorderRadius.circular(5)),
             ),
           ),
           SizedBox(

@@ -1,8 +1,9 @@
 import 'package:fire_login/blocs/auth/auth_bloc.dart';
-import 'package:fire_login/screens/home/home.dart';
+import 'package:fire_login/screens/bottomnav/home.dart';
 import 'package:fire_login/blocs/Google/google_auth_bloc.dart';
 import 'package:fire_login/screens/authentication/ForgotPassword/forgot.dart';
 import 'package:fire_login/screens/authentication/signup/user_signup.dart';
+import 'package:fire_login/screens/profile/addrofile.dart';
 import 'package:fire_login/widgets/signin/signin.dart';
 import 'package:fire_login/widgets/textformfield/textformfield.dart';
 import 'package:fire_login/utils/colors/colormanager.dart';
@@ -17,8 +18,8 @@ import 'package:google_fonts/google_fonts.dart';
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
 
-  TextEditingController _passwordController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
 
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
@@ -55,20 +56,35 @@ class LoginPage extends StatelessWidget {
       },
       builder: (context, state) {
         if (state is Authenticated) {
-          // FocusScope.of(context).unfocus();
+          FocusScope.of(context).unfocus();
           WidgetsBinding.instance.addPostFrameCallback((_) {
             Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (_) => const Home()),
+                MaterialPageRoute(builder: (_) => Bottomnav()),
                 (route) => false);
           });
         }
         return Scaffold(
             body: BlocListener<GoogleAuthBloc, GoogleAuthState>(
           listener: (context, state) {
+
             if (state is GoogleAuthsuccess) {
+
+               if (state is UseralreadyExisting) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(builder: (_) => Home()),
+                    MaterialPageRoute(builder: (_) => Bottomnav()),
+                    (route) => false);
+              });
+            }
+
+
+
+
+
+
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (_) => AddProfile()),
                     (route) => false);
               });
             }
@@ -97,7 +113,7 @@ class LoginPage extends StatelessWidget {
                     Text(
                       "Let's you in",
                       style: GoogleFonts.poppins(
-                          textStyle: TextStyle(
+                          textStyle: const TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 40)),
                     ),
 
@@ -106,7 +122,7 @@ class LoginPage extends StatelessWidget {
                     ),
                     // emial
 
-                    CutomTextFormField(
+                    CustomTextFormField(
                       // ignore: body_might_complete_normally_nullable
                       value: (value) {
                         if (value == null || value.isEmpty) {
@@ -117,20 +133,20 @@ class LoginPage extends StatelessWidget {
                       Textcolor: Colormanager.grayText,
                       fonrmtype: 'Enter email',
                       formColor: Colormanager.whiteContainer,
-                      icons: Icon(
+                      icons: const Icon(
                         Icons.email,
                         size: 27,
                         color: Colormanager.iconscolor,
                       ),
                     ),
 
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
 
                     //password
 
-                    CutomTextFormField(
+                    CustomTextFormField(
                       // ignore: body_might_complete_normally_nullable
                       value: (value) {
                         if (value == null || value.isEmpty) {
@@ -138,14 +154,14 @@ class LoginPage extends StatelessWidget {
                         }
                       },
                       controller: _passwordController,
-                      suficon: Icon(
+                      suficon: const Icon(
                         Icons.remove_red_eye,
                         color: Colormanager.blackIcon,
                       ),
                       Textcolor: Colormanager.grayText,
                       fonrmtype: 'Enter password',
                       formColor: Colormanager.whiteContainer,
-                      icons: Icon(
+                      icons: const Icon(
                         FontAwesomeIcons.lock,
                         size: 20,
                         color: Colormanager.iconscolor,
@@ -157,8 +173,8 @@ class LoginPage extends StatelessWidget {
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => ForgotPassword()));
                       },
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 25),
+                      child: const Padding(
+                        padding: EdgeInsets.only(right: 25),
                         child: Align(
                           alignment: Alignment.centerRight,
                           child: Text(
@@ -193,16 +209,15 @@ class LoginPage extends StatelessWidget {
                       height: mediaQuery.size.width * 0.06,
                     ),
 
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 0),
+                    const Padding(
+                      padding: EdgeInsets.only(left: 10, right: 0),
                       child: Row(
                         children: [
                           Expanded(
                             child: Divider(),
                           ),
                           Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            padding: EdgeInsets.symmetric(horizontal: 8.0),
                             child: Text(
                               'or continue with',
                               style: TextStyle(
@@ -245,9 +260,8 @@ class LoginPage extends StatelessWidget {
                                             color: Colormanager.iconscolor)),
                                     child: Row(
                                       children: [
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 8),
+                                        const Padding(
+                                          padding: EdgeInsets.only(left: 8),
                                           child: Image(
                                             image: AssetImage(
                                               'assets/images/googleLogo.png',
@@ -259,7 +273,7 @@ class LoginPage extends StatelessWidget {
                                         SizedBox(
                                           width: mediaQuery.size.width * 0.14,
                                         ),
-                                        Center(
+                                        const Center(
                                             child: Text(
                                           'Sign in with Google',
                                           style: TextStyle(
@@ -267,11 +281,11 @@ class LoginPage extends StatelessWidget {
                                               fontWeight: FontWeight.w500,
                                               fontSize: 15),
                                         )),
-                                        Spacer(),
+                                        const Spacer(),
                                       ],
                                     ),
                                   ),
-                                  Center(
+                                  const Center(
                                       child: CircularProgressIndicator(
                                     color: Colormanager.blueContainer,
                                   )),
@@ -290,8 +304,8 @@ class LoginPage extends StatelessWidget {
                                       color: Colormanager.iconscolor)),
                               child: Row(
                                 children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 8),
+                                  const Padding(
+                                    padding: EdgeInsets.only(left: 8),
                                     child: Image(
                                       image: AssetImage(
                                         'assets/images/googleLogo.png',
@@ -303,7 +317,7 @@ class LoginPage extends StatelessWidget {
                                   SizedBox(
                                     width: mediaQuery.size.width * 0.14,
                                   ),
-                                  Center(
+                                  const Center(
                                       child: Text(
                                     'Sign in with Google',
                                     style: TextStyle(
@@ -311,7 +325,7 @@ class LoginPage extends StatelessWidget {
                                         fontWeight: FontWeight.w500,
                                         fontSize: 15),
                                   )),
-                                  Spacer(),
+                                  const Spacer(),
                                 ],
                               ),
                             );
@@ -327,7 +341,7 @@ class LoginPage extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
+                        const Text(
                           "Dont't have an account ? ",
                           style: TextStyle(
                             fontWeight: FontWeight.w500,
@@ -338,7 +352,7 @@ class LoginPage extends StatelessWidget {
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (context) => SignUp()));
                             },
-                            child: Text(
+                            child: const Text(
                               "Sign up",
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,

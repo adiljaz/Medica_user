@@ -1,5 +1,5 @@
 import 'package:fire_login/blocs/auth/auth_bloc.dart';
-import 'package:fire_login/screens/home/home.dart';
+import 'package:fire_login/screens/bottomnav/home.dart';
 import 'package:fire_login/screens/introScreens/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,7 +21,7 @@ class SplashScreen extends StatelessWidget {
         // TODO: implement listener
 
       if(state is Authenticated){
-        Navigator.of(context).pushReplacement(MaterialPageRoute(  builder: (context)=>Home(), )); // home
+        Navigator.of(context).pushReplacement(MaterialPageRoute(  builder: (context)=> Bottomnav(), )); // home
       }else if( state is UnAuthenticated){
         // Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=>LoginPage() )); // login 
         Navigator.of(context).pushReplacement(PageTransition(child: WelcomeScreen(), type: PageTransitionType.fade));
@@ -37,7 +37,7 @@ class SplashScreen extends StatelessWidget {
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Spacer(),
+            const Spacer(),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -51,11 +51,11 @@ class SplashScreen extends StatelessWidget {
                   'Medica',
                   style: GoogleFonts.signika(
                       textStyle:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 35)),
+                          const TextStyle(fontWeight: FontWeight.bold, fontSize: 35)),
                 )
               ],
             ),
-            Spacer(),
+            const Spacer(),
             Lottie.asset('assets/lottie/loading.json',
                 fit: BoxFit.cover,
                 width: mediaQuery.size.height * 0.15,

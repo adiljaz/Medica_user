@@ -1,8 +1,9 @@
 import 'package:fire_login/blocs/auth/auth_bloc.dart';
-import 'package:fire_login/screens/home/home.dart';
+import 'package:fire_login/screens/bottomnav/home.dart';
 import 'package:fire_login/models/user_model.dart';
 import 'package:fire_login/blocs/Google/google_auth_bloc.dart';
 import 'package:fire_login/screens/authentication/login/login_view.dart';
+import 'package:fire_login/screens/profile/addrofile.dart';
 import 'package:fire_login/widgets/textformfield/textformfield.dart';
 import 'package:fire_login/utils/colors/colormanager.dart';
 import 'package:flutter/material.dart';
@@ -10,19 +11,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class SignUp extends StatefulWidget {
-  const SignUp({super.key});
+// ignore: must_be_immutable
+class SignUp extends StatelessWidget {
+  SignUp({super.key});
 
-  @override
-  State<SignUp> createState() => _SignUpState();
-}
+  final TextEditingController _usernameController = TextEditingController();
 
-class _SignUpState extends State<SignUp> {
-  TextEditingController _usernameController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
-  GlobalKey<FormState> _formkey = GlobalKey<FormState>();
+  final TextEditingController _emailController = TextEditingController();
+
+  final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -58,10 +57,10 @@ class _SignUpState extends State<SignUp> {
       },
       builder: (context, state) {
         if (state is Authenticated) {
-          FocusScope.of(context).unfocus(); 
+          FocusScope.of(context).unfocus();
           WidgetsBinding.instance.addPostFrameCallback((_) {
             Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (context) => Home()),
+                MaterialPageRoute(builder: (context) =>  AddProfile()),
                 (route) => false);
           });
         }
@@ -91,7 +90,7 @@ class _SignUpState extends State<SignUp> {
                     Text(
                       "Create New Account",
                       style: GoogleFonts.poppins(
-                          textStyle: TextStyle(
+                          textStyle: const TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 25)),
                     ),
 
@@ -101,7 +100,7 @@ class _SignUpState extends State<SignUp> {
                       height: mediaQuery.size.width * 0.04,
                     ),
 
-                    CutomTextFormField(
+                    CustomTextFormField(
                       // ignore: body_might_complete_normally_nullable
                       value: (value) {
                         if (value == null || value.isEmpty) {
@@ -112,7 +111,7 @@ class _SignUpState extends State<SignUp> {
                       Textcolor: Colormanager.grayText,
                       fonrmtype: 'Enter username',
                       formColor: Colormanager.whiteContainer,
-                      icons: Icon(
+                      icons: const Icon(
                         Icons.account_circle,
                         size: 27,
                         color: Colormanager.iconscolor,
@@ -123,7 +122,7 @@ class _SignUpState extends State<SignUp> {
                       height: mediaQuery.size.width * 0.04,
                     ),
 
-                    CutomTextFormField(
+                    CustomTextFormField(
                       // ignore: body_might_complete_normally_nullable
                       value: (value) {
                         if (value == null || value.isEmpty) {
@@ -134,7 +133,7 @@ class _SignUpState extends State<SignUp> {
                       Textcolor: Colormanager.grayText,
                       fonrmtype: 'Enter email',
                       formColor: Colormanager.whiteContainer,
-                      icons: Icon(
+                      icons: const Icon(
                         Icons.email,
                         size: 27,
                         color: Colormanager.iconscolor,
@@ -147,7 +146,7 @@ class _SignUpState extends State<SignUp> {
 
                     //password
 
-                    CutomTextFormField(
+                    CustomTextFormField(
                       value: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Enter your password ';
@@ -158,12 +157,12 @@ class _SignUpState extends State<SignUp> {
                       Textcolor: Colormanager.grayText,
                       fonrmtype: 'Enter password',
                       formColor: Colormanager.whiteContainer,
-                      icons: Icon(
+                      icons: const Icon(
                         FontAwesomeIcons.lock,
                         size: 20,
                         color: Colormanager.iconscolor,
                       ),
-                      suficon: Icon(
+                      suficon: const Icon(
                         Icons.remove_red_eye,
                         color: Colormanager.blackIcon,
                       ),
@@ -178,7 +177,6 @@ class _SignUpState extends State<SignUp> {
                     GestureDetector(
                       onTap: () {
                         if (_formkey.currentState!.validate()) {
-                          
                           UserModel user = UserModel(
                             email: _emailController.text,
                             password: _passwordController.text.trim(),
@@ -195,7 +193,7 @@ class _SignUpState extends State<SignUp> {
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
                               color: Colormanager.blueContainer),
-                          child: Center(
+                          child: const Center(
                               child: Text(
                             'Sign up',
                             style: TextStyle(
@@ -228,8 +226,8 @@ class _SignUpState extends State<SignUp> {
                       height: mediaQuery.size.width * 0.06,
                     ),
 
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 0),
+                    const Padding(
+                      padding: EdgeInsets.only(left: 10, right: 0),
                       child: Row(
                         children: [
                           Expanded(
@@ -237,7 +235,7 @@ class _SignUpState extends State<SignUp> {
                           ),
                           Padding(
                             padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
+                                EdgeInsets.symmetric(horizontal: 8.0),
                             child: Text(
                               'or continue with',
                               style: TextStyle(
@@ -278,9 +276,9 @@ class _SignUpState extends State<SignUp> {
                                             color: Colormanager.iconscolor)),
                                     child: Row(
                                       children: [
-                                        Padding(
+                                        const Padding(
                                           padding:
-                                              const EdgeInsets.only(left: 8),
+                                              EdgeInsets.only(left: 8),
                                           child: Image(
                                             image: AssetImage(
                                               'assets/images/googleLogo.png',
@@ -292,7 +290,7 @@ class _SignUpState extends State<SignUp> {
                                         SizedBox(
                                           width: mediaQuery.size.width * 0.14,
                                         ),
-                                        Center(
+                                        const Center(
                                             child: Text(
                                           'Sign in with Google',
                                           style: TextStyle(
@@ -300,11 +298,11 @@ class _SignUpState extends State<SignUp> {
                                               fontWeight: FontWeight.w500,
                                               fontSize: 15),
                                         )),
-                                        Spacer(),
+                                        const Spacer(),
                                       ],
                                     ),
                                   ),
-                                  Center(
+                                  const Center(
                                       child: CircularProgressIndicator(
                                     color: Colormanager.blueContainer,
                                   )),
@@ -323,8 +321,8 @@ class _SignUpState extends State<SignUp> {
                                       color: Colormanager.iconscolor)),
                               child: Row(
                                 children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 8),
+                                  const Padding(
+                                    padding: EdgeInsets.only(left: 8),
                                     child: Image(
                                       image: AssetImage(
                                         'assets/images/googleLogo.png',
@@ -336,7 +334,7 @@ class _SignUpState extends State<SignUp> {
                                   SizedBox(
                                     width: mediaQuery.size.width * 0.14,
                                   ),
-                                  Center(
+                                  const Center(
                                       child: Text(
                                     'Sign in with Google',
                                     style: TextStyle(
@@ -358,7 +356,7 @@ class _SignUpState extends State<SignUp> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
+                        const Text(
                           "Dont't have an account ? ",
                           style: TextStyle(
                             fontWeight: FontWeight.w500,
@@ -369,7 +367,7 @@ class _SignUpState extends State<SignUp> {
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) => LoginPage()));
                           },
-                          child: Text(
+                          child: const Text(
                             "Sign in",
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
@@ -383,7 +381,8 @@ class _SignUpState extends State<SignUp> {
               ),
             ),
           ),
-        ));
+        )
+        );
       },
     );
   }
