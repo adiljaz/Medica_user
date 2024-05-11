@@ -1,7 +1,8 @@
 import 'package:fire_login/blocs/auth/auth_bloc.dart';
+import 'package:fire_login/blocs/edit_user/edit_user_bloc.dart';
 import 'package:fire_login/blocs/bottomnav/landing_state_bloc.dart';
 import 'package:fire_login/blocs/intro/nextpage_bloc.dart';
-import 'package:fire_login/blocs/profile/addUser/add_user_bloc.dart';
+import 'package:fire_login/blocs/profile/AddUser/add_user_bloc.dart';
 import 'package:fire_login/blocs/profile/Delete/delete_bloc.dart';
 import 'package:fire_login/blocs/profile/ImageAdding/image_adding_bloc.dart';
 import 'package:fire_login/blocs/profile/ImageUrl/image_url_bloc.dart';
@@ -62,6 +63,10 @@ class MyApp extends StatelessWidget {
           create: (context) => DeleteBloc(),
           child: Container(),
         ),
+        BlocProvider(
+          create: (context) => EditUserBloc(),
+          child: Container(),
+        )
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

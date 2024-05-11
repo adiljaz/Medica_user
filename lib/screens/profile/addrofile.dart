@@ -1,4 +1,4 @@
-import 'package:fire_login/blocs/profile/addUser/add_user_bloc.dart';
+import 'package:fire_login/blocs/profile/AddUser/add_user_bloc.dart';
 import 'package:fire_login/blocs/profile/ImageAdding/image_adding_bloc.dart';
 import 'package:fire_login/screens/bottomnav/home.dart';
 import 'package:fire_login/screens/profile/widget/userimage.dart';
@@ -47,14 +47,21 @@ class AddProfile extends StatelessWidget {
                 // Show loading indicator
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text('Loading...')),
+                  
                 );
+                 _clearForm();
+                        print('clearrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr'); 
+
               } else if (state is AddUserSuccesState) {
                 // Show success message
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text('User added successfully!')),
                 );
-                // Clear form and navigate away after success
                 _clearForm();
+
+         
+                // Clear form and navigate away after success
+                
                 Navigator.of(context).pop();
               } else if (state is AddUserErrorState) {
                 // Show error message
@@ -223,7 +230,7 @@ class AddProfile extends StatelessWidget {
                                 mobile: mbobilecontroller,
                               ));
                             }
-
+                              _clearForm(); 
                             Navigator.of(context).pushAndRemoveUntil(
                                 MaterialPageRoute(
                                     builder: (context) => Bottomnav()),
@@ -258,6 +265,7 @@ class AddProfile extends StatelessWidget {
   }
 
   void _clearForm() {
+    
     _nameController.clear();
     _ageController.clear();
     _datofbirthController.clear();

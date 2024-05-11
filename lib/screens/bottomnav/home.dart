@@ -26,20 +26,20 @@ class Bottomnav extends StatelessWidget {
         builder: (context, state) {
           return Scaffold(
             backgroundColor:Colormanager.scaffold,
-            appBar: AppBar(
-              actions: [
-                IconButton(
-                    onPressed: () {
-                      final authBloc = BlocProvider.of<AuthBloc>(context);
-                      authBloc.add(LogoutEvent());
+            // appBar: AppBar(
+            //   actions: [
+            //     IconButton(
+            //         onPressed: () {
+            //           final authBloc = BlocProvider.of<AuthBloc>(context);
+            //           authBloc.add(LogoutEvent());
 
-                      Navigator.of(context).pushAndRemoveUntil(
-                          MaterialPageRoute(builder: (context) => LoginPage()),
-                          (route) => false);
-                    },
-                    icon: Icon(Icons.logout))
-              ],
-            ),
+            //           Navigator.of(context).pushAndRemoveUntil(
+            //               MaterialPageRoute(builder: (context) => LoginPage()),
+            //               (route) => false);
+            //         },
+            //         icon: Icon(Icons.logout))
+            //   ],
+            // ),
             
             body: bottomNavScren.elementAt(state.tabindex),
             bottomNavigationBar: ClipRRect(

@@ -1,12 +1,10 @@
-import 'package:fire_login/blocs/profile/ImageAdding/image_adding_bloc.dart';
-import 'package:fire_login/screens/profile/firebase.dart';
+import 'package:fire_login/blocs/edit_user/edit_user_bloc.dart';
 import 'package:fire_login/screens/profile/widget/editimageclic.dart';
 import 'package:fire_login/utils/colors/colormanager.dart';
 import 'package:fire_login/widgets/profiletexfield/profiletetfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-// ignore: must_be_immutable
 class EditProfile extends StatefulWidget {
   final String name;
   final int age;
@@ -18,7 +16,7 @@ class EditProfile extends StatefulWidget {
   final int mobile;
 
   EditProfile(
-      {super.key,
+      {Key? key,
       required this.name,
       required this.age,
       required this.dob,
@@ -26,87 +24,91 @@ class EditProfile extends StatefulWidget {
       required this.location,
       required this.image,
       required this.uid,
-      required this.mobile});
+      required this.mobile})
+      : super(key: key);
 
   @override
   State<EditProfile> createState() => _EditProfileState();
 }
 
 class _EditProfileState extends State<EditProfile> {
-  late String updateimagepath;
+  late String updateImagePath;
 
   @override
   void initState() {
     _nameController.text = widget.name;
     _ageController.text = widget.age.toString();
-    _datofbirthController.text = widget.dob.toString();
-    _gendercontroller.text = widget.gender;
-    _mobilecontroler.text = widget.mobile.toString();
-    _locationcontroler.text = widget.location;
+    _dateOfBirthController.text = widget.dob.toString();
+    _genderController.text = widget.gender;
+    _mobileController.text = widget.mobile.toString();
+    _locationController.text = widget.location;
 
-    updateimagepath = widget.image;
+    updateImagePath = widget.image;
 
     super.initState();
   }
 
   final TextEditingController _nameController = TextEditingController();
-
   final TextEditingController _ageController = TextEditingController();
-
-  final TextEditingController _datofbirthController = TextEditingController();
-
-  final TextEditingController _gendercontroller = TextEditingController();
-
-  final TextEditingController _locationcontroler = TextEditingController();
-
-  final TextEditingController _mobilecontroler = TextEditingController();
-
-  final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
+  final TextEditingController _dateOfBirthController = TextEditingController();
+  final TextEditingController _genderController = TextEditingController();
+  final TextEditingController _locationController = TextEditingController();
+  final TextEditingController _mobileController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    MediaQueryData mediaquery = MediaQuery.of(context);
+
+      
+
+    MediaQueryData mediaQuery = MediaQuery.of(context);
     return Scaffold(
       backgroundColor: Colormanager.scaffold,
       appBar: AppBar(
         backgroundColor: Colormanager.scaffold,
-        title: const Text(
-          'Edit Profile',
-          style: TextStyle(),
-        ),
+        title: const Text('Edit Profile'),
         centerTitle: true,
       ),
-      body: Form(
-        key: _formkey,
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Center(
-                child: Stack(
-                  children: [
-                    EditUserimage(
-                      networkImageUrl: widget.image,
-                      onFileChange: (changeimage) {
-                        setState(() {
-                          updateimagepath = changeimage;
-                        });
-                      },
-                    ),
-                    Positioned(
+      body: BlocListener<EditUserBloc, EditUserState>(
+        listener: (context, state) {
+          if (state is EditUserSucces) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Profile edit saved')),
+            );
+          }
+        },
+        child: Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Center(
+                  child: Stack(
+                    children: [
+                      EditUserimage(
+                        networkImageUrl: widget.image,
+                        onFileChange: (changeimage) {
+                          setState(() {
+                            updateImagePath = changeimage;
+                          });
+                        },
+                      ),
+                      Positioned(
                         top: 120,
                         left: 145,
                         child: Icon(
                           Icons.add_to_photos,
                           size: 40,
-                        ))
-                  ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              SizedBox(
-                height: mediaquery.size.height * 0.02,
-              ),
-              ProfileTextFormField(
-                      keyboardtype: TextInputType.name,
+                SizedBox(
+                  height: mediaQuery.size.height * 0.02,
+                ),
+                ProfileTextFormField(
+                  keyboardtype: TextInputType.name,
                   fonrmtype: 'Name ',
                   formColor: Colormanager.wittextformfield,
                   textcolor: Colormanager.grayText,
@@ -115,139 +117,156 @@ class _EditProfileState extends State<EditProfile> {
                     if (value == null || value.isEmpty) {
                       return 'Add Name ';
                     }
-
                     return null;
-                  }),
-              SizedBox(
-                height: mediaquery.size.height * 0.02,
-              ),
-              ProfileTextFormField(
-                      keyboardtype: TextInputType.number,
+                  },
+                ),
+                SizedBox(
+                  height: mediaQuery.size.height * 0.02,
+                ),
+                ProfileTextFormField(
+                  keyboardtype: TextInputType.number,
                   fonrmtype: 'Age ',
                   formColor: Colormanager.wittextformfield,
                   textcolor: Colormanager.grayText,
                   controller: _ageController,
                   value: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Add Name ';
+                      return 'Add Age ';
                     }
-
                     return null;
-                  }),
-              SizedBox(
-                height: mediaquery.size.height * 0.02,
-              ),
-              ProfileTextFormField(
-                      keyboardtype: TextInputType.number,
+                  },
+                ),
+                SizedBox(
+                  height: mediaQuery.size.height * 0.02,
+                ),
+                ProfileTextFormField(
+                  keyboardtype: TextInputType.number,
                   fonrmtype: 'Date of Birth',
                   formColor: Colormanager.wittextformfield,
                   textcolor: Colormanager.grayText,
-                  controller: _datofbirthController,
+                  controller: _dateOfBirthController,
                   value: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Add Name ';
+                      return 'Add Date of Birth ';
                     }
-
                     return null;
-                  }),
-              SizedBox(
-                height: mediaquery.size.height * 0.02,
-              ),
-              ProfileTextFormField(
-                      keyboardtype: TextInputType.text,
+                  },
+                ),
+                SizedBox(
+                  height: mediaQuery.size.height * 0.02,
+                ),
+                ProfileTextFormField(
+                  keyboardtype: TextInputType.text,
                   fonrmtype: 'Gender ',
                   formColor: Colormanager.wittextformfield,
                   textcolor: Colormanager.grayText,
-                  controller: _gendercontroller,
+                  controller: _genderController,
                   value: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Add Name ';
+                      return 'Add Gender ';
                     }
-
                     return null;
-                  }),
-              SizedBox(
-                height: mediaquery.size.height * 0.02,
-              ),
-              ProfileTextFormField(
-                      keyboardtype: TextInputType.number,
+                  },
+                ),
+                SizedBox(
+                  height: mediaQuery.size.height * 0.02,
+                ),
+                ProfileTextFormField(
+                  keyboardtype: TextInputType.number,
                   fonrmtype: 'Mobile ',
                   formColor: Colormanager.wittextformfield,
                   textcolor: Colormanager.grayText,
-                  controller: _mobilecontroler,
+                  controller: _mobileController,
                   value: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Add Mobile number';
+                      return 'Add Mobile ';
                     }
-
                     return null;
-                  }),
-              SizedBox(
-                height: mediaquery.size.height * 0.02,
-              ),
-              ProfileTextFormField(
-                      keyboardtype: TextInputType.text,
+                  },
+                ),
+                SizedBox(
+                  height: mediaQuery.size.height * 0.02,
+                ),
+                ProfileTextFormField(
+                  keyboardtype: TextInputType.text,
                   fonrmtype: 'Location',
                   formColor: Colormanager.wittextformfield,
                   textcolor: Colormanager.grayText,
-                  controller: _locationcontroler,
+                  controller: _locationController,
                   suficon: const Icon(
                     Icons.location_on,
                     color: Color.fromARGB(255, 211, 14, 0),
                   ),
                   value: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Add Name ';
+                      return 'Add Location ';
                     }
-
                     return null;
-                  }),
-              SizedBox(
-                height: mediaquery.size.height * 0.03,
-              ),
-              GestureDetector(
-                onTap: () async {
-                  if (_formkey.currentState!.validate()) {
-                    FocusScope.of(context).unfocus();
-                    final name = _nameController.text;
-                    final age = int.parse(_ageController.text);
-                    final dob = int.parse(_datofbirthController.text);
-                    final gender = _gendercontroller.text;
-                    final mobile = int.parse(_mobilecontroler.text);
-                    final location = _locationcontroler.text;
+                  },
+                ),
+                SizedBox(
+                  height: mediaQuery.size.height * 0.03,
+                ),
+                GestureDetector(
+                  onTap: () async {
+                    if (_formKey.currentState!.validate()) {
+                      FocusScope.of(context).unfocus();
+                      final name = _nameController.text;
+                      final age = int.parse(_ageController.text);
+                      final dob = int.parse(_dateOfBirthController.text);
+                      final gender = _genderController.text;
+                      final mobile = int.parse(_mobileController.text);
+                      final location = _locationController.text;
 
-                    final data = {
-                      'name': name,
-                      'age': age,
-                      'dob': dob,
-                      'gender': gender,
-                      'mobile': mobile,
-                      'location': location,
-                      'imageUrl': updateimagepath,
-                      'uid':widget.uid,
-                    };
+                      if (updateImagePath.isNotEmpty) {
+                        final data = {
+                          'name': name,
+                          'age': age,
+                          'dob': dob,
+                          'gender': gender,
+                          'mobile': mobile,
+                          'location': location,
+                          'imageUrl': updateImagePath,
+                       
+                        };
 
-                    editStudentClicked(widget.uid, data);
-                  }
-                  Navigator.of(context).pop();
-                },
-                child: Container(
-                  decoration: BoxDecoration(
+                        BlocProvider.of<EditUserBloc>(context).add(
+                          EditUserClick(
+                            name: name,
+                            age: age,
+                            location: location,
+                            dob: dob,
+                            mobile: mobile,
+                            gender: gender,
+                            imaage: updateImagePath,
+                            uid: widget.uid,
+                            data: data,
+                          ),
+                        );
+                      }
+                    }
+                    Navigator.of(context).pop();
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
                       color: Colormanager.blueContainer,
-                      borderRadius: BorderRadius.circular(10)),
-                  height: mediaquery.size.width * 0.14,
-                  width: mediaquery.size.height * 0.4,
-                  child: Center(
-                    child: Text(
-                      'Save',
-                      style: TextStyle(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    height: mediaQuery.size.width * 0.14,
+                    width: mediaQuery.size.height * 0.4,
+                    child: Center(
+                      child: Text(
+                        'Save',
+                        style: TextStyle(
                           fontWeight: FontWeight.w500,
-                          color: Colormanager.whiteText),
+                          color: Colormanager.whiteText,
+                        ),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

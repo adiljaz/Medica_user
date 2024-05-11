@@ -26,13 +26,23 @@ class _UserimageState extends State<EditUserimage> {
 
   @override
   Widget build(BuildContext context) {
+    MediaQueryData mediaquery = MediaQuery.of(context);
+
     return Column(
       children: [
         if (imageUrl == null)
           // here i need to ceate a image iwdget and i need  a controctor as required for this
-          Container(
-            child:Image.network(widget.networkImageUrl!), 
-
+          GestureDetector(
+            onTap: () {
+              _selectPhoto();
+            },
+            child: ClipRRect(
+                borderRadius: BorderRadius.circular(100),
+                child: Image.network(
+                  widget.networkImageUrl!,
+                  width: mediaquery.size.width * 0.57,
+                  height: mediaquery.size.height * 0.25,
+                )),
           ),
         if (imageUrl != null)
           InkWell(

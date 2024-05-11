@@ -89,7 +89,7 @@ class LoginPage extends StatelessWidget {
 
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(builder: (_) => AddProfile()),
+                    MaterialPageRoute(builder: (_) => Bottomnav()),
                     (route) => false);
               });
             }

@@ -60,7 +60,7 @@ class SignUp extends StatelessWidget {
           FocusScope.of(context).unfocus();
           WidgetsBinding.instance.addPostFrameCallback((_) {
             Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (context) =>  AddProfile()),
+                MaterialPageRoute(builder: (context) =>  Bottomnav()),
                 (route) => false);
           });
         }
