@@ -50,8 +50,6 @@ class AddProfile extends StatelessWidget {
                   
                 );
                  _clearForm();
-                        print('clearrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr'); 
-
               } else if (state is AddUserSuccesState) {
                 // Show success message
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -194,7 +192,7 @@ class AddProfile extends StatelessWidget {
                             return null;
                           }),
                       SizedBox(
-                        height: mediaquery.size.height * 0.1,
+                        height: mediaquery.size.height * 0.02,
                       ),
                       GestureDetector(
                         onTap: () {
@@ -252,7 +250,12 @@ class AddProfile extends StatelessWidget {
                             ),
                           ),
                         ),
+                        
                       ),
+
+                      SizedBox(
+                        height: mediaquery.size.height*0.02,
+                      )
                     ],
                   ),
                 ),

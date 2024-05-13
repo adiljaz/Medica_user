@@ -11,24 +11,26 @@ class CustomTextFormField extends StatelessWidget {
     required this.value,
     this.icons,
     this.suficon,
+    this.obscuretext = false,
   });
 
   final FormFieldValidator<String> value;
   final String fonrmtype;
   final Color formColor;
   final Icon? icons;
-  final Icon? suficon;
+  final Widget? suficon;
   final Color Textcolor;
   final TextEditingController controller;
+
+  bool obscuretext = true;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(left: 20, right: 20),
       child: TextFormField(
-        
-        
-                autovalidateMode: AutovalidateMode.onUserInteraction,
+        obscureText: obscuretext,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         validator: value,
         controller: controller,
         decoration: InputDecoration(
@@ -41,12 +43,13 @@ class CustomTextFormField extends StatelessWidget {
           ),
           fillColor: formColor,
           filled: true,
-          contentPadding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 10.0),
+          contentPadding:
+              EdgeInsets.symmetric(vertical: 14.0, horizontal: 10.0),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10.0),
             borderSide: BorderSide(
-              
-              color: Theme.of(context).primaryColor, // Use theme color for focused border
+              color: Theme.of(context)
+                  .primaryColor, // Use theme color for focused border
               width: 1,
             ),
           ),

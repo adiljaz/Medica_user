@@ -1,11 +1,13 @@
 import 'dart:io';
 import 'package:fire_login/blocs/profile/ImageUrl/image_url_bloc.dart';
 import 'package:fire_login/screens/profile/widget/approunderwidget.dart';
+import 'package:fire_login/utils/colors/colormanager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:lottie/lottie.dart';
 import 'package:path/path.dart' as p;
 import 'package:firebase_storage/firebase_storage.dart' as storage;
 import 'package:path_provider/path_provider.dart';
@@ -24,6 +26,7 @@ class _UserimageState extends State<Userimage> {
 
   @override
   Widget build(BuildContext context) {
+    MediaQueryData mediaquery = MediaQuery.of(context);
     return BlocBuilder<ImageUrlBloc, ImageUrlState>(
       builder: (context, state) {
         if (state is ImageSelectedState) {
@@ -33,11 +36,7 @@ class _UserimageState extends State<Userimage> {
         return Column(
           children: [
             if (imageUrl == null)
-              Icon(
-                Icons.image,
-                size: 60,
-                color: Colors.black,
-              ),
+             Image.asset('assets/images/profileno.png',height: mediaquery.size.height*0.25,width: mediaquery.size.width*0.5, fit: BoxFit.cover,),
             if (imageUrl != null)
               InkWell(
                 splashColor: Colors.transparent,

@@ -1,3 +1,4 @@
+import 'package:fire_login/blocs/Obascure/obscure_bloc.dart';
 import 'package:fire_login/blocs/auth/auth_bloc.dart';
 import 'package:fire_login/screens/bottomnav/home.dart';
 import 'package:fire_login/models/user_model.dart';
@@ -60,7 +61,7 @@ class SignUp extends StatelessWidget {
           FocusScope.of(context).unfocus();
           WidgetsBinding.instance.addPostFrameCallback((_) {
             Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (context) =>  Bottomnav()),
+                MaterialPageRoute(builder: (context) => Bottomnav()),
                 (route) => false);
           });
         }
@@ -146,26 +147,39 @@ class SignUp extends StatelessWidget {
 
                     //password
 
-                    CustomTextFormField(
-                      value: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Enter your password ';
-                        }
-                        return null;
+                    BlocBuilder<ObscureBloc, ObscureState>(
+                      builder: (context, state) {
+                        final st =BlocProvider.of<ObscureBloc>(context).state; 
+                        return CustomTextFormField(
+                          obscuretext: st is Obscurtrue?false:true,
+                            value: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Enter your password ';
+                              }
+                              return null;
+                            },
+                            controller: _passwordController,
+                            Textcolor: Colormanager.grayText,
+                            fonrmtype: 'Enter password',
+                            formColor: Colormanager.whiteContainer,
+                            icons: const Icon(
+                              FontAwesomeIcons.lock,
+                              size: 20,
+                              color: Colormanager.iconscolor,
+                            ),
+                            suficon: InkWell(
+                              onTap: () {
+                                if (st is Obscurtrue) {
+                                  BlocProvider.of<ObscureBloc>(context)
+                                      .add(ObscureCLick(obscure: false));
+                                } else {
+                                  BlocProvider.of<ObscureBloc>(context)
+                                      .add(ObscureCLick(obscure: true));
+                                }
+                              },
+                              child: st is  Obscurtrue?Icon(Icons.visibility):Icon(Icons.visibility_off),
+                            ));
                       },
-                      controller: _passwordController,
-                      Textcolor: Colormanager.grayText,
-                      fonrmtype: 'Enter password',
-                      formColor: Colormanager.whiteContainer,
-                      icons: const Icon(
-                        FontAwesomeIcons.lock,
-                        size: 20,
-                        color: Colormanager.iconscolor,
-                      ),
-                      suficon: const Icon(
-                        Icons.remove_red_eye,
-                        color: Colormanager.blackIcon,
-                      ),
                     ),
 
                     SizedBox(
@@ -234,8 +248,7 @@ class SignUp extends StatelessWidget {
                             child: Divider(),
                           ),
                           Padding(
-                            padding:
-                                EdgeInsets.symmetric(horizontal: 8.0),
+                            padding: EdgeInsets.symmetric(horizontal: 8.0),
                             child: Text(
                               'or continue with',
                               style: TextStyle(
@@ -277,8 +290,7 @@ class SignUp extends StatelessWidget {
                                     child: Row(
                                       children: [
                                         const Padding(
-                                          padding:
-                                              EdgeInsets.only(left: 8),
+                                          padding: EdgeInsets.only(left: 8),
                                           child: Image(
                                             image: AssetImage(
                                               'assets/images/googleLogo.png',
@@ -381,8 +393,7 @@ class SignUp extends StatelessWidget {
               ),
             ),
           ),
-        )
-        );
+        ));
       },
     );
   }

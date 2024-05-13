@@ -1,3 +1,4 @@
+import 'package:fire_login/blocs/Obascure/obscure_bloc.dart';
 import 'package:fire_login/blocs/auth/auth_bloc.dart';
 import 'package:fire_login/blocs/edit_user/edit_user_bloc.dart';
 import 'package:fire_login/blocs/bottomnav/landing_state_bloc.dart';
@@ -66,7 +67,11 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => EditUserBloc(),
           child: Container(),
-        )
+        ),
+        BlocProvider(
+          create: (context) => ObscureBloc(),
+          child: Container(),
+        ), 
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:fire_login/blocs/Obascure/obscure_bloc.dart';
 import 'package:fire_login/blocs/auth/auth_bloc.dart';
 import 'package:fire_login/screens/bottomnav/home.dart';
 import 'package:fire_login/blocs/Google/google_auth_bloc.dart';
@@ -55,7 +56,7 @@ class LoginPage extends StatelessWidget {
             ),
           );
         }
-        if(state is UseralreadyExisting){
+        if (state is UseralreadyExisting) {
           log("user already exist");
         }
       },
@@ -71,21 +72,14 @@ class LoginPage extends StatelessWidget {
         return Scaffold(
             body: BlocListener<GoogleAuthBloc, GoogleAuthState>(
           listener: (context, state) {
-
             if (state is GoogleAuthsuccess) {
-
-               if (state is UseralreadyExisting) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(builder: (_) => Bottomnav()),
-                    (route) => false);
-              });
-            }
-
-
-
-
-
+              if (state is UseralreadyExisting) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(builder: (_) => Bottomnav()),
+                      (route) => false);
+                });
+              }
 
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 Navigator.of(context).pushAndRemoveUntil(
@@ -151,26 +145,44 @@ class LoginPage extends StatelessWidget {
 
                     //password
 
-                    CustomTextFormField(
-                      // ignore: body_might_complete_normally_nullable
-                      value: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Enter your password';
-                        }
+                    BlocBuilder<ObscureBloc, ObscureState>(
+                      builder: (context, state) {
+                        final st = BlocProvider.of<ObscureBloc>(context).state;
+
+                        return CustomTextFormField(
+                          obscuretext: st is Obscurtrue?false:true,
+
+                          // ignore: body_might_complete_normally_nullable
+                          value: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Enter your password';
+                            }
+                          },
+                          controller: _passwordController,
+                          suficon: InkWell(
+                            onTap: () {
+                              if (st is Obscurtrue) {
+                                BlocProvider.of<ObscureBloc>(context)
+                                    .add(ObscureCLick(obscure: false));
+                              } else {
+                                BlocProvider.of<ObscureBloc>(context)
+                                    .add(ObscureCLick(obscure: true));
+                              }
+                            },
+                            child: st is Obscurtrue
+                                ? Icon(Icons.visibility)
+                                : Icon(Icons.visibility_off),
+                          ),
+                          Textcolor: Colormanager.grayText,
+                          fonrmtype: 'Enter password',
+                          formColor: Colormanager.whiteContainer,
+                          icons: const Icon(
+                            FontAwesomeIcons.lock,
+                            size: 20,
+                            color: Colormanager.iconscolor,
+                          ),
+                        );
                       },
-                      controller: _passwordController,
-                      suficon: const Icon(
-                        Icons.remove_red_eye,
-                        color: Colormanager.blackIcon,
-                      ),
-                      Textcolor: Colormanager.grayText,
-                      fonrmtype: 'Enter password',
-                      formColor: Colormanager.whiteContainer,
-                      icons: const Icon(
-                        FontAwesomeIcons.lock,
-                        size: 20,
-                        color: Colormanager.iconscolor,
-                      ),
                     ),
 
                     GestureDetector(
