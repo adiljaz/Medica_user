@@ -1,7 +1,5 @@
 
-import 'package:fire_login/blocs/auth/auth_bloc.dart';
 import 'package:fire_login/blocs/bottomnav/landing_state_bloc.dart';
-import 'package:fire_login/screens/authentication/login/login_view.dart';
 import 'package:fire_login/screens/profile/profile.dart';
 import 'package:fire_login/utils/colors/colormanager.dart';
 import 'package:flutter/material.dart';
