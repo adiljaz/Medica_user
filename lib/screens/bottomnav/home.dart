@@ -1,5 +1,6 @@
 
 import 'package:fire_login/blocs/bottomnav/landing_state_bloc.dart';
+import 'package:fire_login/screens/home/home.dart';
 import 'package:fire_login/screens/profile/profile.dart';
 import 'package:fire_login/utils/colors/colormanager.dart';
 import 'package:flutter/material.dart';
@@ -12,10 +13,11 @@ class Bottomnav extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Widget> bottomNavScren = <Widget>[
-      Text('oneeeeeeeee'),
+      Home(),
       Text('Twooooooooooooooooo'),
       Text('threeeeeeeeeeeeeeeeeeeee'),
       Text('threeeeeeeeeeeeeeeeeeeee'),
+
      Profile(), 
     ];
 
@@ -24,6 +26,8 @@ class Bottomnav extends StatelessWidget {
         builder: (context, state) {
           return Scaffold(
             backgroundColor:Colormanager.scaffold,
+            
+
             // appBar: AppBar(
             //   actions: [
             //     IconButton(
