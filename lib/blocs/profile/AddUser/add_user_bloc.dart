@@ -2,7 +2,6 @@ import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:meta/meta.dart';
-import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 

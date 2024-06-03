@@ -1,5 +1,7 @@
 import 'package:fire_login/blocs/Obascure/obscure_bloc.dart';
 import 'package:fire_login/blocs/auth/auth_bloc.dart';
+import 'package:fire_login/blocs/calendar/bloc/calendar_bloc.dart';
+import 'package:fire_login/blocs/department/bloc/department_bloc.dart';
 import 'package:fire_login/blocs/edit_user/edit_user_bloc.dart';
 import 'package:fire_login/blocs/bottomnav/landing_state_bloc.dart';
 import 'package:fire_login/blocs/intro/nextpage_bloc.dart';
@@ -72,6 +74,14 @@ class MyApp extends StatelessWidget {
           create: (context) => ObscureBloc(),
           child: Container(),
         ), 
+        BlocProvider(
+          create: (context) => GenderBloc(), 
+          child: Container(),
+        ),
+        BlocProvider(
+          create: (context) => CalendarBloc(),
+          child: Container(),
+        )
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
