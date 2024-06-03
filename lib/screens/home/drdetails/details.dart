@@ -334,7 +334,7 @@ class DrDetails extends StatelessWidget {
                 child: Center(
                     child: GestureDetector(
                   onTap: () {
-                 Navigator.of(context).push(PageTransition(child: Booking(fromTime: from ,toTime: to ,uid: uid!,), type: PageTransitionType.fade ));
+                 Navigator.of(context).push(PageTransition(child: Booking(fromTime: from ,toTime: to ,uid: uid.toString(),), type: PageTransitionType.fade ));
                   },
                   child: Text(
                     'Book Aoointment',

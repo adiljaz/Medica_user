@@ -16,23 +16,24 @@ class Booking extends StatelessWidget {
 
   final String fromTime;
   final String toTime;
-  final String uid; 
+  final String uid;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => CalendarBloc()..add(GenerateTimeSlots(fromTime: fromTime, toTime: toTime)),
-      child: BookingView(),
+      create: (_) => CalendarBloc()
+        ..add(GenerateTimeSlots(fromTime: fromTime, toTime: toTime, uid: uid)),
+      child: BookingView(uid: uid,),
     );
   }
 }
 
 class BookingView extends StatelessWidget {
 
-      // final CollectionReference userCollection =
-      //   FirebaseFirestore.instance.collection('users');
+  final String uid; 
 
-      
+  BookingView({required this.uid});
+  
   @override
   Widget build(BuildContext context) {
     MediaQueryData mediaQuery = MediaQuery.of(context);
@@ -83,8 +84,7 @@ class BookingView extends StatelessWidget {
                     onFormatChanged: (format) {},
                     onDaySelected: (selectedDay, focusedDay) {
                       context.read<CalendarBloc>().add(CalendarDaySelected(
-                          selectedDay: selectedDay,
-                          focusedDay: focusedDay));
+                          selectedDay: selectedDay, focusedDay: focusedDay));
                     },
                     calendarStyle: CalendarStyle(
                       outsideDaysVisible: false,
@@ -141,14 +141,19 @@ class BookingView extends StatelessWidget {
 
                       return GestureDetector(
                         onTap: () {
-                          context.read<CalendarBloc>().add(TimeSlotSelected(selectedTimeSlot: timeSlot));
+                          context.read<CalendarBloc>().add(
+                              TimeSlotSelected(selectedTimeSlot: timeSlot));
                         },
                         child: Container(
                           decoration: BoxDecoration(
-                            color: isSelected ? Colormanager.blueContainer : Colors.white,
+                            color: isSelected
+                                ? Colormanager.blueContainer
+                                : Colors.white,
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
-                                color: isSelected ?Colormanager.blueContainer: Colormanager.blueContainer,
+                                color: isSelected
+                                    ? Colormanager.blueContainer
+                                    : Colormanager.blueContainer,
                                 width: 2),
                           ),
                           child: Center(
@@ -156,7 +161,9 @@ class BookingView extends StatelessWidget {
                               DateFormat('h:mm a').format(timeSlot),
                               style: GoogleFonts.dongle(
                                   fontSize: 25,
-                                  color: isSelected ? Colors.white : Colormanager.blueText),
+                                  color: isSelected
+                                      ? Colors.white
+                                      : Colormanager.blueText),
                             ),
                           ),
                         ),
@@ -175,33 +182,44 @@ class BookingView extends StatelessWidget {
           ),
           GestureDetector(
             onTap: () {
-              Navigator.of(context).push(PageTransition(
-                  child: Description(), type: PageTransitionType.fade));
+              final currentState = context.read<CalendarBloc>().state;
+              if (currentState is CalendarUpdated) {
+                if (currentState.selectedDay != null &&
+                    currentState.selectedTimeSlot != null) {
+                  context.read<CalendarBloc>().add(SaveBooking(
+                    selectedDay: currentState.selectedDay!,
+                    selectedTimeSlot: currentState.selectedTimeSlot!,
+                    uid:uid,
+                  ));
+                } else {
+           
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Please select a date and time slot'),
+                    ),
+                  );
+                }
+              }
             },
-            child: Center(
-              child: Container(
-                height: mediaQuery.size.height * 0.07,
-                decoration: BoxDecoration(
-                    color: Colormanager.blueContainer,
-                    borderRadius: BorderRadius.circular(50)),
-                width: mediaQuery.size.width * 0.9,
-                child: Center(
-                    child: Text(
+            child: Container(
+              margin: EdgeInsets.only(bottom: 20, left: 20, right: 20),
+              width: double.infinity,
+              height: 50,
+              decoration: BoxDecoration(
+                color: Colormanager.blueContainer,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Center(
+                child: Text(
                   'Next',
                   style: GoogleFonts.dongle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 25,
-                      color: Colormanager.whiteText),
-                )),
+                      fontSize: 25, color: Colors.white),
+                ),
               ),
             ),
           ),
-          SizedBox(
-            height: mediaQuery.size.height * 0.01,
-          )
         ],
       ),
     );
   }
-  
 }

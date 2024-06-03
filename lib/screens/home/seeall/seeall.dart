@@ -119,7 +119,7 @@ class SeeAll extends StatelessWidget {
                                       imageUrl: doctor['imageUrl'],
                                       name: doctor['name'],
                                       to: doctor['to'],
-                                      uid: doctor['uid'],
+                                      uid: doctor.id,
                                     ),
                                     transitionsBuilder: (context, animation,
                                             secondaryAnimation, child) =>
@@ -136,11 +136,16 @@ class SeeAll extends StatelessWidget {
                                           imageUrl: doctor['imageUrl'],
                                           name: doctor['name'],
                                           to: doctor['to'],
-                                          uid: doctor['uid'],
+                                          uid: doctor.id,
+
+                                        
                                         ),
                                       ),
                                     ),
                                   ));
+
+
+                                  print(doctor.id);
                                 },
                                 child: Container(
                                   decoration: BoxDecoration(

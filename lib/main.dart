@@ -78,10 +78,10 @@ class MyApp extends StatelessWidget {
           create: (context) => GenderBloc(), 
           child: Container(),
         ),
-        BlocProvider(
-          create: (context) => CalendarBloc(),
-          child: Container(),
-        )
+      BlocProvider(
+        create: (context) => CalendarBloc(),
+        child: Container(),
+      )
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
