@@ -22,6 +22,11 @@ class Colormanager {
     static const Color blueicon = Color.fromARGB(255, 0, 85, 232);
     static const Color lightblue =Color.fromARGB(255, 178, 220, 255);
         static const Color blueText = Color.fromARGB(255, 0, 85, 232);
+
+
+
+          static const Color gradientStart = Color(0xFF6A1B9A);
+  static const Color gradientEnd = Color(0xFF8E24AA);
         
 
 }

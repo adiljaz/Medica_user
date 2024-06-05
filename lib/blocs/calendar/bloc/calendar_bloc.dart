@@ -9,16 +9,20 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
     on<GenerateTimeSlots>(_onGenerateTimeSlots);
     on<CalendarDaySelected>(_onCalendarDaySelected);
     on<TimeSlotSelected>(_onTimeSlotSelected);
-    on<SaveBooking>(_onSaveBooking); // Add this line
+    on<SaveBooking>(_onSaveBooking); 
   }
 
-  void _onGenerateTimeSlots(GenerateTimeSlots event, Emitter<CalendarState> emit) {
+  void _onGenerateTimeSlots(GenerateTimeSlots event, Emitter<CalendarState> emit) async {
     try {
-      final List<DateTime> timeSlots = _generateTimeSlots(event.fromTime, event.toTime);
+      // Fetch booked slots for the selected day
+      final bookedSlots = await _fetchBookedSlots(event.selectedDay, event.uid);
+      final List<DateTime> timeSlots = _generateTimeSlots(event.fromTime, event.toTime, bookedSlots);
 
       emit(CalendarUpdated(
-        focusedDay: DateTime.now(),
+        focusedDay: event.selectedDay,
+        selectedDay: event.selectedDay,
         timeSlots: timeSlots,
+        bookedSlots: bookedSlots,
       ));
     } catch (e) {
       emit(CalendarError(message: e.toString()));
@@ -32,6 +36,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
         focusedDay: event.focusedDay,
         selectedDay: event.selectedDay,
         timeSlots: currentState.timeSlots,
+        bookedSlots: currentState.bookedSlots,
       ));
     }
   }
@@ -43,6 +48,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
         focusedDay: currentState.focusedDay,
         selectedDay: currentState.selectedDay,
         timeSlots: currentState.timeSlots,
+        bookedSlots: currentState.bookedSlots,
         selectedTimeSlot: event.selectedTimeSlot,
       ));
     }
@@ -50,11 +56,9 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
 
   Future<void> _onSaveBooking(SaveBooking event, Emitter<CalendarState> emit) async {
     try {
-      // Extract date and time in desired formats
       final String formattedDate = DateFormat('yyyy-MM-dd').format(event.selectedDay);
-      final String formattedTime = DateFormat('h:mm a').format(event.selectedTimeSlot); // 12-hour format
+      final String formattedTime = DateFormat('h:mm a').format(event.selectedTimeSlot);
 
-      // Dynamically create the user collection based on the uid from the event
       final CollectionReference userCollection = FirebaseFirestore.instance
           .collection('doctor')
           .doc(event.uid)
@@ -62,46 +66,71 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
           .doc(formattedDate)
           .collection('dailyBookings');
 
-      // Add the booking details to Firestore
       await userCollection.add({
         'selectedDay': formattedDate,
         'selectedTimeSlot': formattedTime,
       });
 
-      // Emit a success state or navigate to another screen if needed
+      // Re-fetch booked slots and update state
+      final bookedSlots = await _fetchBookedSlots(event.selectedDay, event.uid);
+      final List<DateTime> timeSlots = _generateTimeSlots(formattedTime, formattedTime, bookedSlots);
+
+      emit(CalendarUpdated(
+        focusedDay: event.selectedDay,
+        selectedDay: event.selectedDay,
+        timeSlots: timeSlots,
+        bookedSlots: bookedSlots,
+        selectedTimeSlot: event.selectedTimeSlot,
+      ));
+      emit(CalendarSuccess());
     } catch (e) {
       emit(CalendarError(message: e.toString()));
     }
   }
 
-  List<DateTime> _generateTimeSlots(String fromTime, String toTime) {
+  Future<List<DateTime>> _fetchBookedSlots(DateTime selectedDay, String uid) async {
+    final String formattedDate = DateFormat('yyyy-MM-dd').format(selectedDay);
+
+    final CollectionReference userCollection = FirebaseFirestore.instance
+        .collection('doctor')
+        .doc(uid)
+        .collection('bookedSlots')
+        .doc(formattedDate)
+        .collection('dailyBookings');
+
+    final QuerySnapshot snapshot = await userCollection.get();
+    final List<DateTime> bookedSlots = [];
+
+    snapshot.docs.forEach((doc) {
+      final String time = doc['selectedTimeSlot'];
+      final DateTime dateTime = DateFormat('h:mm a').parse(time);
+      bookedSlots.add(dateTime);
+    });
+
+    return bookedSlots;
+  }
+
+  List<DateTime> _generateTimeSlots(String fromTime, String toTime, List<DateTime> bookedSlots) {
     final List<DateTime> slots = [];
-    final DateFormat formatter = DateFormat('h:mm a'); // Adjusted to 'h:mm a' format
+    final DateFormat formatter = DateFormat('h:mm a');
 
     DateTime start = formatter.parse(fromTime);
     DateTime end = formatter.parse(toTime);
 
-    // Adjust date part to be the same for both times for correct comparison
     DateTime startDateTime = DateTime(1970, 1, 1, start.hour, start.minute);
     DateTime endDateTime = DateTime(1970, 1, 1, end.hour, end.minute);
 
-    print('Generating time slots from: $fromTime to: $toTime');
-    print('Parsed start time: $startDateTime');
-    print('Parsed end time: $endDateTime');
-
-    if (startDateTime.isAfter(endDateTime)) {
-      print('Start time is after end time. No slots to generate.');
-      return slots;
-    }
-
     while (startDateTime.isBefore(endDateTime)) {
-      slots.add(startDateTime);
+      if (!bookedSlots.contains(startDateTime)) {
+        slots.add(startDateTime);
+      }
       startDateTime = startDateTime.add(const Duration(minutes: 30));
     }
 
-    slots.add(endDateTime);
+    if (!bookedSlots.contains(endDateTime)) {
+      slots.add(endDateTime);
+    }
 
-    print('Generated slots: $slots');
     return slots;
   }
 }

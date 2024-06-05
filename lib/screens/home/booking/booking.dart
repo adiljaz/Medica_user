@@ -1,8 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fire_login/blocs/calendar/bloc/calendar_bloc.dart';
 import 'package:fire_login/blocs/calendar/bloc/calendar_event.dart';
 import 'package:fire_login/blocs/calendar/bloc/calendar_state.dart';
-import 'package:fire_login/screens/home/discription/discription.dart';
+import 'package:fire_login/screens/home/discription/description.dart';
 import 'package:fire_login/utils/colors/colormanager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,28 +11,36 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
 
 class Booking extends StatelessWidget {
-  Booking({required this.fromTime, required this.toTime, required this.uid});
+  Booking({required this.fromTime, required this.toTime, required this.uid,required this.fees});
 
   final String fromTime;
   final String toTime;
   final String uid;
+  final int  fees;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => CalendarBloc()
-        ..add(GenerateTimeSlots(fromTime: fromTime, toTime: toTime, uid: uid)),
-      child: BookingView(uid: uid,),
+        ..add(GenerateTimeSlots(
+            fromTime: fromTime,
+            toTime: toTime,
+            uid: uid,
+            selectedDay: DateTime.now())),
+      child: BookingView(uid: uid, fromTime: fromTime, toTime: toTime,fees: fees,),
     );
   }
 }
 
 class BookingView extends StatelessWidget {
+  final String uid;
+  final String fromTime;
+  final String toTime;
+  final int fees; 
 
-  final String uid; 
+  BookingView(
+      {required this.uid, required this.fromTime, required this.toTime,required this.fees});
 
-  BookingView({required this.uid});
-  
   @override
   Widget build(BuildContext context) {
     MediaQueryData mediaQuery = MediaQuery.of(context);
@@ -42,10 +49,11 @@ class BookingView extends StatelessWidget {
       backgroundColor: Colormanager.scaffold,
       appBar: AppBar(
         leading: IconButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            icon: Icon(Icons.arrow_back_ios_sharp)),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          icon: Icon(Icons.arrow_back_ios_sharp),
+        ),
         elevation: 0,
         centerTitle: true,
         backgroundColor: Colormanager.scaffold,
@@ -61,8 +69,9 @@ class BookingView extends StatelessWidget {
             child: Container(
               width: mediaQuery.size.width * 0.86,
               decoration: BoxDecoration(
-                  color: Colormanager.lightblue,
-                  borderRadius: BorderRadius.all(Radius.circular(20))),
+                color: Colormanager.lightblue,
+                borderRadius: BorderRadius.all(Radius.circular(20)),
+              ),
               child: BlocBuilder<CalendarBloc, CalendarState>(
                 builder: (context, state) {
                   DateTime focusedDay = DateTime.now();
@@ -83,8 +92,20 @@ class BookingView extends StatelessWidget {
                     },
                     onFormatChanged: (format) {},
                     onDaySelected: (selectedDay, focusedDay) {
-                      context.read<CalendarBloc>().add(CalendarDaySelected(
-                          selectedDay: selectedDay, focusedDay: focusedDay));
+                      context.read<CalendarBloc>().add(
+                            CalendarDaySelected(
+                              selectedDay: selectedDay,
+                              focusedDay: focusedDay,
+                            ),
+                          );
+                      context.read<CalendarBloc>().add(
+                            GenerateTimeSlots(
+                              fromTime: fromTime,
+                              toTime: toTime,
+                              uid: uid,
+                              selectedDay: selectedDay,
+                            ),
+                          );
                     },
                     calendarStyle: CalendarStyle(
                       outsideDaysVisible: false,
@@ -112,8 +133,8 @@ class BookingView extends StatelessWidget {
             child: Text(
               'Select Time',
               style: GoogleFonts.dongle(
-                  textStyle:
-                      TextStyle(fontWeight: FontWeight.bold, fontSize: 27)),
+                textStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 27),
+              ),
             ),
           ),
           Expanded(
@@ -122,22 +143,27 @@ class BookingView extends StatelessWidget {
                 if (state is CalendarUpdated) {
                   if (state.timeSlots.isEmpty) {
                     return Center(
-                        child: Text('No available slots',
-                            style: TextStyle(fontSize: 18)));
+                      child: Text('No available slots',
+                          style: TextStyle(fontSize: 18)),
+                    );
                   }
 
                   return GridView.builder(
                     physics: BouncingScrollPhysics(),
-                    padding: EdgeInsets.only(left: 22, right: 22),
+                    padding: EdgeInsets.all(15),
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        mainAxisSpacing: 10,
-                        crossAxisSpacing: 10,
-                        childAspectRatio: 5 / 2),
+                      crossAxisCount: 3,
+                      mainAxisSpacing: 15,
+                      crossAxisSpacing: 15,
+                      childAspectRatio: 2.5,
+                    ),
                     itemCount: state.timeSlots.length,
-                    itemBuilder: (BuildContext context, int index) {
+                    itemBuilder: (context, index) {
                       final timeSlot = state.timeSlots[index];
-                      final isSelected = state.selectedTimeSlot == timeSlot;
+                      final String formattedTime =
+                          DateFormat('h:mm a').format(timeSlot);
+                      final bool isSelected =
+                          state.selectedTimeSlot == timeSlot;
 
                       return GestureDetector(
                         onTap: () {
@@ -145,75 +171,77 @@ class BookingView extends StatelessWidget {
                               TimeSlotSelected(selectedTimeSlot: timeSlot));
                         },
                         child: Container(
+                          alignment: Alignment.center,
                           decoration: BoxDecoration(
                             color: isSelected
-                                ? Colormanager.blueContainer
+                                ? Colormanager.blueicon
                                 : Colors.white,
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(10),
                             border: Border.all(
-                                color: isSelected
-                                    ? Colormanager.blueContainer
-                                    : Colormanager.blueContainer,
-                                width: 2),
+                              color: isSelected
+                                  ? Colormanager.blueicon
+                                  : Colormanager.lightblue,
+                              width: 2,
+                            ),
                           ),
-                          child: Center(
-                            child: Text(
-                              DateFormat('h:mm a').format(timeSlot),
-                              style: GoogleFonts.dongle(
-                                  fontSize: 25,
-                                  color: isSelected
-                                      ? Colors.white
-                                      : Colormanager.blueText),
+                          child: Text(
+                            formattedTime,
+                            style: TextStyle(
+                              color: isSelected ? Colors.white : Colors.black,
                             ),
                           ),
                         ),
                       );
                     },
                   );
+
+                  
                 } else if (state is CalendarError) {
                   return Center(
-                      child: Text('Error: ${state.message}',
-                          style: TextStyle(fontSize: 18)));
+                    child: Text('Failed to load time slots: ${state.message}',
+                        style: TextStyle(fontSize: 18)),
+                  );
+                } else {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
                 }
-
-                return Center(child: CircularProgressIndicator());
               },
             ),
           ),
-          GestureDetector(
-            onTap: () {
-              final currentState = context.read<CalendarBloc>().state;
-              if (currentState is CalendarUpdated) {
-                if (currentState.selectedDay != null &&
-                    currentState.selectedTimeSlot != null) {
-                  context.read<CalendarBloc>().add(SaveBooking(
-                    selectedDay: currentState.selectedDay!,
-                    selectedTimeSlot: currentState.selectedTimeSlot!,
-                    uid:uid,
-                  ));
-                } else {
-           
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Please select a date and time slot'),
-                    ),
-                  );
-                }
-              }
-            },
-            child: Container(
-              margin: EdgeInsets.only(bottom: 20, left: 20, right: 20),
-              width: double.infinity,
-              height: 50,
-              decoration: BoxDecoration(
-                color: Colormanager.blueContainer,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Center(
-                child: Text(
-                  'Next',
-                  style: GoogleFonts.dongle(
-                      fontSize: 25, color: Colors.white),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Center(
+              child: GestureDetector(
+                onTap: () {
+                  final calendarState = context.read<CalendarBloc>().state;
+                  if (calendarState is CalendarUpdated &&
+                      calendarState.selectedTimeSlot != null) {
+                    final selectedTimeSlot = calendarState.selectedTimeSlot!;
+                    final selectedDay = calendarState.selectedDay;
+
+                    context.read<CalendarBloc>().add(SaveBooking(
+                          selectedDay: selectedDay,
+                          selectedTimeSlot: selectedTimeSlot,
+                          uid: uid,
+
+                        ));
+
+                         Navigator.of(context).push(PageTransition(child: Description(fees: fees,), type: PageTransitionType.fade)); 
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Please select a time slot.')));
+                  }
+                },
+                child: Container(
+                  child: Center(child: Text('Next  ',style: GoogleFonts.dongle(fontWeight: FontWeight.bold ,fontSize: 25,color: Colormanager.whiteText),)),
+                  width: mediaQuery.size.width * 0.9,
+                  height: mediaQuery.size.height * 0.07,
+                  
+                  
+                  decoration: BoxDecoration(color: Colormanager.blueContainer, 
+                  borderRadius: BorderRadius.circular(12), 
+                  ),
                 ),
               ),
             ),
