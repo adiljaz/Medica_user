@@ -1,28 +1,24 @@
 import 'package:fire_login/blocs/department/bloc/department_bloc.dart';
-import 'package:fire_login/screens/home/payment/payment.dart';
 import 'package:fire_login/utils/colors/colormanager.dart';
 import 'package:fire_login/widgets/dropdown/dropdown.dart';
 import 'package:fire_login/widgets/textformfield/textformfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:iconly/iconly.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:slide_to_act/slide_to_act.dart';
 
-class Description extends StatefulWidget {
-  Description({super.key, required this.fees});
+class PayNow extends StatefulWidget {
+  PayNow({super.key, required this.fees});
 
   int fees;
 
   @override
-  State<Description> createState() => _DescriptionState();
+  State<PayNow> createState() => _PayNowState();
 }
 
-class _DescriptionState extends State<Description> {
+class _PayNowState extends State<PayNow> {
   TextEditingController _fullnameController = TextEditingController();
 
   TextEditingController _ageController = TextEditingController();
@@ -77,6 +73,7 @@ class _DescriptionState extends State<Description> {
 
   void handlePaymentSuccess(PaymentSuccessResponse response) {
     Fluttertoast.showToast(
+        backgroundColor: Colors.green,
         msg: 'Payment successful with ID: ${response.paymentId}',
         toastLength: Toast.LENGTH_LONG);
   }
@@ -89,6 +86,7 @@ class _DescriptionState extends State<Description> {
     } catch (e) {
       debugPrint('Error handling payment failure: $e');
       Fluttertoast.showToast(
+          backgroundColor: Colors.red,
           msg: 'Failed to display payment error message',
           toastLength: Toast.LENGTH_LONG);
     }

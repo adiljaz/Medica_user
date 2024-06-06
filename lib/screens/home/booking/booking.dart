@@ -1,7 +1,7 @@
 import 'package:fire_login/blocs/calendar/bloc/calendar_bloc.dart';
 import 'package:fire_login/blocs/calendar/bloc/calendar_event.dart';
 import 'package:fire_login/blocs/calendar/bloc/calendar_state.dart';
-import 'package:fire_login/screens/home/discription/description.dart';
+import 'package:fire_login/screens/home/paynow/paynow.dart';
 import 'package:fire_login/utils/colors/colormanager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -164,83 +164,121 @@ class BookingView extends StatelessWidget {
                           DateFormat('h:mm a').format(timeSlot);
                       final bool isSelected =
                           state.selectedTimeSlot == timeSlot;
+                      final bool isBooked =
+                          state.bookedSlots.contains(timeSlot);
 
                       return GestureDetector(
                         onTap: () {
-                          context.read<CalendarBloc>().add(
-                              TimeSlotSelected(selectedTimeSlot: timeSlot));
+                          if (!isBooked) {
+                            context.read<CalendarBloc>().add(
+                                  TimeSlotSelected(
+                                    selectedTimeSlot: timeSlot,
+                                  ),
+                                );
+                          }
                         },
                         child: Container(
+                          
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
+                            
+                            borderRadius: BorderRadius.circular(10),
                             color: isSelected
                                 ? Colormanager.blueicon
-                                : Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(
-                              color: isSelected
-                                  ? Colormanager.blueicon
-                                  : Colormanager.lightblue,
-                              width: 2,
-                            ),
+                                : isBooked
+                                    ? Colors.grey
+                                    : Colors.white,
                           ),
                           child: Text(
                             formattedTime,
                             style: TextStyle(
-                              color: isSelected ? Colors.white : Colors.black,
+                              color: isSelected || isBooked
+                                  ? Colors.white
+                                  : Colors.black,
                             ),
                           ),
                         ),
                       );
                     },
                   );
-
-                  
-                } else if (state is CalendarError) {
-                  return Center(
-                    child: Text('Failed to load time slots: ${state.message}',
-                        style: TextStyle(fontSize: 18)),
-                  );
-                } else {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
                 }
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
               },
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
+          BlocListener<CalendarBloc, CalendarState>(
+            listener: (context, state) {
+              if (state is CalendarSuccess) {
+                // ScaffoldMessenger.of(context).showSnackBar(
+                //   SnackBar(
+                //     content: Text('Booking saved successfully!'),
+                //   ),
+                // );
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PayNow(
+                     
+                      fees: fees, 
+                    ),
+                  ),
+                );
+              } else if (state is CalendarError) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Failed to save booking: ${state.message}'),
+                  ),
+                );
+              }
+            },
             child: Center(
-              child: GestureDetector(
-                onTap: () {
-                  final calendarState = context.read<CalendarBloc>().state;
-                  if (calendarState is CalendarUpdated &&
-                      calendarState.selectedTimeSlot != null) {
-                    final selectedTimeSlot = calendarState.selectedTimeSlot!;
-                    final selectedDay = calendarState.selectedDay;
-
-                    context.read<CalendarBloc>().add(SaveBooking(
-                          selectedDay: selectedDay,
-                          selectedTimeSlot: selectedTimeSlot,
-                          uid: uid,
-
-                        ));
-
-                         Navigator.of(context).push(PageTransition(child: Description(fees: fees,), type: PageTransitionType.fade)); 
+              child: ElevatedButton(
+                style: ButtonStyle(
+                  minimumSize: WidgetStateProperty.all(
+                    Size(mediaQuery.size.width * 0.9 , 50),
+                  ),
+                  shape: WidgetStateProperty.all(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  backgroundColor:
+                      WidgetStateProperty.all(Colormanager.blueicon),
+                ),
+                onPressed: () {
+                  final currentState = context.read<CalendarBloc>().state;
+                  if (currentState is CalendarUpdated &&
+                      currentState.selectedTimeSlot != null) {
+                    context.read<CalendarBloc>().add(
+                          SaveBooking(
+                            selectedDay: currentState.selectedDay,
+                            selectedTimeSlot: currentState.selectedTimeSlot!,
+                            fromTime: fromTime,
+                            toTime: toTime,
+                            uid: uid,
+                          ),
+                        );
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Please select a time slot.')));
+                      SnackBar(
+                        duration: Duration(seconds: 1), 
+                        backgroundColor: Colormanager.blackIcon,
+                        margin: EdgeInsets.only(left: 10,right: 10,bottom: 10),
+                        behavior:SnackBarBehavior.floating ,
+                        content: Text('Please select a time slot'),
+                      ),
+                    );
                   }
                 },
-                child: Container(
-                  child: Center(child: Text('Next  ',style: GoogleFonts.dongle(fontWeight: FontWeight.bold ,fontSize: 25,color: Colormanager.whiteText),)),
-                  width: mediaQuery.size.width * 0.9,
-                  height: mediaQuery.size.height * 0.07,
-                  
-                  
-                  decoration: BoxDecoration(color: Colormanager.blueContainer, 
-                  borderRadius: BorderRadius.circular(12), 
+                child: Text(
+                  'Next',
+                  style: GoogleFonts.dongle(
+                    textStyle: TextStyle(
+                      color: Colormanager.whiteText,
+                      
+                        fontWeight: FontWeight.bold, fontSize: 25),
                   ),
                 ),
               ),

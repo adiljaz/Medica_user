@@ -39,10 +39,14 @@ class SaveBooking extends CalendarEvent {
   final DateTime selectedDay;
   final DateTime selectedTimeSlot;
   final String uid;
+  final String fromTime;
+  final String toTime;
 
   SaveBooking({
     required this.selectedDay,
     required this.selectedTimeSlot,
     required this.uid,
+    required this.fromTime,
+    required this.toTime,
   });
 }

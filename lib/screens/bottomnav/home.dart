@@ -1,5 +1,6 @@
 
 import 'package:fire_login/blocs/bottomnav/landing_state_bloc.dart';
+import 'package:fire_login/screens/appoinement/appoinement.dart';
 import 'package:fire_login/screens/home/home.dart';
 import 'package:fire_login/screens/profile/profile.dart';
 import 'package:fire_login/utils/colors/colormanager.dart';
@@ -14,7 +15,7 @@ class Bottomnav extends StatelessWidget {
   Widget build(BuildContext context) {
     List<Widget> bottomNavScren = <Widget>[
       Home(),
-      Text('Twooooooooooooooooo'),
+      Appointment(), 
       Text('threeeeeeeeeeeeeeeeeeeee'),
       Text('threeeeeeeeeeeeeeeeeeeee'),
 

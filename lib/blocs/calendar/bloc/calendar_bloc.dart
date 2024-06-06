@@ -14,9 +14,8 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
 
   void _onGenerateTimeSlots(GenerateTimeSlots event, Emitter<CalendarState> emit) async {
     try {
-      // Fetch booked slots for the selected day
       final bookedSlots = await _fetchBookedSlots(event.selectedDay, event.uid);
-      final List<DateTime> timeSlots = _generateTimeSlots(event.fromTime, event.toTime, bookedSlots);
+      final List<DateTime> timeSlots = _generateTimeSlots(event.fromTime, event.toTime);
 
       emit(CalendarUpdated(
         focusedDay: event.selectedDay,
@@ -71,9 +70,8 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
         'selectedTimeSlot': formattedTime,
       });
 
-      // Re-fetch booked slots and update state
       final bookedSlots = await _fetchBookedSlots(event.selectedDay, event.uid);
-      final List<DateTime> timeSlots = _generateTimeSlots(formattedTime, formattedTime, bookedSlots);
+      final List<DateTime> timeSlots = _generateTimeSlots(event.fromTime, event.toTime);
 
       emit(CalendarUpdated(
         focusedDay: event.selectedDay,
@@ -110,7 +108,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
     return bookedSlots;
   }
 
-  List<DateTime> _generateTimeSlots(String fromTime, String toTime, List<DateTime> bookedSlots) {
+  List<DateTime> _generateTimeSlots(String fromTime, String toTime) {
     final List<DateTime> slots = [];
     final DateFormat formatter = DateFormat('h:mm a');
 
@@ -121,15 +119,11 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
     DateTime endDateTime = DateTime(1970, 1, 1, end.hour, end.minute);
 
     while (startDateTime.isBefore(endDateTime)) {
-      if (!bookedSlots.contains(startDateTime)) {
-        slots.add(startDateTime);
-      }
+      slots.add(startDateTime);
       startDateTime = startDateTime.add(const Duration(minutes: 30));
     }
 
-    if (!bookedSlots.contains(endDateTime)) {
-      slots.add(endDateTime);
-    }
+    slots.add(endDateTime);
 
     return slots;
   }
