@@ -68,6 +68,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
       await userCollection.add({
         'selectedDay': formattedDate,
         'selectedTimeSlot': formattedTime,
+        
       });
 
       final bookedSlots = await _fetchBookedSlots(event.selectedDay, event.uid);

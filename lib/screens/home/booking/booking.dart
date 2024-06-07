@@ -11,12 +11,16 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
 
 class Booking extends StatelessWidget {
-  Booking({required this.fromTime, required this.toTime, required this.uid,required this.fees});
+  Booking(
+      {required this.fromTime,
+      required this.toTime,
+      required this.uid,
+      required this.fees});
 
   final String fromTime;
   final String toTime;
   final String uid;
-  final int  fees;
+  final int fees;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +31,12 @@ class Booking extends StatelessWidget {
             toTime: toTime,
             uid: uid,
             selectedDay: DateTime.now())),
-      child: BookingView(uid: uid, fromTime: fromTime, toTime: toTime,fees: fees,),
+      child: BookingView(
+        uid: uid,
+        fromTime: fromTime,
+        toTime: toTime,
+        fees: fees,
+      ),
     );
   }
 }
@@ -36,10 +45,13 @@ class BookingView extends StatelessWidget {
   final String uid;
   final String fromTime;
   final String toTime;
-  final int fees; 
+  final int fees;
 
   BookingView(
-      {required this.uid, required this.fromTime, required this.toTime,required this.fees});
+      {required this.uid,
+      required this.fromTime,
+      required this.toTime,
+      required this.fees});
 
   @override
   Widget build(BuildContext context) {
@@ -178,10 +190,8 @@ class BookingView extends StatelessWidget {
                           }
                         },
                         child: Container(
-                          
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
-                            
                             borderRadius: BorderRadius.circular(10),
                             color: isSelected
                                 ? Colormanager.blueicon
@@ -210,34 +220,38 @@ class BookingView extends StatelessWidget {
           ),
           BlocListener<CalendarBloc, CalendarState>(
             listener: (context, state) {
-              if (state is CalendarSuccess) {
-                // ScaffoldMessenger.of(context).showSnackBar(
-                //   SnackBar(
-                //     content: Text('Booking saved successfully!'),
-                //   ),
-                // );
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => PayNow(
-                     
-                      fees: fees, 
-                    ),
-                  ),
-                );
-              } else if (state is CalendarError) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Failed to save booking: ${state.message}'),
-                  ),
-                );
-              }
+              // if (state is CalendarUpdated) {
+              //   // ScaffoldMessenger.of(context).showSnackBar(
+              //   //   SnackBar(
+              //   //     content: Text('Booking saved successfully!'),
+              //   //   ),
+              //   // );
+              //   // Navigator.push(
+              //   //   context,
+              //   //   MaterialPageRoute(
+              //   //     builder: (context) => PayNow(
+              //   //       formtime: fromTime,
+              //   //       selectedDay: state.selectedDay,
+              //   //       selectedTimeSlot: state.selectedTimeSlot!,
+              //   //       totime: toTime,
+              //   //       uid: uid,
+              //   //       fees: fees,
+              //   //     ),
+              //   //   ),
+              //   // );
+              // } else if (state is CalendarError) {
+              //   ScaffoldMessenger.of(context).showSnackBar(
+              //     SnackBar(
+              //       content: Text('Failed to save booking: ${state.message}'),
+              //     ),
+              //   );
+              // }
             },
             child: Center(
               child: ElevatedButton(
                 style: ButtonStyle(
                   minimumSize: WidgetStateProperty.all(
-                    Size(mediaQuery.size.width * 0.9 , 50),
+                    Size(mediaQuery.size.width * 0.9, 50),
                   ),
                   shape: WidgetStateProperty.all(
                     RoundedRectangleBorder(
@@ -251,22 +265,37 @@ class BookingView extends StatelessWidget {
                   final currentState = context.read<CalendarBloc>().state;
                   if (currentState is CalendarUpdated &&
                       currentState.selectedTimeSlot != null) {
-                    context.read<CalendarBloc>().add(
-                          SaveBooking(
-                            selectedDay: currentState.selectedDay,
-                            selectedTimeSlot: currentState.selectedTimeSlot!,
-                            fromTime: fromTime,
-                            toTime: toTime,
-                            uid: uid,
-                          ),
-                        );
+                    // context.read<CalendarBloc>().add(
+                    //       SaveBooking(
+                    //         selectedDay: currentState.selectedDay,
+                    //         selectedTimeSlot: currentState.selectedTimeSlot!,
+                    //         fromTime: fromTime,
+                    //         toTime: toTime,
+                    //         uid: uid,
+                    //       ),
+                    //     );
+
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PayNow(
+                          formtime: fromTime,
+                          selectedDay: currentState.selectedDay,
+                          selectedTimeSlot: currentState.selectedTimeSlot!,
+                          totime: toTime,
+                          uid: uid,
+                          fees: fees,
+                        ),
+                      ),
+                    );
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        duration: Duration(seconds: 1), 
+                        duration: Duration(seconds: 1),
                         backgroundColor: Colormanager.blackIcon,
-                        margin: EdgeInsets.only(left: 10,right: 10,bottom: 10),
-                        behavior:SnackBarBehavior.floating ,
+                        margin:
+                            EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                        behavior: SnackBarBehavior.floating,
                         content: Text('Please select a time slot'),
                       ),
                     );
@@ -276,9 +305,9 @@ class BookingView extends StatelessWidget {
                   'Next',
                   style: GoogleFonts.dongle(
                     textStyle: TextStyle(
-                      color: Colormanager.whiteText,
-                      
-                        fontWeight: FontWeight.bold, fontSize: 25),
+                        color: Colormanager.whiteText,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 25),
                   ),
                 ),
               ),

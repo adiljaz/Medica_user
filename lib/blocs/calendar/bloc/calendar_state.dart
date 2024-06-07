@@ -21,7 +21,9 @@ class CalendarUpdated extends CalendarState {
   });
 }
 
-class CalendarSuccess extends CalendarState {}
+class CalendarSuccess extends CalendarState {
+  
+}
 
 class CalendarError extends CalendarState {
   final String message;

@@ -6,7 +6,6 @@ import 'package:fire_login/utils/colors/colormanager.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:iconly/iconly.dart';
 
 class UpcomingAppointments extends StatelessWidget {
   const UpcomingAppointments({super.key});
@@ -16,6 +15,7 @@ class UpcomingAppointments extends StatelessWidget {
     final FirebaseAuth _auth = FirebaseAuth.instance;
 
     final doctor = FirebaseFirestore.instance.collection('doctor');
+
 
     MediaQueryData mediaQuery = MediaQuery.of(context);
     return SafeArea(

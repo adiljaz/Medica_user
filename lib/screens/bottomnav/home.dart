@@ -52,7 +52,7 @@ class Bottomnav extends StatelessWidget {
                 
                 data: NavigationBarThemeData(
                 
-                  labelTextStyle: MaterialStatePropertyAll<TextStyle>(TextStyle(
+                  labelTextStyle: WidgetStatePropertyAll<TextStyle>(TextStyle(
                       fontWeight: FontWeight.w500, 
                       overflow: TextOverflow.ellipsis)),
                 ),
