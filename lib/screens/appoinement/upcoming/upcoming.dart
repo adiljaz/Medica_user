@@ -6,6 +6,7 @@ import 'package:fire_login/utils/colors/colormanager.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:iconly/iconly.dart';
 
 class UpcomingAppointments extends StatelessWidget {
   const UpcomingAppointments({super.key});
@@ -17,6 +18,7 @@ class UpcomingAppointments extends StatelessWidget {
     final doctor = FirebaseFirestore.instance.collection('doctor');
 
 
+
     MediaQueryData mediaQuery = MediaQuery.of(context);
     return SafeArea(
       child: Scaffold(
@@ -24,7 +26,7 @@ class UpcomingAppointments extends StatelessWidget {
         body: Column(
           children: [
             StreamBuilder(
-              stream: doctor.snapshots(),
+              stream: doctor .snapshots(),
               builder: (context, snpashot) {
                 if (snpashot.connectionState == ConnectionState.waiting) {
                   return Center(

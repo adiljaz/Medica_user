@@ -9,13 +9,15 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
     on<GenerateTimeSlots>(_onGenerateTimeSlots);
     on<CalendarDaySelected>(_onCalendarDaySelected);
     on<TimeSlotSelected>(_onTimeSlotSelected);
-    on<SaveBooking>(_onSaveBooking); 
+    on<SaveBooking>(_onSaveBooking);
   }
 
-  void _onGenerateTimeSlots(GenerateTimeSlots event, Emitter<CalendarState> emit) async {
+  void _onGenerateTimeSlots(
+      GenerateTimeSlots event, Emitter<CalendarState> emit) async {
     try {
       final bookedSlots = await _fetchBookedSlots(event.selectedDay, event.uid);
-      final List<DateTime> timeSlots = _generateTimeSlots(event.fromTime, event.toTime);
+      final List<DateTime> timeSlots =
+          _generateTimeSlots(event.fromTime, event.toTime);
 
       emit(CalendarUpdated(
         focusedDay: event.selectedDay,
@@ -28,7 +30,8 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
     }
   }
 
-  void _onCalendarDaySelected(CalendarDaySelected event, Emitter<CalendarState> emit) {
+  void _onCalendarDaySelected(
+      CalendarDaySelected event, Emitter<CalendarState> emit) {
     if (state is CalendarUpdated) {
       final currentState = state as CalendarUpdated;
       emit(CalendarUpdated(
@@ -40,7 +43,8 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
     }
   }
 
-  void _onTimeSlotSelected(TimeSlotSelected event, Emitter<CalendarState> emit) {
+  void _onTimeSlotSelected(
+      TimeSlotSelected event, Emitter<CalendarState> emit) {
     if (state is CalendarUpdated) {
       final currentState = state as CalendarUpdated;
       emit(CalendarUpdated(
@@ -53,26 +57,33 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
     }
   }
 
-  Future<void> _onSaveBooking(SaveBooking event, Emitter<CalendarState> emit) async {
+  Future<void> _onSaveBooking(
+      SaveBooking event, Emitter<CalendarState> emit) async {
     try {
-      final String formattedDate = DateFormat('yyyy-MM-dd').format(event.selectedDay);
-      final String formattedTime = DateFormat('h:mm a').format(event.selectedTimeSlot);
+      final String formattedDate =
+          DateFormat('yyyy-MM-dd').format(event.selectedDay);
+      final String formattedTime =
+          DateFormat('h:mm a').format(event.selectedTimeSlot);
 
       final CollectionReference userCollection = FirebaseFirestore.instance
           .collection('doctor')
           .doc(event.uid)
-          .collection('bookedSlots')
-          .doc(formattedDate)
           .collection('dailyBookings');
 
       await userCollection.add({
         'selectedDay': formattedDate,
         'selectedTimeSlot': formattedTime,
-        
+        'name': event.name,
+        'gender': event.gender,
+        'image': event.image,
+        'age': event.age,
+        'disease': event.disease,
+        'problem': event.problem,
       });
 
       final bookedSlots = await _fetchBookedSlots(event.selectedDay, event.uid);
-      final List<DateTime> timeSlots = _generateTimeSlots(event.fromTime, event.toTime);
+      final List<DateTime> timeSlots =
+          _generateTimeSlots(event.fromTime, event.toTime);
 
       emit(CalendarUpdated(
         focusedDay: event.selectedDay,
@@ -87,14 +98,11 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
     }
   }
 
-  Future<List<DateTime>> _fetchBookedSlots(DateTime selectedDay, String uid) async {
-    final String formattedDate = DateFormat('yyyy-MM-dd').format(selectedDay);
-
+  Future<List<DateTime>> _fetchBookedSlots(
+      DateTime selectedDay, String uid) async {
     final CollectionReference userCollection = FirebaseFirestore.instance
         .collection('doctor')
         .doc(uid)
-        .collection('bookedSlots')
-        .doc(formattedDate)
         .collection('dailyBookings');
 
     final QuerySnapshot snapshot = await userCollection.get();

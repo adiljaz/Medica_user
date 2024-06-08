@@ -41,7 +41,12 @@ class SaveBooking extends CalendarEvent {
   final String uid;
   final String fromTime;
   final String toTime;
-  
+  final String name;
+  final String image;
+  final String gender;
+  final String age;
+  final String disease;
+  final String problem;
 
   SaveBooking({
     required this.selectedDay,
@@ -49,5 +54,11 @@ class SaveBooking extends CalendarEvent {
     required this.uid,
     required this.fromTime,
     required this.toTime,
+    required this.image,
+    required this.name,
+    required this.gender,
+    required this.age,
+    required this.disease,
+    required this.problem,
   });
 }

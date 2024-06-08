@@ -2,6 +2,7 @@ import 'package:fire_login/screens/home/homewidgets/baner.dart';
 import 'package:fire_login/screens/home/homewidgets/searchbar.dart';
 import 'package:fire_login/screens/home/seeall/seeall.dart';
 import 'package:fire_login/screens/home/widgets/doctortype.dart';
+import 'package:fire_login/screens/search/saech.dart';
 import 'package:fire_login/utils/colors/colormanager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -73,13 +74,25 @@ class Home extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // search field
-                      Searchfield(
-                        controller: _searchController,
-                        icons: const Icon(IconlyLight.search),
-                        value: (value) {
-                          
+                      GestureDetector(
+                        onTap: (){
+
+                          Navigator.of(context).push(PageTransition(child: SearchPage(), type: PageTransitionType.fade));
                         },
+                        child: Row(children: [Container(child: Align( 
+                          
+                          alignment: Alignment.centerLeft, 
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                Icon(IconlyLight.search,color:Colormanager.grayText,), SizedBox(width: mediaquerry.size.width*0.03,), 
+                                Text('Search',style: GoogleFonts.dongle(fontWeight: FontWeight.w500,fontSize: 28,color: Colormanager.grayText),)
+                              ],
+                            ),
+                          )),width:mediaquerry.size.width*0.89,height: mediaquerry.size.height*0.065, decoration:BoxDecoration(    color:Colormanager.whiteContainer,borderRadius: BorderRadius.circular(8)),)],)
                       ),
+
                       SizedBox(
                         height: mediaquerry.size.width * 0.06,
                       ),
