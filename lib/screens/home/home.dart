@@ -1,3 +1,6 @@
+import 'package:fire_login/screens/home/department/dentist/dentist.dart';
+import 'package:fire_login/screens/home/department/general/general.dart';
+import 'package:fire_login/screens/home/department/nephrology/nephrology.dart';
 import 'package:fire_login/screens/home/homewidgets/baner.dart';
 import 'package:fire_login/screens/home/homewidgets/searchbar.dart';
 import 'package:fire_login/screens/home/seeall/seeall.dart';
@@ -75,23 +78,46 @@ class Home extends StatelessWidget {
                     children: [
                       // search field
                       GestureDetector(
-                        onTap: (){
-
-                          Navigator.of(context).push(PageTransition(child: SearchPage(), type: PageTransitionType.fade));
-                        },
-                        child: Row(children: [Container(child: Align( 
-                          
-                          alignment: Alignment.centerLeft, 
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              children: [
-                                Icon(IconlyLight.search,color:Colormanager.grayText,), SizedBox(width: mediaquerry.size.width*0.03,), 
-                                Text('Search',style: GoogleFonts.dongle(fontWeight: FontWeight.w500,fontSize: 28,color: Colormanager.grayText),)
-                              ],
-                            ),
-                          )),width:mediaquerry.size.width*0.89,height: mediaquerry.size.height*0.065, decoration:BoxDecoration(    color:Colormanager.whiteContainer,borderRadius: BorderRadius.circular(8)),)],)
-                      ),
+                          onTap: () {
+                            Navigator.of(context).push(PageTransition(
+                                child: SearchPage(),
+                                type: PageTransitionType.fade));
+                          },
+                          child: Row(
+                            children: [
+                              Container(
+                                child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            IconlyLight.search,
+                                            color: Colormanager.grayText,
+                                          ),
+                                          SizedBox(
+                                            width:
+                                                mediaquerry.size.width * 0.03,
+                                          ),
+                                          Text(
+                                            'Search',
+                                            style: GoogleFonts.dongle(
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 28,
+                                                color: Colormanager.grayText),
+                                          )
+                                        ],
+                                      ),
+                                    )),
+                                width: mediaquerry.size.width * 0.89,
+                                height: mediaquerry.size.height * 0.065,
+                                decoration: BoxDecoration(
+                                    color: Colormanager.whiteContainer,
+                                    borderRadius: BorderRadius.circular(8)),
+                              )
+                            ],
+                          )),
 
                       SizedBox(
                         height: mediaquerry.size.width * 0.06,
@@ -127,54 +153,124 @@ class Home extends StatelessWidget {
                       ),
 
                       Padding(
-                        padding: const EdgeInsets.only(left: 7,right: 7),
+                        padding: const EdgeInsets.only(left: 7, right: 7),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            DoctorType(icon: Icon(IconlyBold.home,size: 28,color: Colormanager.blueicon,),text: 'General',),
-                            DoctorType(icon: Icon(FontAwesomeIcons.tooth,size: 28,color:  Colormanager.blueicon,),text: 'dentist',),
-                            DoctorType(icon: Icon(Icons.visibility,color: Colormanager.blueicon,size: 32  ,),text: 'alooo',),
-                            DoctorType( icon: Icon(FontAwesomeIcons.brain,color: Colormanager.blueicon,size: 28, ),text: 'ejnfnrf',),
-                            
+                            GestureDetector(
+                                onTap: () {
+                                  Navigator.of(context).push(PageTransition(
+                                      child: General(),
+                                      type: PageTransitionType.fade));
+                                },
+                                child: DoctorType(
+                                  icon: Icon(
+                                    IconlyBold.home,
+                                    size: 28,
+                                    color: Colormanager.blueicon,
+                                  ),
+                                  text: 'General',
+                                )),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).push(PageTransition(
+                                    child: Dentist(),
+                                    type: PageTransitionType.fade));
+                              },
+                              child: DoctorType(
+                                icon: Icon(
+                                  FontAwesomeIcons.tooth,
+                                  size: 28,
+                                  color: Colormanager.blueicon,
+                                ),
+                                text: 'dentist',
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: (){
+                                Navigator.of(context).push(PageTransition(child: Nephrology(), type: PageTransitionType.fade )); 
+
+                              },
+                              
+                              child: DoctorType(
+                                image: Opacity(
+                                  opacity: 0.65,
+                                  child: Image.asset('assets/images/nephrology.png',fit: BoxFit.cover, height: mediaquerry.size.width*0.09, width: mediaquerry.size.width*0.09,)),
+                                text: 'Nephrolo..',
+                              ),
+                            ),
+                            DoctorType(
+                              icon: Icon(
+                                FontAwesomeIcons.brain,
+                                color: Colormanager.blueicon,
+                                size: 28,
+                              ),
+                              text: 'Paedia..',
+                            ),
                           ],
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(left: 7,right: 7),
+                        padding: const EdgeInsets.only(left: 7, right: 7),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                           DoctorType(icon: Icon(Icons.local_drink_sharp ,color: Colormanager.blueicon,),text: 'General',),
-                            DoctorType(icon: Icon(Icons.baby_changing_station,color: Colormanager.blueicon,),text: 'dentist',),
-                            DoctorType(icon: Icon(Icons.document_scanner_rounded ,color: Colormanager.blueicon,),text: 'alooo',),
-                            DoctorType( icon: Icon(Icons.more_horiz,color: Colormanager.blueicon,),text: 'ejnfnrf',),
+                            DoctorType(
+                              icon: Icon(
+                                Icons.local_drink_sharp,
+                                color: Colormanager.blueicon,
+                              ),
+                              text: 'General',
+                            ),
+                            DoctorType(
+                              icon: Icon(
+                                Icons.baby_changing_station,
+                                color: Colormanager.blueicon,
+                              ),
+                              text: 'dentist',
+                            ),
+                            DoctorType(
+                              icon: Icon(
+                                Icons.document_scanner_rounded,
+                                color: Colormanager.blueicon,
+                              ),
+                              text: 'alooo',
+                            ),
+                            DoctorType(
+                              icon: Icon(
+                                Icons.more_horiz,
+                                color: Colormanager.blueicon,
+                              ),
+                              text: 'ejnfnrf',
+                            ),
                           ],
-
                         ),
                       ),
 
-                       Text('Top Doctors',style: GoogleFonts.dongle(fontWeight: FontWeight.bold,fontSize: 30) ,) ,
+                      Text(
+                        'Top Doctors',
+                        style: GoogleFonts.dongle(
+                            fontWeight: FontWeight.bold, fontSize: 30),
+                      ),
 
-
-                       SizedBox(
-                        height: mediaquerry.size.height*0.18,
+                      SizedBox(
+                        height: mediaquerry.size.height * 0.18,
                         width: mediaquerry.size.width,
-                         child: ListView(
+                        child: ListView(
                           scrollDirection: Axis.horizontal,
                           children: [
-                          Container(
-                            decoration: BoxDecoration(color: Colors.amber, ),
-                          width: mediaquerry.size.width*0.35 ,), 
-                         
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.amber,
+                              ),
+                              width: mediaquerry.size.width * 0.35,
+                            ),
                           ],
-                         ),
-                       )
-
-                     
+                        ),
+                      )
                     ],
                   ),
                 ),
-                
               ],
             ),
           ),
