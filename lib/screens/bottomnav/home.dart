@@ -1,8 +1,8 @@
-
 import 'package:fire_login/blocs/bottomnav/landing_state_bloc.dart';
 import 'package:fire_login/news/news.dart';
 import 'package:fire_login/screens/appoinement/appoinement.dart';
 import 'package:fire_login/screens/home/home.dart';
+import 'package:fire_login/screens/message/message.dart';
 import 'package:fire_login/screens/profile/profile.dart';
 import 'package:fire_login/utils/colors/colormanager.dart';
 import 'package:flutter/material.dart';
@@ -10,25 +10,23 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconly/iconly.dart';
 
 class Bottomnav extends StatelessWidget {
-   Bottomnav({super.key});
+  Bottomnav({super.key});
 
   @override
   Widget build(BuildContext context) {
     List<Widget> bottomNavScren = <Widget>[
       Home(),
-      Appointment(), 
-    HealthNews(), 
-      Text('threeeeeeeeeeeeeeeeeeeee'),
-
-     Profile(), 
+      Appointment(),
+      HealthNews(),
+      Message(),
+      Profile(),
     ];
 
     return SafeArea(
       child: BlocBuilder<LandingStateBloc, LandingStateState>(
         builder: (context, state) {
           return Scaffold(
-            backgroundColor:Colormanager.scaffold,
-            
+            backgroundColor: Colormanager.scaffold,
 
             // appBar: AppBar(
             //   actions: [
@@ -44,17 +42,15 @@ class Bottomnav extends StatelessWidget {
             //         icon: Icon(Icons.logout))
             //   ],
             // ),
-            
+
             body: bottomNavScren.elementAt(state.tabindex),
             bottomNavigationBar: ClipRRect(
               borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(40), topRight: Radius.circular(40)),
               child: NavigationBarTheme(
-                
                 data: NavigationBarThemeData(
-                
                   labelTextStyle: WidgetStatePropertyAll<TextStyle>(TextStyle(
-                      fontWeight: FontWeight.w500, 
+                      fontWeight: FontWeight.w500,
                       overflow: TextOverflow.ellipsis)),
                 ),
                 child: NavigationBar(
@@ -72,11 +68,18 @@ class Bottomnav extends StatelessWidget {
                         IconlyBold.home,
                         color: Colormanager.blueicon,
                       ),
-                      icon: Icon(IconlyBold.home,color: Colormanager.blackIcon, ),
+                      icon: Icon(
+                        IconlyBold.home,
+                        color: Colormanager.blackIcon,
+                      ),
                       label: 'Home',
                     ),
                     NavigationDestination(
-                      icon: Badge(child: Icon(IconlyBold.calendar,color: Colormanager.blackIcon,)),
+                      icon: Badge(
+                          child: Icon(
+                        IconlyBold.calendar,
+                        color: Colormanager.blackIcon,
+                      )),
                       selectedIcon: Icon(
                         IconlyBold.calendar,
                         color: Colormanager.blueicon,
@@ -88,12 +91,18 @@ class Bottomnav extends StatelessWidget {
                           IconlyBold.paper_negative,
                           color: Colormanager.blueicon,
                         ),
-                        icon: Icon(IconlyBold.paper_negative,color: Colormanager.blackIcon,),
+                        icon: Icon(
+                          IconlyBold.paper_negative,
+                          color: Colormanager.blackIcon,
+                        ),
                         label: 'News'),
                     NavigationDestination(
                       icon: Badge(
                         label: Text('2'),
-                        child: Icon(IconlyBold.message,color: Colormanager.blackIcon,),
+                        child: Icon(
+                          IconlyBold.message,
+                          color: Colormanager.blackIcon,
+                        ),
                       ),
                       selectedIcon: Icon(
                         IconlyBold.message,
@@ -106,7 +115,10 @@ class Bottomnav extends StatelessWidget {
                           IconlyBold.profile,
                           color: Colormanager.blueicon,
                         ),
-                        icon: Icon(IconlyBold.profile,color: Colormanager.blackIcon,),
+                        icon: Icon(
+                          IconlyBold.profile,
+                          color: Colormanager.blackIcon,
+                        ),
                         label: 'Profile'),
                   ],
                 ),

@@ -59,6 +59,7 @@ dependencies:
   slide_to_act: ^2.0.2
   shimmer: ^3.0.0
   carousel_slider: ^4.2.1
+  provider: ^6.1.2
   
 
 
