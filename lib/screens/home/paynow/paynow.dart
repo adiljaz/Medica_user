@@ -2,10 +2,13 @@ import 'package:fire_login/blocs/bottomnav/landing_state_bloc.dart';
 import 'package:fire_login/blocs/calendar/bloc/calendar_bloc.dart';
 import 'package:fire_login/blocs/calendar/bloc/calendar_event.dart';
 import 'package:fire_login/blocs/department/bloc/department_bloc.dart';
+import 'package:fire_login/blocs/saveuser/bloc/saveuser_bloc.dart';
+import 'package:fire_login/blocs/saveuser/bloc/saveuser_event.dart';
 import 'package:fire_login/screens/bottomnav/home.dart';
 import 'package:fire_login/utils/colors/colormanager.dart';
 import 'package:fire_login/widgets/dropdown/dropdown.dart';
 import 'package:fire_login/widgets/textformfield/textformfield.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -108,6 +111,27 @@ class _PayNowState extends State<PayNow> {
   }
 
   void handlePaymentSuccess(PaymentSuccessResponse response) {
+
+
+    FirebaseAuth _auth =FirebaseAuth.instance; 
+  final id  =_auth.currentUser!.uid;
+  print(id); 
+    context.read<SaveUserBloc>().add(
+          SaveUserBooking(
+            selectedDay: widget.selectedDay,
+            selectedTimeSlot: widget.selectedTimeSlot,
+            fromTime: widget.formtime,
+            toTime: widget.totime,
+            uid: id,
+            age: _ageController.text,
+            disease: _diseaseController.text,
+            gender: selectedGender,
+            image: widget.image,
+            name: _fullnameController.text,
+            problem: _problemController.text,
+          ),
+        );
+
     context.read<CalendarBloc>().add(
           SaveBooking(
             selectedDay: widget.selectedDay,
@@ -123,6 +147,8 @@ class _PayNowState extends State<PayNow> {
             problem: _problemController.text,
           ),
         );
+
+    /////  user side adding
 
     Navigator.of(context).push(
         PageTransition(child: Bottomnav(), type: PageTransitionType.fade));

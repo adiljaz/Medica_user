@@ -5,8 +5,8 @@ import 'package:iconly/iconly.dart';
 import 'package:fire_login/utils/colors/colormanager.dart';
 import 'package:fire_login/screens/home/drdetails/details.dart';
 
-class Dentist extends StatelessWidget {
-  const Dentist({super.key});
+class Cardiologists extends StatelessWidget {
+  const Cardiologists({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +30,7 @@ class Dentist extends StatelessWidget {
                       },
                       child: Icon(Icons.arrow_back_ios)),
                   Text(
-                    'Dentist',
+                    'General Doctors',
                     style: GoogleFonts.dongle(
                         fontWeight: FontWeight.bold, fontSize: 33),
                   ),
@@ -41,7 +41,7 @@ class Dentist extends StatelessWidget {
             StreamBuilder(
               stream: _firestore
                   .collection('doctor')
-                  .where('department', isEqualTo: 'Dentist')
+                  .where('department', isEqualTo: 'Cardiologists')
                   .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -119,8 +119,7 @@ class Dentist extends StatelessWidget {
                                         top: 15,
                                       ),
                                       child: Container(
-                                        height:
-                                            mediaQuery.size.height * 0.145,
+                                        height: mediaQuery.size.height * 0.145,
                                         width: mediaQuery.size.width * 0.3,
                                         child: ClipRRect(
                                             borderRadius:
@@ -133,8 +132,7 @@ class Dentist extends StatelessWidget {
                                     ),
                                     Expanded(
                                       child: Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 8),
+                                        padding: const EdgeInsets.only(left: 8),
                                         child: Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
@@ -147,9 +145,8 @@ class Dentist extends StatelessWidget {
                                                   MainAxisAlignment.start,
                                               children: [
                                                 SizedBox(
-                                                  width:
-                                                      mediaQuery.size.width *
-                                                          0.46,
+                                                  width: mediaQuery.size.width *
+                                                      0.46,
                                                   child: Padding(
                                                     padding:
                                                         const EdgeInsets.only(
@@ -159,38 +156,36 @@ class Dentist extends StatelessWidget {
                                                       overflow:
                                                           TextOverflow.fade,
                                                       maxLines: 1,
-                                                      style: GoogleFonts.poppins(
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontSize: 19),
+                                                      style:
+                                                          GoogleFonts.poppins(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              fontSize: 19),
                                                     ),
                                                   ),
                                                 ),
                                                 Spacer(),
                                                 Icon(
                                                   IconlyBold.heart,
-                                                  color:
-                                                      Colormanager.blueicon,
+                                                  color: Colormanager.blueicon,
                                                 ),
                                                 SizedBox(
-                                                  width:
-                                                      mediaQuery.size.width *
-                                                          0.05,
+                                                  width: mediaQuery.size.width *
+                                                      0.05,
                                                 ),
                                               ],
                                             ),
                                             SizedBox(
-                                                width: mediaQuery.size.width *
-                                                    0.5,
+                                                width:
+                                                    mediaQuery.size.width * 0.5,
                                                 child: Divider()),
                                             Row(
                                               mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceEvenly,
+                                                  MainAxisAlignment.spaceEvenly,
                                               children: [
                                                 Text(doctor['department'],
-                                                    style:
-                                                        GoogleFonts.poppins(
+                                                    style: GoogleFonts.poppins(
                                                       fontSize: 13,
                                                       textStyle: TextStyle(
                                                           fontWeight:
@@ -201,15 +196,14 @@ class Dentist extends StatelessWidget {
                                                 Text(
                                                   '|',
                                                   style: TextStyle(
-                                                      color: Colormanager
-                                                          .grayText,
+                                                      color:
+                                                          Colormanager.grayText,
                                                       fontWeight:
                                                           FontWeight.bold,
                                                       fontSize: 18),
                                                 ),
                                                 Text(doctor['hospitalNAme'],
-                                                    style:
-                                                        GoogleFonts.poppins(
+                                                    style: GoogleFonts.poppins(
                                                       textStyle: TextStyle(
                                                           fontSize: 13,
                                                           fontWeight:
@@ -223,8 +217,7 @@ class Dentist extends StatelessWidget {
                                               children: [
                                                 Icon(
                                                   IconlyBold.star,
-                                                  color:
-                                                      Colormanager.blueicon,
+                                                  color: Colormanager.blueicon,
                                                 ),
                                                 Spacer(),
                                                 Text(
@@ -247,9 +240,8 @@ class Dentist extends StatelessWidget {
                                                           .grayText),
                                                 ),
                                                 SizedBox(
-                                                  width:
-                                                      mediaQuery.size.width *
-                                                          0.1,
+                                                  width: mediaQuery.size.width *
+                                                      0.1,
                                                 )
                                               ],
                                             )

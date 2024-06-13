@@ -1,31 +1,37 @@
-// search_bloc.dart
-
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'search_event.dart';
-import 'search_state.dart';
+import 'package:fire_login/blocs/search/bloc/search_event.dart';
+import 'package:fire_login/blocs/search/bloc/search_state.dart';
+
+
 
 class SearchBloc extends Bloc<SearchEvent, SearchState> {
-  SearchBloc() : super(SearchInitial()) {
-    on<SearchQueryChanged>(_onSearchQueryChanged);
+  SearchBloc() : super(SearchInitialState());
+
+  @override
+  Stream<SearchState> mapEventToState(SearchEvent event) async* {
+    if (event is SearchDoctorsEvent) {
+      yield SearchLoadingState();
+      try {
+        List<DocumentSnapshot> doctors = await _searchDoctors(event.query);
+        yield SearchSuccessState(doctors);
+      } catch (e) {
+        yield SearchErrorState('Error searching doctors');
+      }
+    }
   }
 
-  void _onSearchQueryChanged(
-      SearchQueryChanged event, Emitter<SearchState> emit) async {
-    emit(SearchLoading());
-    try {
-      if (event.query.isNotEmpty) {
-        var doctors = await FirebaseFirestore.instance
-            .collection('doctor')
-            .where('name', isGreaterThanOrEqualTo: event.query)
-            .where('name', isLessThanOrEqualTo: event.query + '\uf8ff')
-            .get();
-        emit(SearchLoaded(doctors.docs));
-      } else {
-        emit(SearchLoaded([]));
-      }
-    } catch (e) {
-      emit(SearchError(e.toString()));
+  Future<List<DocumentSnapshot>> _searchDoctors(String query) async {
+    if (query.isNotEmpty) {
+      var doctors = await FirebaseFirestore.instance
+          .collection('doctor')
+          .where('name', isGreaterThanOrEqualTo: query)
+          .where('name', isLessThanOrEqualTo: query + '\uf8ff')
+          .get();
+
+      return doctors.docs;
+    } else {
+      return [];
     }
   }
 }

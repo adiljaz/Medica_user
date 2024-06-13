@@ -41,7 +41,7 @@ class Nephrology extends StatelessWidget {
             StreamBuilder(
               stream: _firestore
                   .collection('doctor')
-                  .where('department', isEqualTo: 'Neurologists')
+                  .where('department', isEqualTo: 'Nephrology')
                   .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {

@@ -1,6 +1,10 @@
+import 'package:fire_login/screens/home/department/Neurologists/neurologi.dart';
+import 'package:fire_login/screens/home/department/cardiologists/Cardio.dart';
 import 'package:fire_login/screens/home/department/dentist/dentist.dart';
 import 'package:fire_login/screens/home/department/general/general.dart';
 import 'package:fire_login/screens/home/department/nephrology/nephrology.dart';
+import 'package:fire_login/screens/home/department/nutrition/nutrition.dart';
+import 'package:fire_login/screens/home/department/pediatrics/pediatrics.dart';
 import 'package:fire_login/screens/home/homewidgets/baner.dart';
 import 'package:fire_login/screens/home/homewidgets/searchbar.dart';
 import 'package:fire_login/screens/home/seeall/seeall.dart';
@@ -187,25 +191,37 @@ class Home extends StatelessWidget {
                               ),
                             ),
                             GestureDetector(
-                              onTap: (){
-                                Navigator.of(context).push(PageTransition(child: Nephrology(), type: PageTransitionType.fade )); 
-
+                              onTap: () {
+                                Navigator.of(context).push(PageTransition(
+                                    child: Nephrology(),
+                                    type: PageTransitionType.fade));
                               },
-                              
                               child: DoctorType(
                                 image: Opacity(
-                                  opacity: 0.65,
-                                  child: Image.asset('assets/images/nephrology.png',fit: BoxFit.cover, height: mediaquerry.size.width*0.09, width: mediaquerry.size.width*0.09,)),
+                                    opacity: 0.65,
+                                    child: Image.asset(
+                                      'assets/images/nephrology.png',
+                                      fit: BoxFit.cover,
+                                      height: mediaquerry.size.width * 0.09,
+                                      width: mediaquerry.size.width * 0.09,
+                                    )),
                                 text: 'Nephrolo..',
                               ),
                             ),
-                            DoctorType(
-                              icon: Icon(
-                                FontAwesomeIcons.brain,
-                                color: Colormanager.blueicon,
-                                size: 28,
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).push(PageTransition(
+                                    child: Neurologists(),
+                                    type: PageTransitionType.fade));
+                              },
+                              child: DoctorType(
+                                icon: Icon(
+                                  FontAwesomeIcons.brain,
+                                  color: Colormanager.blueicon,
+                                  size: 28,
+                                ),
+                                text: 'neurol..',
                               ),
-                              text: 'Paedia..',
                             ),
                           ],
                         ),
@@ -215,33 +231,66 @@ class Home extends StatelessWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            DoctorType(
-                              icon: Icon(
-                                Icons.local_drink_sharp,
-                                color: Colormanager.blueicon,
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).push(PageTransition(
+                                    child: Nutrition(),
+                                    type: PageTransitionType.fade));
+                              },
+                              child: DoctorType(
+                                image: Opacity(
+                                    opacity: 0.8,
+                                    child: Image.asset(
+                                        'assets/images/Nutrition.png',
+                                        height:
+                                            mediaquerry.size.height * 0.037)),
+                                text: 'Nutrition',
                               ),
-                              text: 'General',
                             ),
-                            DoctorType(
-                              icon: Icon(
-                                Icons.baby_changing_station,
-                                color: Colormanager.blueicon,
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).push(PageTransition(
+                                    child: Pediatrics(),
+                                    type: PageTransitionType.fade));
+                              },
+                              child: DoctorType(
+                                icon: Icon(
+                                  FontAwesomeIcons.baby,
+                                  size: 29,
+                                  color: Colormanager.blueicon,
+                                ),
+                                text: 'pediatri..',
                               ),
-                              text: 'dentist',
                             ),
-                            DoctorType(
-                              icon: Icon(
-                                Icons.document_scanner_rounded,
-                                color: Colormanager.blueicon,
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).push(PageTransition(
+                                    child: Cardiologists(),
+                                    type: PageTransitionType.fade));
+                              },
+                              child: DoctorType(
+                                icon: Icon(
+                                  Icons.remove_red_eye,
+                                  size: 30,
+                                  color: Colormanager.blueicon,
+                                ),
+                                text: 'Cardiol..',
                               ),
-                              text: 'alooo',
                             ),
-                            DoctorType(
-                              icon: Icon(
-                                Icons.more_horiz,
-                                color: Colormanager.blueicon,
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).push(PageTransition(
+                                    child: SeeAll(),
+                                    type: PageTransitionType.fade));
+                              },
+                              child: DoctorType(
+                                icon: Icon(
+                                  Icons.more_horiz,
+                                  size: 33,
+                                  color: Colormanager.blueicon,
+                                ),
+                                text: 'More',
                               ),
-                              text: 'ejnfnrf',
                             ),
                           ],
                         ),

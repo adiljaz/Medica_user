@@ -1,9 +1,7 @@
-// search_event.dart
-
 abstract class SearchEvent {}
 
-class SearchQueryChanged extends SearchEvent {
+class SearchDoctorsEvent extends SearchEvent {
   final String query;
 
-  SearchQueryChanged(this.query);
+  SearchDoctorsEvent(this.query);
 }

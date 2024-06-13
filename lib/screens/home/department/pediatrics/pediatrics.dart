@@ -5,8 +5,8 @@ import 'package:iconly/iconly.dart';
 import 'package:fire_login/utils/colors/colormanager.dart';
 import 'package:fire_login/screens/home/drdetails/details.dart';
 
-class Dentist extends StatelessWidget {
-  const Dentist({super.key});
+class Pediatrics extends StatelessWidget {
+ const Pediatrics({super.key}); 
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +30,7 @@ class Dentist extends StatelessWidget {
                       },
                       child: Icon(Icons.arrow_back_ios)),
                   Text(
-                    'Dentist',
+                    'General Doctors',
                     style: GoogleFonts.dongle(
                         fontWeight: FontWeight.bold, fontSize: 33),
                   ),
@@ -41,7 +41,7 @@ class Dentist extends StatelessWidget {
             StreamBuilder(
               stream: _firestore
                   .collection('doctor')
-                  .where('department', isEqualTo: 'Dentist')
+                  .where('department', isEqualTo: 'Pediatrics')
                   .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {

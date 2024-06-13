@@ -5,13 +5,16 @@ import 'package:google_fonts/google_fonts.dart';
 class Drtype extends StatelessWidget {
   final String typeText;
   final double width;
-  Drtype({required this.typeText,required this.width});
+    final double height;
+
+  Drtype({required this.typeText,required this.width,required this.height});
 
   @override
   Widget build(BuildContext context) {
     MediaQueryData mediaQuery = MediaQuery.of(context);
 
     return Container(
+      height:height ,
       width: width,
       decoration: BoxDecoration(
         border:Border.all(color: Colormanager.blueContainer,width: 2),

@@ -1,21 +1,19 @@
-// search_state.dart
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 abstract class SearchState {}
 
-class SearchInitial extends SearchState {}
+class SearchInitialState extends SearchState {}
 
-class SearchLoading extends SearchState {}
+class SearchLoadingState extends SearchState {}
 
-class SearchLoaded extends SearchState {
-  final List<DocumentSnapshot> searchResults;
+class SearchSuccessState extends SearchState {
+  final List<DocumentSnapshot> results;
 
-  SearchLoaded(this.searchResults);
+  SearchSuccessState(this.results);
 }
 
-class SearchError extends SearchState {
-  final String message;
+class SearchErrorState extends SearchState {
+  final String error;
 
-  SearchError(this.message);
+  SearchErrorState(this.error);
 }

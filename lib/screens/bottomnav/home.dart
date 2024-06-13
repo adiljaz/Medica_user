@@ -1,5 +1,6 @@
 
 import 'package:fire_login/blocs/bottomnav/landing_state_bloc.dart';
+import 'package:fire_login/news/news.dart';
 import 'package:fire_login/screens/appoinement/appoinement.dart';
 import 'package:fire_login/screens/home/home.dart';
 import 'package:fire_login/screens/profile/profile.dart';
@@ -16,7 +17,7 @@ class Bottomnav extends StatelessWidget {
     List<Widget> bottomNavScren = <Widget>[
       Home(),
       Appointment(), 
-      Text('threeeeeeeeeeeeeeeeeeeee'),
+    HealthNews(), 
       Text('threeeeeeeeeeeeeeeeeeeee'),
 
      Profile(), 

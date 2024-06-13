@@ -1,64 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'calendar_event.dart';
-import 'calendar_state.dart';
+import 'saveuser_event.dart';
+import 'saveuser_state.dart';
 import 'package:intl/intl.dart';
 
-class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
-  CalendarBloc() : super(CalendarInitial()) {
-    on<GenerateTimeSlots>(_onGenerateTimeSlots);
-    on<CalendarDaySelected>(_onCalendarDaySelected);
-    on<TimeSlotSelected>(_onTimeSlotSelected);
-    on<SaveBooking>(_onSaveBooking);
+class SaveUserBloc extends Bloc<SaveUserEvent, SaveUserState> {
+  SaveUserBloc() : super(SaveUserInitial()) {
+
+    on<SaveUserBooking>(_onSaveBooking);
   }
 
-  void _onGenerateTimeSlots(
-      GenerateTimeSlots event, Emitter<CalendarState> emit) async {
-    try {
-      final bookedSlots = await _fetchBookedSlots(event.selectedDay, event.uid);
-      final List<DateTime> timeSlots =
-          _generateTimeSlots(event.fromTime, event.toTime);
-
-      emit(CalendarUpdated(
-        focusedDay: event.selectedDay,
-        selectedDay: event.selectedDay,
-        timeSlots: timeSlots,
-        bookedSlots: bookedSlots,
-      ));
-    } catch (e) {
-      emit(CalendarError(message: e.toString()));
-    }
-  }
-
-  void _onCalendarDaySelected(
-      CalendarDaySelected event, Emitter<CalendarState> emit) {
-    if (state is CalendarUpdated) {
-      final currentState = state as CalendarUpdated;
-      emit(CalendarUpdated(
-        focusedDay: event.focusedDay,
-        selectedDay: event.selectedDay,
-        timeSlots: currentState.timeSlots,
-        bookedSlots: currentState.bookedSlots,
-      ));
-    }
-  }
-
-  void _onTimeSlotSelected(
-      TimeSlotSelected event, Emitter<CalendarState> emit) {
-    if (state is CalendarUpdated) {
-      final currentState = state as CalendarUpdated;
-      emit(CalendarUpdated(
-        focusedDay: currentState.focusedDay,
-        selectedDay: currentState.selectedDay,
-        timeSlots: currentState.timeSlots,
-        bookedSlots: currentState.bookedSlots,
-        selectedTimeSlot: event.selectedTimeSlot,
-      ));
-    }
-  }
 
   Future<void> _onSaveBooking(
-      SaveBooking event, Emitter<CalendarState> emit) async {
+      SaveUserBooking event, Emitter<SaveUserState> emit) async {
     try {
       final String formattedDate =
           DateFormat('yyyy-MM-dd').format(event.selectedDay);
@@ -66,9 +20,9 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
           DateFormat('h:mm a').format(event.selectedTimeSlot);
 
       final CollectionReference userCollection = FirebaseFirestore.instance
-          .collection('doctor')
+          .collection('users')
           .doc(event.uid)
-          .collection('dailyBookings');
+          .collection('userbookings ');
 
       await userCollection.add({
         'selectedDay': formattedDate,
