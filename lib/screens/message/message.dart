@@ -18,7 +18,7 @@ class Message extends StatelessWidget {
 
   Widget _buildDoctorList() {
     return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance.collection('users auth').snapshots(),
+      stream: FirebaseFirestore.instance.collection('doctor auth').snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
