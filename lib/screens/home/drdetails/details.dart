@@ -1,4 +1,5 @@
 import 'package:fire_login/screens/home/booking/booking.dart';
+import 'package:fire_login/screens/message/chat.dart';
 import 'package:fire_login/utils/colors/colormanager.dart';
 import 'package:fire_login/widgets/drdetail/round.dart';
 import 'package:flutter/material.dart';
@@ -314,27 +315,42 @@ class DrDetails extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Container(
-                child: Center(
-                    child: Text(
-                  'Send message',
-                  style: GoogleFonts.dongle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 25,
-                      color: Colormanager.blueText),
-                )),
-                height: mediaQuery.size.height * 0.06,
-                width: mediaQuery.size.width * 0.38,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colormanager.lightblue,
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(PageTransition(
+                      child: ChatPage(reciveUserid: uid!,image: imageUrl,name: name,),
+                      type: PageTransitionType.fade));
+                },
+                child: Container(
+                  child: Center(
+                      child: Text(
+                    'Send message',
+                    style: GoogleFonts.dongle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 25,
+                        color: Colormanager.blueText),
+                  )),
+                  height: mediaQuery.size.height * 0.06,
+                  width: mediaQuery.size.width * 0.38,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colormanager.lightblue,
+                  ),
                 ),
               ),
               Container(
                 child: Center(
                     child: GestureDetector(
                   onTap: () {
-                 Navigator.of(context).push(PageTransition(child: Booking( image:imageUrl,  fromTime: from ,toTime: to ,uid: uid.toString(), fees: fees), type: PageTransitionType.fade, ));
+                    Navigator.of(context).push(PageTransition(
+                      child: Booking(
+                          image: imageUrl,
+                          fromTime: from,
+                          toTime: to,
+                          uid: uid.toString(),
+                          fees: fees),
+                      type: PageTransitionType.fade,
+                    ));
                   },
                   child: Text(
                     'Book Aoointment',
