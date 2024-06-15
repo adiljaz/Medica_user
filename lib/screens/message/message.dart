@@ -77,7 +77,7 @@ class Message extends StatelessWidget {
                 name: name,
                 image:profile!,
            
-                reciveUserid: uid,
+                receiveUserId: uid,
               ),
               type: PageTransitionType.fade,
             ));

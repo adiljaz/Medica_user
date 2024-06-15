@@ -318,7 +318,7 @@ class DrDetails extends StatelessWidget {
               GestureDetector(
                 onTap: () {
                   Navigator.of(context).push(PageTransition(
-                      child: ChatPage(reciveUserid: uid!,image: imageUrl,name: name,),
+                      child: ChatPage(receiveUserId: uid!,image: imageUrl,name: name,),
                       type: PageTransitionType.fade));
                 },
                 child: Container(

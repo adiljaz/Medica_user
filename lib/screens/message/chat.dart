@@ -1,22 +1,22 @@
 import 'dart:io';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fire_login/screens/message/chatservice.dart';
-import 'package:fire_login/utils/colors/colormanager.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fire_login/blocs/chat/chat_bloc.dart';
+import 'package:fire_login/blocs/chat/chat_event.dart';
+import 'package:fire_login/blocs/chat/chat_state.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage({
     Key? key,
-    required this.reciveUserid,
+    required this.receiveUserId,
     required this.image,
     required this.name,
   }) : super(key: key);
 
-  final String reciveUserid;
+  final String receiveUserId;
   final String image;
   final String name;
 
@@ -26,43 +26,38 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   final TextEditingController _messageController = TextEditingController();
-  final ChatService _chatService = ChatService();
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final ScrollController _scrollController = ScrollController();
   final ImagePicker _picker = ImagePicker();
-  bool _isLoading = false;
+  late ChatBloc _chatBloc;
 
   @override
   void initState() {
     super.initState();
+    _chatBloc = ChatBloc();
+    _chatBloc.add(FetchMessagesEvent(widget.receiveUserId));
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       _scrollToBottom();
     });
   }
 
-  void sendMessage() async {
+  @override
+  void dispose() {
+    _chatBloc.close(); // Close the bloc to avoid memory leaks
+    super.dispose();
+  }
+
+  void sendMessage() {
     if (_messageController.text.isNotEmpty) {
-      await _chatService.sendMessage(
-        widget.reciveUserid,
-        _messageController.text,
-      );
+      _chatBloc.add(SendMessageEvent(widget.receiveUserId, _messageController.text));
       _messageController.clear();
-      _scrollToBottom();
     }
   }
 
   void sendImage() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
-      setState(() {
-        _isLoading = true;
-      });
       File imageFile = File(pickedFile.path);
-      await _chatService.sendImage(widget.reciveUserid, imageFile);
-      setState(() {
-        _isLoading = false;
-      });
-      _scrollToBottom();
+      _chatBloc.add(SendImageEvent(widget.receiveUserId, imageFile));
     }
   }
 
@@ -71,7 +66,7 @@ class _ChatPageState extends State<ChatPage> {
       if (_scrollController.hasClients) {
         _scrollController.animateTo(
           _scrollController.position.maxScrollExtent,
-          duration: Duration(milliseconds: 300),
+          duration: const Duration(milliseconds: 300),
           curve: Curves.easeOut,
         );
       }
@@ -82,19 +77,19 @@ class _ChatPageState extends State<ChatPage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Delete Message'),
-        content: Text('Are you sure you want to delete this message?'),
+        title: const Text('Delete Message'),
+        content: const Text('Are you sure you want to delete this message?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: Text('Cancel'),
+            child: const Text('Cancel'),
           ),
           TextButton(
-            onPressed: () async {
-              await _chatService.deleteMessage(docId);
+            onPressed: () {
+              _chatBloc.add(DeleteMessageEvent(docId));
               Navigator.of(context).pop();
             },
-            child: Text('Delete'),
+            child: const Text('Delete'),
           ),
         ],
       ),
@@ -106,10 +101,7 @@ class _ChatPageState extends State<ChatPage> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios,
-            color: Colormanager.whiteContainer,
-          ),
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
           onPressed: () {
             Navigator.of(context).pop();
           },
@@ -126,221 +118,119 @@ class _ChatPageState extends State<ChatPage> {
                 height: 40,
               ),
             ),
-            SizedBox(width: 10),
+            const SizedBox(width: 10),
             Text(
               widget.name,
-              style: GoogleFonts.dongle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-                color: Colormanager.whiteText,
-              ),
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.white),
             ),
           ],
         ),
-        backgroundColor: Color.fromARGB(255, 0, 140, 255),
+        backgroundColor: const Color.fromARGB(255, 0, 140, 255),
       ),
       body: Column(
         children: [
-          if (_isLoading) LinearProgressIndicator(),
-          Expanded(child: _buildMessageList()),
-          _buildMessageInput(),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildMessageInput() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        children: [
-          IconButton(
-            icon: Icon(Icons.photo),
-            onPressed: sendImage,
-          ),
           Expanded(
-            child: TextField(
-              controller: _messageController,
-              decoration: InputDecoration(
-                hintText: "Type your message...",
-                filled: true,
-                fillColor: Colors.grey[200],
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30.0),
-                  borderSide: BorderSide.none,
-                ),
-              ),
+            child: BlocConsumer<ChatBloc, ChatState>(
+              bloc: _chatBloc,
+              listener: (context, state) {
+                if (state is ChatMessageSent || state is ChatMessageDeleted) {
+                  _chatBloc.add(FetchMessagesEvent(widget.receiveUserId));
+                }
+              },
+              builder: (context, state) {
+                if (state is ChatLoading) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (state is ChatLoaded) {
+                  return ListView.builder(
+                    reverse: true,
+                    controller: _scrollController,
+                    itemCount: state.messages.length,
+                    itemBuilder: (context, index) {
+                      DocumentSnapshot document = state.messages[index];
+                      Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+
+                      var isCurrentUser = data['senderId'] == FirebaseAuth.instance.currentUser!.uid;
+
+                      return GestureDetector(
+                        onLongPress: () => _deleteMessage(document.id),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                          alignment: isCurrentUser ? Alignment.centerRight : Alignment.centerLeft,
+                          child: Column(
+                            crossAxisAlignment: isCurrentUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                            children: [
+                              if (data['type'] == 'text')
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: isCurrentUser ? Colors.blue : Colors.grey,
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ),
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    data['messages'],
+                                    style: const TextStyle(color: Colors.white),
+                                  ),
+                                )
+                              else if (data['type'] == 'image')
+                                Container(
+                                  
+                                  decoration: BoxDecoration(
+                                    color: isCurrentUser ? Colors.blue : Colors.grey,
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ),
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Image.network(
+                                    data['messages'],
+                                    fit: BoxFit.cover,
+                                    width:200, // Adjust image width
+                                    height: 200, // Adjust image height
+                                  ),
+                                ),
+                              const SizedBox(height: 4),
+                              Text(
+                                '10:30 AM',  // Replace with your timestamp logic
+                                style: const TextStyle(fontSize: 12, color: Colors.black54),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                } else if (state is ChatError) {
+                  return Center(child: Text('Error: ${state.error}'));
+                } else {
+                  return Container();
+                }
+              },
             ),
           ),
-          IconButton(
-            onPressed: sendMessage,
-            icon: Icon(Icons.send),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildMessageList() {
-    return StreamBuilder(
-      stream: _chatService.getMessages(
-        widget.reciveUserid,
-        _firebaseAuth.currentUser!.uid,
-      ),
-      builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-        if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
-        }
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
-        }
-
-        List<DocumentSnapshot> messages = snapshot.data!.docs;
-        messages.sort((a, b) {
-          // Check if timestamps are null and handle accordingly
-          if (a['timestamp'] == null || b['timestamp'] == null) {
-            return 0; // Consider them equal if either is null
-          }
-          return a['timestamp'].compareTo(b['timestamp']);
-        });
-        messages = messages.reversed.toList();
-
-        return ListView.builder(
-          reverse:
-              true, // Reverse the list view to show latest messages at the bottom
-          controller: _scrollController,
-          itemCount: messages.length,
-          itemBuilder: (context, index) {
-            DocumentSnapshot document = messages[index];
-            Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-
-            var isCurrentUser =
-                data['senderId'] == _firebaseAuth.currentUser!.uid;
-
-            return GestureDetector(
-              onLongPress: () => _deleteMessage(document.id),
-              child: Container(
-                padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                alignment: isCurrentUser
-                    ? Alignment.centerRight
-                    : Alignment.centerLeft,
-                child: Column(
-                  crossAxisAlignment: isCurrentUser
-                      ? CrossAxisAlignment.end
-                      : CrossAxisAlignment.start,
-                  children: [
-                    if (data['type'] == 'text')
-                      ChatBubble(
-                        message: data['messages'],
-                        isCurrentUser: isCurrentUser,
-                        timestamp: data['timestamp']?.toDate(),
-                      )
-                    else if (data['type'] == 'image')
-                      ImageBubble(
-                        imageUrl: data['messages'],
-                        isCurrentUser: isCurrentUser,
-                        timestamp: data['timestamp']?.toDate(),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                IconButton(
+                  icon: Icon(Icons.image), // Changed camera icon to image icon
+                  onPressed: sendImage,
+                ),
+                Expanded(
+                  child: TextField(
+                    controller: _messageController,
+                    decoration: InputDecoration(
+                      hintText: 'Type a message...',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(16.0),
                       ),
-                  ],
+                      suffixIcon: IconButton( // Added send icon inside text field
+                        icon: Icon(Icons.send),
+                        onPressed: sendMessage,
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-}
-
-class ChatBubble extends StatelessWidget {
-  final String message;
-  final bool isCurrentUser;
-  final DateTime? timestamp;
-
-  const ChatBubble({
-    Key? key,
-    required this.message,
-    required this.isCurrentUser,
-    this.timestamp,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(bottom: 10),
-      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 14),
-      decoration: BoxDecoration(
-        color:
-            isCurrentUser ? Color.fromARGB(255, 0, 140, 255) : Colors.grey[300],
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-          bottomLeft: isCurrentUser ? Radius.circular(20) : Radius.circular(0),
-          bottomRight: isCurrentUser ? Radius.circular(0) : Radius.circular(20),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            message,
-            style: TextStyle(
-              color: isCurrentUser ? Colors.white : Colors.black87,
+              ],
             ),
           ),
-          if (timestamp != null)
-            Text(
-              '${timestamp!.hour}:${timestamp!.minute} ${timestamp!.hour < 12 ? 'AM' : 'PM'}',
-              style: TextStyle(
-                color: isCurrentUser ? Colors.white70 : Colors.black54,
-                fontSize: 10,
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-}
-
-class ImageBubble extends StatelessWidget {
-  final String imageUrl;
-  final bool isCurrentUser;
-  final DateTime? timestamp;
-
-  const ImageBubble({
-    Key? key,
-    required this.imageUrl,
-    required this.isCurrentUser,
-    this.timestamp,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(bottom: 10),
-      padding: EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color:
-            isCurrentUser ? Color.fromARGB(255, 0, 140, 255) : Colors.grey[300],
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-          bottomLeft: isCurrentUser ? Radius.circular(20) : Radius.circular(0),
-          bottomRight: isCurrentUser ? Radius.circular(0) : Radius.circular(20),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Image.network(imageUrl, height: 200, fit: BoxFit.cover),
-          if (timestamp != null)
-            Text(
-              '${timestamp!.hour}:${timestamp!.minute} ${timestamp!.hour < 12 ? 'AM' : 'PM'}',
-              style: TextStyle(
-                color: isCurrentUser ? Colors.white70 : Colors.black54,
-                fontSize: 10,
-              ),
-            ),
         ],
       ),
     );

@@ -1,6 +1,24 @@
-part of 'chat_bloc.dart';
+// chat_state.dart
 
-@immutable
-sealed class ChatState {}
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-final class ChatInitial extends ChatState {}
+abstract class ChatState {}
+
+class ChatInitial extends ChatState {}
+
+class ChatLoading extends ChatState {}
+
+class ChatLoaded extends ChatState {
+  final List<DocumentSnapshot> messages;
+
+  ChatLoaded(this.messages);
+}
+
+class ChatError extends ChatState {
+  final String error;
+
+  ChatError(this.error);
+}
+class ChatMessageSent extends ChatState {}
+
+class ChatMessageDeleted extends ChatState {}
