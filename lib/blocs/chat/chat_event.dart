@@ -1,5 +1,3 @@
-// chat_event.dart
-
 import 'dart:io';
 
 abstract class ChatEvent {}

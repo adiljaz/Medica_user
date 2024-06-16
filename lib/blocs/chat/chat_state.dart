@@ -1,5 +1,3 @@
-// chat_state.dart
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 abstract class ChatState {}
@@ -11,7 +9,7 @@ class ChatLoading extends ChatState {}
 class ChatLoaded extends ChatState {
   final List<DocumentSnapshot> messages;
 
-  ChatLoaded(this.messages);
+  ChatLoaded({required this.messages});
 }
 
 class ChatError extends ChatState {
@@ -19,6 +17,7 @@ class ChatError extends ChatState {
 
   ChatError(this.error);
 }
+
 class ChatMessageSent extends ChatState {}
 
 class ChatMessageDeleted extends ChatState {}

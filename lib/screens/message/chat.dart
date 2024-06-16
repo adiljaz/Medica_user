@@ -29,6 +29,7 @@ class _ChatPageState extends State<ChatPage> {
   final ScrollController _scrollController = ScrollController();
   final ImagePicker _picker = ImagePicker();
   late ChatBloc _chatBloc;
+  List<DocumentSnapshot> _messages = [];
 
   @override
   void initState() {
@@ -48,8 +49,9 @@ class _ChatPageState extends State<ChatPage> {
 
   void sendMessage() {
     if (_messageController.text.isNotEmpty) {
-      _chatBloc.add(SendMessageEvent(widget.receiveUserId, _messageController.text));
+      final messageText = _messageController.text;
       _messageController.clear();
+      _chatBloc.add(SendMessageEvent(widget.receiveUserId, messageText));
     }
   }
 
@@ -135,100 +137,99 @@ class _ChatPageState extends State<ChatPage> {
               listener: (context, state) {
                 if (state is ChatMessageSent || state is ChatMessageDeleted) {
                   _chatBloc.add(FetchMessagesEvent(widget.receiveUserId));
+                } else if (state is ChatLoaded) {
+                  setState(() {
+                    _messages = state.messages;
+                  });
                 }
               },
               builder: (context, state) {
-                if (state is ChatLoading) {
-                  return Center(child: CircularProgressIndicator());
-                } else if (state is ChatLoaded) {
-                  return ListView.builder(
-                    reverse: true,
-                    controller: _scrollController,
-                    itemCount: state.messages.length,
-                    itemBuilder: (context, index) {
-                      DocumentSnapshot document = state.messages[index];
-                      Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+                return ListView.builder(
+                  reverse: true,
+                  controller: _scrollController,
+                  itemCount: _messages.length,
+                  itemBuilder: (context, index) {
+                    DocumentSnapshot document = _messages[index];
+                    Map<String, dynamic> data = document.data() as Map<String, dynamic>;
 
-                      var isCurrentUser = data['senderId'] == FirebaseAuth.instance.currentUser!.uid;
+                    var isCurrentUser = data['senderId'] == FirebaseAuth.instance.currentUser!.uid;
 
-                      return GestureDetector(
-                        onLongPress: () => _deleteMessage(document.id),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                          alignment: isCurrentUser ? Alignment.centerRight : Alignment.centerLeft,
-                          child: Column(
-                            crossAxisAlignment: isCurrentUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-                            children: [
-                              if (data['type'] == 'text')
-                                Container(
-                                  decoration: BoxDecoration(
-                                    color: isCurrentUser ? Colors.blue : Colors.grey,
-                                    borderRadius: BorderRadius.circular(8.0),
-                                  ),
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    data['messages'],
-                                    style: const TextStyle(color: Colors.white),
-                                  ),
-                                )
-                              else if (data['type'] == 'image')
-                                Container(
-                                  
-                                  decoration: BoxDecoration(
-                                    color: isCurrentUser ? Colors.blue : Colors.grey,
-                                    borderRadius: BorderRadius.circular(8.0),
-                                  ),
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Image.network(
-                                    data['messages'],
-                                    fit: BoxFit.cover,
-                                    width:200, // Adjust image width
-                                    height: 200, // Adjust image height
-                                  ),
+                    return GestureDetector(
+                      onLongPress: () => _deleteMessage(document.id),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                        alignment: isCurrentUser ? Alignment.centerRight : Alignment.centerLeft,
+                        child: Column(
+                          crossAxisAlignment: isCurrentUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                          children: [
+                            if (data['type'] == 'text')
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: isCurrentUser ? Colors.blue : Colors.grey,
+                                  borderRadius: BorderRadius.circular(8.0),
                                 ),
-                              const SizedBox(height: 4),
-                              Text(
-                                '10:30 AM',  // Replace with your timestamp logic
-                                style: const TextStyle(fontSize: 12, color: Colors.black54),
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  data['messages'],
+                                  style: const TextStyle(color: Colors.white),
+                                ),
+                              )
+                            else if (data['type'] == 'image')
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: isCurrentUser ? Colors.blue : Colors.grey,
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                                padding: const EdgeInsets.all(8.0),
+                                child: Image.network(
+                                  data['messages'],
+                                  fit: BoxFit.cover,
+                                  width: 200, // Adjust image width
+                                  height: 200, // Adjust image height
+                                ),
                               ),
-                            ],
-                          ),
+                            const SizedBox(height: 4),
+                            Text(
+                              '10:30 AM',  // Replace with your timestamp logic
+                              style: const TextStyle(fontSize: 12, color: Colors.black54),
+                            ),
+                          ],
                         ),
-                      );
-                    },
-                  );
-                } else if (state is ChatError) {
-                  return Center(child: Text('Error: ${state.error}'));
-                } else {
-                  return Container();
-                }
+                      ),
+                    );
+                  },
+                );
               },
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                IconButton(
-                  icon: Icon(Icons.image), // Changed camera icon to image icon
-                  onPressed: sendImage,
+          _buildMessageInput(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMessageInput() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          IconButton(
+            icon: Icon(Icons.image), // Changed camera icon to image icon
+            onPressed: sendImage,
+          ),
+          Expanded(
+            child: TextField(
+              controller: _messageController,
+              decoration: InputDecoration(
+                hintText: 'Type a message...',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16.0),
                 ),
-                Expanded(
-                  child: TextField(
-                    controller: _messageController,
-                    decoration: InputDecoration(
-                      hintText: 'Type a message...',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16.0),
-                      ),
-                      suffixIcon: IconButton( // Added send icon inside text field
-                        icon: Icon(Icons.send),
-                        onPressed: sendMessage,
-                      ),
-                    ),
-                  ),
+                suffixIcon: IconButton( // Added send icon inside text field
+                  icon: Icon(Icons.send),
+                  onPressed: sendMessage,
                 ),
-              ],
+              ),
             ),
           ),
         ],
@@ -236,3 +237,4 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 }
+ 
