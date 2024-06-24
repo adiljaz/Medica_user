@@ -123,7 +123,10 @@ class _ChatPageState extends State<ChatPage> {
             const SizedBox(width: 10),
             Text(
               widget.name,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.white),
+              style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                  color: Colors.white),
             ),
           ],
         ),
@@ -150,48 +153,58 @@ class _ChatPageState extends State<ChatPage> {
                   itemCount: _messages.length,
                   itemBuilder: (context, index) {
                     DocumentSnapshot document = _messages[index];
-                    Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+                    Map<String, dynamic> data =
+                        document.data() as Map<String, dynamic>;
 
-                    var isCurrentUser = data['senderId'] == FirebaseAuth.instance.currentUser!.uid;
+                    // Check if the sender ID matches the current user's ID
+                    var isCurrentUser = data['senderId'] ==
+                        FirebaseAuth.instance.currentUser!.uid;
 
                     return GestureDetector(
                       onLongPress: () => _deleteMessage(document.id),
                       child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                        alignment: isCurrentUser ? Alignment.centerRight : Alignment.centerLeft,
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 16.0),
+                        alignment: isCurrentUser
+                            ? Alignment.centerRight
+                            : Alignment.centerLeft,
                         child: Column(
-                          crossAxisAlignment: isCurrentUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                          crossAxisAlignment: isCurrentUser
+                              ? CrossAxisAlignment.end
+                              : CrossAxisAlignment.start,
                           children: [
-                            if (data['type'] == 'text')
+                            if (isCurrentUser) ...[
+                              // Message sent by the current user
                               Container(
                                 decoration: BoxDecoration(
-                                  color: isCurrentUser ? Colors.blue : Colors.grey,
+                                  color: Colors.blue,
                                   borderRadius: BorderRadius.circular(8.0),
                                 ),
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
-                                  data['messages'],
+                                  data['message'],
                                   style: const TextStyle(color: Colors.white),
                                 ),
-                              )
-                            else if (data['type'] == 'image')
+                              ),
+                            ] else ...[
+                              // Message sent by the doctor
                               Container(
                                 decoration: BoxDecoration(
-                                  color: isCurrentUser ? Colors.blue : Colors.grey,
+                                  color: Colors.grey,
                                   borderRadius: BorderRadius.circular(8.0),
                                 ),
                                 padding: const EdgeInsets.all(8.0),
-                                child: Image.network(
-                                  data['messages'],
-                                  fit: BoxFit.cover,
-                                  width: 200, // Adjust image width
-                                  height: 200, // Adjust image height
+                                child: Text(
+                                  data['message'],
+                                  style: const TextStyle(color: Colors.black),
                                 ),
                               ),
+                            ],
                             const SizedBox(height: 4),
                             Text(
-                              '10:30 AM',  // Replace with your timestamp logic
-                              style: const TextStyle(fontSize: 12, color: Colors.black54),
+                              '10:30 AM', // Replace with your timestamp logic
+                              style: const TextStyle(
+                                  fontSize: 12, color: Colors.black54),
                             ),
                           ],
                         ),
@@ -225,7 +238,8 @@ class _ChatPageState extends State<ChatPage> {
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(16.0),
                 ),
-                suffixIcon: IconButton( // Added send icon inside text field
+                suffixIcon: IconButton(
+                  // Added send icon inside text field
                   icon: Icon(Icons.send),
                   onPressed: sendMessage,
                 ),

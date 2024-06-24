@@ -1,3 +1,4 @@
+import 'package:fire_login/blocs/Favorite/favorite_bloc.dart';
 import 'package:fire_login/blocs/Obascure/obscure_bloc.dart';
 import 'package:fire_login/blocs/auth/auth_bloc.dart';
 import 'package:fire_login/blocs/calendar/bloc/calendar_bloc.dart';
@@ -85,6 +86,10 @@ class MyApp extends StatelessWidget {
       ),
       BlocProvider(
         create: (context) => SearchBloc(),
+        child: Container(),
+      ),
+      BlocProvider(
+        create: (context) => FavoriteBloc(), 
         child: Container(),
       )
       ],

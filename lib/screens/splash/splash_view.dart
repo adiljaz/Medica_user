@@ -33,7 +33,9 @@ class SplashScreen extends StatelessWidget {
 
       child: Scaffold(
         backgroundColor: Colors.white,
-        appBar: AppBar(),
+        appBar: AppBar(
+          
+        ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

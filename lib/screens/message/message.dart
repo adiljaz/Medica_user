@@ -1,20 +1,21 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'chat.dart'; // Ensure you have the ChatPage imported
 
 class Message extends StatelessWidget {
-  Message({super.key});
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  Message({Key? key}) : super(key: key);
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Chats', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+        title: Text(
+          'Chats',
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
         actions: [
           IconButton(
             icon: Icon(Icons.search),
@@ -37,7 +38,7 @@ class Message extends StatelessWidget {
 
   Widget _buildDoctorList() {
     return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance.collection('doctor').snapshots(),
+      stream: _firestore.collection('doctor').snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
@@ -51,11 +52,47 @@ class Message extends StatelessWidget {
           return Center(child: Text('No doctors available'));
         }
 
-        return ListView(
-          children: snapshot.data!.docs.map<Widget>((doc) => _buildUserListItem(doc, context)).toList(),
+        return FutureBuilder<List<DocumentSnapshot>>(
+          future: _getDoctorsWithChat(snapshot.data!.docs),
+          builder: (context, doctorsSnapshot) {
+            if (doctorsSnapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            }
+
+            List<DocumentSnapshot> doctorsWithChat = doctorsSnapshot.data ?? [];
+
+            if (doctorsWithChat.isEmpty) {
+              return Center(child: Text('No doctors available for chat'));
+            }
+
+            return ListView(
+              children: doctorsWithChat
+                  .map<Widget>((doc) => _buildUserListItem(doc, context))
+                  .toList(),
+            );
+          },
         );
       },
     );
+  }
+
+  Future<List<DocumentSnapshot>> _getDoctorsWithChat(
+      List<DocumentSnapshot> doctors) async {
+    List<DocumentSnapshot> doctorsWithChat = [];
+
+    for (var doc in doctors) {
+      String uid = doc['uid'];
+      QuerySnapshot chatSnapshot = await _firestore
+          .collection('chats')
+          .where('reciveUserid', isEqualTo: uid)
+          .get();
+
+      if (chatSnapshot.docs.isNotEmpty) {
+        doctorsWithChat.add(doc);
+      }
+    }
+
+    return doctorsWithChat;
   }
 
   Widget _buildUserListItem(DocumentSnapshot document, BuildContext context) {
@@ -70,13 +107,12 @@ class Message extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       child: GestureDetector(
         onTap: () {
-          Navigator.of(context).push(PageTransition(
-            child: ChatPage(
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => ChatPage(
               name: name,
               image: profile!,
               receiveUserId: uid!,
             ),
-            type: PageTransitionType.fade,
           ));
         },
         child: Container(
@@ -93,13 +129,15 @@ class Message extends StatelessWidget {
             ],
           ),
           child: ListTile(
-            contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
+            contentPadding:
+                EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
             leading: Stack(
               children: [
                 CircleAvatar(
                   backgroundImage: profile != null
                       ? NetworkImage(profile)
-                      : AssetImage('assets/default_avatar.png') as ImageProvider,
+                      : AssetImage('assets/default_avatar.png')
+                          as ImageProvider,
                   radius: 25,
                 ),
                 Positioned(
@@ -122,20 +160,24 @@ class Message extends StatelessWidget {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             subtitle: StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance
+              stream: _firestore
                   .collection('chats')
                   .where('reciveUserid', isEqualTo: uid)
                   .orderBy('timestamp', descending: true)
                   .limit(1) // Limit to the last message
                   .snapshots(),
               builder: (context, snapshot) {
-                if (snapshot.hasError || !snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                if (snapshot.hasError ||
+                    !snapshot.hasData ||
+                    snapshot.data!.docs.isEmpty) {
                   return Text('No messages yet');
                 }
 
                 DocumentSnapshot lastMessage = snapshot.data!.docs.first;
-                Map<String, dynamic> lastMessageData = lastMessage.data() as Map<String, dynamic>;
-                String message = lastMessageData['messages'] ?? 'No messages yet';
+                Map<String, dynamic> lastMessageData =
+                    lastMessage.data() as Map<String, dynamic>;
+                String message =
+                    lastMessageData['messages'] ?? 'No messages yet';
 
                 return Text(
                   message,
@@ -158,5 +200,4 @@ class Message extends StatelessWidget {
       ),
     );
   }
-} 
- 
+}

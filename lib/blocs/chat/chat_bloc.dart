@@ -87,4 +87,4 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       emit(ChatError(e.toString()));
     }
   }
-}
+} 

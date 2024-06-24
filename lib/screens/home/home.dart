@@ -5,6 +5,7 @@ import 'package:fire_login/screens/home/department/general/general.dart';
 import 'package:fire_login/screens/home/department/nephrology/nephrology.dart';
 import 'package:fire_login/screens/home/department/nutrition/nutrition.dart';
 import 'package:fire_login/screens/home/department/pediatrics/pediatrics.dart';
+import 'package:fire_login/screens/home/favourite/favourite.dart';
 import 'package:fire_login/screens/home/homewidgets/baner.dart';
 import 'package:fire_login/screens/home/homewidgets/searchbar.dart';
 import 'package:fire_login/screens/home/seeall/seeall.dart';
@@ -64,15 +65,17 @@ class Home extends StatelessWidget {
                         ],
                       ),
                     ),
-                    const Padding(
+                     Padding(
                       padding: EdgeInsets.all(8.0),
-                      child: Icon(
+                      child: IconButton(onPressed: (){
+                        Navigator.of(context).push(PageTransition(child:Favourite() , type: PageTransitionType.fade));
+                      }, icon: Icon(
                         IconlyBold.heart,
                         color: Colormanager.blueicon,
                         size: 30,
-                      ),
+                      ),)
                     ),
-                    const Icon(Icons.notification_add)
+                   
                   ],
                 ),
                 Padding(
