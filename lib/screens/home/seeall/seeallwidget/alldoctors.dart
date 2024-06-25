@@ -71,14 +71,19 @@ class _AllDoctorsState extends State<AllDoctors> {
                       padding: const EdgeInsets.only(left: 13, top: 13, right: 13),
                       child: GestureDetector(
                         onTap: () {
+
+
+
+
+
                           Navigator.of(context).push(PageRouteBuilder(
                             pageBuilder: (context, animation, secondaryAnimation) => DrDetails(
                               about: doctor['about'],
                               departmnet: doctor['department'],
-                              experiance: doctor['experience'],
+                              experiance: doctor['experiance'],
                               fees: doctor['fees'],
-                              from: doctor['from'],
-                              hospital: doctor['hospitalName'],
+                              from: doctor['form'],
+                              hospital: doctor['hospitalNAme'],
                               imageUrl: doctor['imageUrl'],
                               name: doctor['name'],
                               to: doctor['to'],
@@ -189,12 +194,15 @@ class _AllDoctorsState extends State<AllDoctors> {
                                         children: [
                                           SizedBox(
                                             width: 100,
-                                            child: Text(
-                                              doctor['department'],
-                                              style: GoogleFonts.poppins(
-                                                fontSize: 13,
-                                                fontWeight: FontWeight.w500,
-                                                color: Colormanager.grayText,
+                                            child: Center(
+                                              child: Text(
+                                                overflow: TextOverflow.ellipsis , 
+                                                doctor['department'],
+                                                style: GoogleFonts.poppins(
+                                                  fontSize: 13,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: Colormanager.grayText,
+                                                ),
                                               ),
                                             ),
                                           ),
@@ -208,12 +216,15 @@ class _AllDoctorsState extends State<AllDoctors> {
                                           ),
                                           SizedBox(
                                             width: 100,
-                                            child: Text(
-                                              doctor['hospitalNAme'],
-                                              style: GoogleFonts.poppins(
-                                                fontSize: 13,
-                                                fontWeight: FontWeight.w500,
-                                                color: Colormanager.grayText,
+                                            child: Center( 
+                                              child: Text(
+                                                  overflow: TextOverflow.ellipsis ,  
+                                                doctor['hospitalNAme'],
+                                                style: GoogleFonts.poppins(
+                                                  fontSize: 13,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: Colormanager.grayText,
+                                                ),
                                               ),
                                             ),
                                           ),

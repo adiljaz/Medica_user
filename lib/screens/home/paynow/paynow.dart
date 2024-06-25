@@ -76,6 +76,24 @@ class _PayNowState extends State<PayNow> {
     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, handlePaymentSuccess);
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, handlePaymentError);
     _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, handleExternalWallet);
+
+
+    print(widget.name);
+        print(widget.age);
+        print(widget.disease);
+           print(widget.fees);
+        print(widget.gender);
+        print(widget.image);
+           print(widget.problem);
+        print(widget.selectedTimeSlot);
+        print(widget.totime);
+           print(widget.uid);
+            print(widget.formtime);
+           print(widget.selectedDay);
+          
+    
+
+
   }
 
   @override
@@ -112,10 +130,23 @@ class _PayNowState extends State<PayNow> {
 
   void handlePaymentSuccess(PaymentSuccessResponse response) {
 
+     print(widget.name);
+        print(widget.age);
+        print(widget.disease);
+           print(widget.fees);
+        print(widget.gender);
+        print(widget.image);
+           print(widget.problem);
+        print(widget.selectedTimeSlot);
+        print(widget.totime);
+           print(widget.uid);
+            print(widget.formtime);
+           print(widget.selectedDay);
+
 
     FirebaseAuth _auth =FirebaseAuth.instance; 
   final id  =_auth.currentUser!.uid;
-  print(id); 
+ 
     context.read<SaveUserBloc>().add(
           SaveUserBooking(
             selectedDay: widget.selectedDay,
@@ -154,6 +185,7 @@ class _PayNowState extends State<PayNow> {
         PageTransition(child: Bottomnav(), type: PageTransitionType.fade));
     context.read<LandingStateBloc>().add(TabChangeEvent(tabindex: 1));
 
+   
     Fluttertoast.showToast(
         backgroundColor: Colors.green,
         msg: 'Payment successful with ID: ${response.paymentId}',
@@ -374,9 +406,11 @@ class _PayNowState extends State<PayNow> {
                       if (_formkey.currentState!.validate()) {
                         int fees = widget.fees;
                         openCheckout(fees);
+
+                        print(fees);
                       }
 
-                      return null;
+                      return null; 
                     },
                     sliderButtonIcon: Icon(
                       Icons.arrow_forward_ios,
@@ -404,3 +438,4 @@ class _PayNowState extends State<PayNow> {
         ));
   }
 }
+ 

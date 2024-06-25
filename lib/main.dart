@@ -10,6 +10,7 @@ import 'package:fire_login/blocs/profile/AddUser/add_user_bloc.dart';
 import 'package:fire_login/blocs/profile/Delete/delete_bloc.dart';
 import 'package:fire_login/blocs/profile/ImageAdding/image_adding_bloc.dart';
 import 'package:fire_login/blocs/profile/ImageUrl/image_url_bloc.dart';
+import 'package:fire_login/blocs/saveuser/bloc/saveuser_bloc.dart';
 import 'package:fire_login/blocs/search/bloc/search_bloc.dart';
 import 'package:fire_login/screens/splash/splash_view.dart';
 import 'package:fire_login/blocs/Forgot/forgot_password_bloc.dart';
@@ -90,6 +91,10 @@ class MyApp extends StatelessWidget {
       ),
       BlocProvider(
         create: (context) => FavoriteBloc(), 
+        child: Container(),
+      ),
+      BlocProvider(
+        create: (context) => SaveUserBloc(),
         child: Container(),
       )
       ],
