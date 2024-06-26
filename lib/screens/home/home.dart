@@ -9,6 +9,8 @@ import 'package:fire_login/screens/home/favourite/favourite.dart';
 import 'package:fire_login/screens/home/homewidgets/baner.dart';
 import 'package:fire_login/screens/home/homewidgets/searchbar.dart';
 import 'package:fire_login/screens/home/seeall/seeall.dart';
+import 'package:fire_login/screens/home/seeall/seeallwidget/alldoctors.dart';
+import 'package:fire_login/screens/home/seeall/seeallwidget/allhorizontal.dart';
 import 'package:fire_login/screens/home/widgets/doctortype.dart';
 import 'package:fire_login/screens/search/saech.dart';
 import 'package:fire_login/utils/colors/colormanager.dart';
@@ -306,20 +308,9 @@ class Home extends StatelessWidget {
                       ),
 
                       SizedBox(
-                        height: mediaquerry.size.height * 0.18,
-                        width: mediaquerry.size.width,
-                        child: ListView(
-                          scrollDirection: Axis.horizontal,
-                          children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Colors.amber,
-                              ),
-                              width: mediaquerry.size.width * 0.35,
-                            ),
-                          ],
-                        ),
-                      )
+                     
+                        height:mediaquerry.size.height*0.32,
+                        child: AllDoctorsHorizontal()),
                     ],
                   ),
                 ),

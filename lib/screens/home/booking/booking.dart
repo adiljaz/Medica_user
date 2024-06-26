@@ -18,8 +18,15 @@ class Booking extends StatelessWidget {
       required this.toTime,
       required this.uid,
       required this.fees,
-      required this.image});
-
+      required this.image,
+      required this.doctorImage,
+      required this.doctorName,
+      required this.doctordepartment,
+      required this.hospital});
+   String doctorName;
+   String doctordepartment;
+  String hospital;
+  String doctorImage;
   final String fromTime;
   final String toTime;
   final String uid;
@@ -36,6 +43,10 @@ class Booking extends StatelessWidget {
             uid: uid,
             selectedDay: DateTime.now())),
       child: BookingView(
+        department: doctordepartment,
+        doctorimage: doctorImage,
+        doctorname: doctorName,
+        hospital: hospital,
         image: image,
         uid: uid,
         fromTime: fromTime,
@@ -53,12 +64,21 @@ class BookingView extends StatelessWidget {
   final int fees;
   final String image;
 
+  final String doctorimage;
+  final String doctorname;
+  final String department;
+  final String hospital;
+
   BookingView({
     required this.uid,
     required this.fromTime,
     required this.toTime,
     required this.fees,
     required this.image,
+    required this.department,
+    required this.doctorimage,
+    required this.hospital,
+    required this.doctorname,
   });
 
   @override
@@ -311,6 +331,10 @@ class BookingView extends StatelessWidget {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => PayNow(
+                                    departmnet: department,
+                                    doctorImage: doctorimage,
+                                    doctorname: doctorname,
+                                    hospital: hospital,
                                     age: userData['age'],
                                     disease: userData['gender'],
                                     gender: userData['gender'],
@@ -358,4 +382,4 @@ class BookingView extends StatelessWidget {
               return Container();
             }));
   }
-} 
+}

@@ -68,9 +68,9 @@ class Favourite extends StatelessWidget {
                               builder: (context) => DrDetails(
                                 about: doctor['about'],
                                 departmnet: doctor['department'],
-                                experiance: doctor['experience'],
+                                experiance: doctor['experiance'],
                                 fees: doctor['fees'],
-                                from: doctor['from'],
+                                from: doctor['form'],
                                 hospital: doctor['hospitalNAme'],
                                 imageUrl: doctor['imageUrl'],
                                 name: doctor['name'],

@@ -2,6 +2,8 @@ import 'package:fire_login/blocs/bottomnav/landing_state_bloc.dart';
 import 'package:fire_login/blocs/calendar/bloc/calendar_bloc.dart';
 import 'package:fire_login/blocs/calendar/bloc/calendar_event.dart';
 import 'package:fire_login/blocs/department/bloc/department_bloc.dart';
+import 'package:fire_login/blocs/savedoctor/savedoctor_bloc.dart';
+import 'package:fire_login/blocs/savedoctor/savedoctor_event.dart';
 import 'package:fire_login/blocs/saveuser/bloc/saveuser_bloc.dart';
 import 'package:fire_login/blocs/saveuser/bloc/saveuser_event.dart';
 import 'package:fire_login/screens/bottomnav/home.dart';
@@ -34,9 +36,18 @@ class PayNow extends StatefulWidget {
     required this.age,
     required this.disease,
     required this.problem,
+    this.doctorImage,
+    this.doctorname,
+    this.hospital,
+    this.departmnet,
   });
 
   int fees;
+
+  String? doctorImage;
+  String? doctorname;
+  String? hospital;
+  String? departmnet;
 
   final DateTime selectedDay;
   final DateTime selectedTimeSlot;
@@ -77,23 +88,18 @@ class _PayNowState extends State<PayNow> {
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, handlePaymentError);
     _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, handleExternalWallet);
 
-
     print(widget.name);
-        print(widget.age);
-        print(widget.disease);
-           print(widget.fees);
-        print(widget.gender);
-        print(widget.image);
-           print(widget.problem);
-        print(widget.selectedTimeSlot);
-        print(widget.totime);
-           print(widget.uid);
-            print(widget.formtime);
-           print(widget.selectedDay);
-          
-    
-
-
+    print(widget.age);
+    print(widget.disease);
+    print(widget.fees);
+    print(widget.gender);
+    print(widget.image);
+    print(widget.problem);
+    print(widget.selectedTimeSlot);
+    print(widget.totime);
+    print(widget.uid);
+    print(widget.formtime);
+    print(widget.selectedDay);
   }
 
   @override
@@ -129,24 +135,22 @@ class _PayNowState extends State<PayNow> {
   }
 
   void handlePaymentSuccess(PaymentSuccessResponse response) {
+    print(widget.name);
+    print(widget.age);
+    print(widget.disease);
+    print(widget.fees);
+    print(widget.gender);
+    print(widget.image);
+    print(widget.problem);
+    print(widget.selectedTimeSlot);
+    print(widget.totime);
+    print(widget.uid);
+    print(widget.formtime);
+    print(widget.selectedDay);
 
-     print(widget.name);
-        print(widget.age);
-        print(widget.disease);
-           print(widget.fees);
-        print(widget.gender);
-        print(widget.image);
-           print(widget.problem);
-        print(widget.selectedTimeSlot);
-        print(widget.totime);
-           print(widget.uid);
-            print(widget.formtime);
-           print(widget.selectedDay);
+    FirebaseAuth _auth = FirebaseAuth.instance;
+    final id = _auth.currentUser!.uid;
 
-
-    FirebaseAuth _auth =FirebaseAuth.instance; 
-  final id  =_auth.currentUser!.uid;
- 
     context.read<SaveUserBloc>().add(
           SaveUserBooking(
             selectedDay: widget.selectedDay,
@@ -179,13 +183,28 @@ class _PayNowState extends State<PayNow> {
           ),
         );
 
-    /////  user side adding
+    context.read<SaveDoctorBloc>().add(SaveDoctorBooking(
+        doctorname: widget.doctorname!,
+        doctordepartment: widget.departmnet!,
+        hospital: widget.hospital!,
+        selectedDay: widget.selectedDay,
+        selectedTimeSlot: widget.selectedTimeSlot,
+        uid: widget.uid,
+        fromTime: widget.formtime,
+        toTime: widget.totime,
+        image: widget.doctorImage!,
+        name: widget.doctorname!,
+        disease: widget.disease,
+        problem: widget.problem));
+
+    print(' alooooooo${id}');
+
+    ///  user side adding
 
     Navigator.of(context).push(
         PageTransition(child: Bottomnav(), type: PageTransitionType.fade));
     context.read<LandingStateBloc>().add(TabChangeEvent(tabindex: 1));
 
-   
     Fluttertoast.showToast(
         backgroundColor: Colors.green,
         msg: 'Payment successful with ID: ${response.paymentId}',
@@ -410,7 +429,7 @@ class _PayNowState extends State<PayNow> {
                         print(fees);
                       }
 
-                      return null; 
+                      return null;
                     },
                     sliderButtonIcon: Icon(
                       Icons.arrow_forward_ios,
@@ -438,4 +457,3 @@ class _PayNowState extends State<PayNow> {
         ));
   }
 }
- 

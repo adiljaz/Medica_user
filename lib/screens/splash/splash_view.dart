@@ -1,6 +1,7 @@
 import 'package:fire_login/blocs/auth/auth_bloc.dart';
 import 'package:fire_login/screens/bottomnav/home.dart';
 import 'package:fire_login/screens/introScreens/welcome.dart';
+import 'package:fire_login/utils/colors/colormanager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -34,6 +35,7 @@ class SplashScreen extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
+          backgroundColor: Colors.transparent,
           
         ),
         body: Column(

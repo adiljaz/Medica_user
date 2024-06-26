@@ -435,11 +435,19 @@ class _DrDetailsState extends State<DrDetails> {
                         onTap: () {
                           Navigator.of(context).push(PageTransition(
                             child: Booking(
+                              doctorImage: widget.imageUrl,
+                              doctorName: widget.name,
+                               doctordepartment: widget.departmnet,
+                               hospital: widget.hospital,
                                 image: widget.imageUrl,
                                 fromTime: widget.from,
                                 toTime: widget.to,
                                 uid: widget.uid.toString(),
-                                fees: widget.fees),
+                                fees: widget.fees
+                                
+                                
+                                
+                                ),
                             type: PageTransitionType.fade,
                           ));
                         },
