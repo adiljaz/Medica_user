@@ -1,7 +1,6 @@
-import 'package:fire_login/utils/colors/colormanager.dart';
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class UpcomingAppointments extends StatelessWidget {
   @override
@@ -74,7 +73,7 @@ class UpcomingAppointments extends StatelessWidget {
                                       appointment['name'],
                                       overflow: TextOverflow.fade,
                                       maxLines: 1,
-                                      style: GoogleFonts.poppins(
+                                      style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 19,
                                       ),
@@ -84,15 +83,15 @@ class UpcomingAppointments extends StatelessWidget {
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(3),
                                         border: Border.all(
-                                          color: Colormanager.blueContainer,
+                                          color: Colors.blue,
                                           width: 1.5,
                                         ),
                                       ),
                                       child: Center(
                                         child: Text(
                                           'Upcoming',
-                                          style: GoogleFonts.poppins(
-                                            color: Colormanager.blueContainer,
+                                          style: TextStyle(
+                                            color: Colors.blue,
                                             fontWeight: FontWeight.bold,
                                             fontSize: 10,
                                           ),
@@ -102,7 +101,7 @@ class UpcomingAppointments extends StatelessWidget {
                                     SizedBox(height: 5),
                                     Text(
                                       'Department: ${appointment['department']}',
-                                      style: GoogleFonts.poppins(
+                                      style: TextStyle(
                                         color: Colors.grey[700],
                                         fontWeight: FontWeight.bold,
                                         fontSize: 12,
@@ -111,7 +110,7 @@ class UpcomingAppointments extends StatelessWidget {
                                     SizedBox(height: 5),
                                     Text(
                                       'Date: ${appointment['selectedDay']}',
-                                      style: GoogleFonts.poppins(
+                                      style: TextStyle(
                                         color: Colors.grey[700],
                                         fontWeight: FontWeight.bold,
                                         fontSize: 12,
@@ -120,7 +119,7 @@ class UpcomingAppointments extends StatelessWidget {
                                     SizedBox(height: 5),
                                     Text(
                                       'Time: ${appointment['selectedTimeSlot']}',
-                                      style: GoogleFonts.poppins(
+                                      style: TextStyle(
                                         color: Colors.grey[700],
                                         fontWeight: FontWeight.bold,
                                         fontSize: 12,
@@ -143,17 +142,17 @@ class UpcomingAppointments extends StatelessWidget {
                               child: Center(
                                 child: Text(
                                   'Reschedule',
-                                  style: GoogleFonts.poppins(
+                                  style: TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w600,
-                                    color: Colormanager.whiteText,
+                                    color: Colors.white,
                                   ),
                                 ),
                               ),
                               width: mediaQuery.size.width * 0.4,
                               height: mediaQuery.size.height * 0.05,
                               decoration: BoxDecoration(
-                                color: Colormanager.blueContainer,
+                                color: Colors.blue,
                                 borderRadius: BorderRadius.circular(20),
                               ),
                             ),
@@ -165,10 +164,10 @@ class UpcomingAppointments extends StatelessWidget {
                                 child: Center(
                                   child: Text(
                                     'Cancel Appointment',
-                                    style: GoogleFonts.poppins(
+                                    style: TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w500,
-                                      color: Colormanager.blueText,
+                                      color: Colors.blue,
                                     ),
                                   ),
                                 ),
@@ -177,9 +176,9 @@ class UpcomingAppointments extends StatelessWidget {
                                 decoration: BoxDecoration(
                                   border: Border.all(
                                     width: 2,
-                                    color: Colormanager.blueContainer,
+                                    color: Colors.blue,
                                   ),
-                                  color: Colormanager.whiteContainer,
+                                  color: Colors.white,
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                               ),
@@ -228,14 +227,34 @@ class UpcomingAppointments extends StatelessWidget {
 
   Future<void> _cancelAppointment(String appointmentId) async {
     try {
-      await FirebaseFirestore.instance
+      final appointmentSnapshot = await FirebaseFirestore.instance
           .collection('userbooking')
           .doc(appointmentId)
-          .delete();
+          .get();
 
-      // Optionally, you can add additional logic to remove from other collections if needed
+      if (appointmentSnapshot.exists) {
+        final selectedDay = appointmentSnapshot['selectedDay'];
+        final selectedTimeSlot = appointmentSnapshot['selectedTimeSlot'];
+        final doctorId = appointmentSnapshot.id; // Assuming you have doctorId in appointment data
+
+        // Delete the appointment from 'userbooking' collection
+        await appointmentSnapshot.reference.delete();
+
+        // Now free up the time slot in the doctor's 'dailyBookings' collection
+        final doctorRef = FirebaseFirestore.instance.collection('doctor').doc(doctorId);
+        final dailyBookingRef = doctorRef.collection('dailyBookings');
+        final bookedSlot = await dailyBookingRef
+            .where('selectedDay', isEqualTo: selectedDay)
+            .where('selectedTimeSlot', isEqualTo: selectedTimeSlot)
+            .get();
+
+        if (bookedSlot.docs.isNotEmpty) {
+          await bookedSlot.docs.first.reference.delete();
+        }
+      }
     } catch (e) {
-      print(e);
+      print('Error cancelling appointment: $e');
+      // Handle error here
     }
   }
 }

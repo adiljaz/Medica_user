@@ -32,3 +32,4 @@ class SaveDoctorBooking extends SaveDoctorEvent {
     required this.hospital,
   });
 }
+
