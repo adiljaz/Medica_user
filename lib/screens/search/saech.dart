@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fire_login/screens/home/drdetails/details.dart';
-import 'package:fire_login/screens/home/homewidgets/searchbar.dart';
 import 'package:fire_login/utils/colors/colormanager.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconly/iconly.dart';
@@ -66,22 +64,23 @@ class _SearchPageState extends State<SearchPage> {
         ),
         backgroundColor: Colormanager.scaffold,
         body: Padding(
-          padding: const EdgeInsets.only(top: 15, ),
+          padding: const EdgeInsets.only(top: 15),
           child: Column(
             children: [
-              Searchfield(
-                icons: Icon(IconlyLight.search),
+              SearchField(
+                icon: IconlyLight.search,
                 controller: _searchController,
-                value: (value) {
-                  _searchDoctors(value!);
-                  return null;
+                onChanged: (value) {
+                  _searchDoctors(value);
                 },
               ),
               Expanded(
                 child: _searchResults.isEmpty
                     ? Center(
                         child: Text(
-                          'Search something',
+                          _searchController.text.isNotEmpty
+                              ? 'No search results'
+                              : '',
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -93,12 +92,15 @@ class _SearchPageState extends State<SearchPage> {
                         itemBuilder: (context, index) {
                           final doctor = _searchResults[index];
                           return Padding(
-                            padding: const EdgeInsets.only(left: 13, top: 13, right: 13),
+                            padding: const EdgeInsets.only(
+                                left: 13, top: 13, right: 13),
                             child: GestureDetector(
                               onTap: () {
                                 Navigator.of(context).push(
                                   PageRouteBuilder(
-                                    pageBuilder: (context, animation, secondaryAnimation) => DrDetails(
+                                    pageBuilder: (context, animation,
+                                            secondaryAnimation) =>
+                                        DrDetails(
                                       about: doctor['about'],
                                       departmnet: doctor['department'],
                                       experiance: doctor['experiance'],
@@ -110,7 +112,9 @@ class _SearchPageState extends State<SearchPage> {
                                       to: doctor['to'],
                                       uid: doctor.id,
                                     ),
-                                    transitionsBuilder: (context, animation, secondaryAnimation, child) => Align(
+                                    transitionsBuilder: (context, animation,
+                                            secondaryAnimation, child) =>
+                                        Align(
                                       child: SizeTransition(
                                         sizeFactor: animation,
                                         child: DrDetails(
@@ -139,12 +143,18 @@ class _SearchPageState extends State<SearchPage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Padding(
-                                      padding: const EdgeInsets.only(left: 10, top: 15),
+                                      padding: const EdgeInsets.only(
+                                          left: 10, top: 15),
                                       child: Container(
-                                        height: MediaQuery.of(context).size.height * 0.145,
-                                        width: MediaQuery.of(context).size.width * 0.3,
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.145,
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.3,
                                         child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(15),
+                                          borderRadius:
+                                              BorderRadius.circular(15),
                                           child: Image.network(
                                             doctor['imageUrl'] ?? '',
                                             fit: BoxFit.cover,
@@ -156,24 +166,39 @@ class _SearchPageState extends State<SearchPage> {
                                       child: Padding(
                                         padding: const EdgeInsets.only(left: 8),
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           mainAxisSize: MainAxisSize.min,
-                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
                                           children: [
                                             Row(
-                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
                                               children: [
                                                 SizedBox(
-                                                  width: MediaQuery.of(context).size.width * 0.46,
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.46,
                                                   child: Padding(
-                                                    padding: const EdgeInsets.only(top: 15),
-                                                    child: Text(
-                                                      doctor['name'],
-                                                      overflow: TextOverflow.fade,
-                                                      maxLines: 1,
-                                                      style: GoogleFonts.poppins(
-                                                        fontWeight: FontWeight.bold,
-                                                        fontSize: 19,
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            top: 15),
+                                                    child: SizedBox(
+                                                      width: 100,
+                                                      child: Text(
+                                                        
+                                                        doctor['name'],
+                                                        overflow:
+                                                            TextOverflow.ellipsis,
+                                                        maxLines: 1,
+                                                        style:
+                                                            GoogleFonts.poppins(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 19,
+                                                        ),
                                                       ),
                                                     ),
                                                   ),
@@ -184,42 +209,68 @@ class _SearchPageState extends State<SearchPage> {
                                                   color: Colormanager.blueicon,
                                                 ),
                                                 SizedBox(
-                                                  width: MediaQuery.of(context).size.width * 0.05,
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.05,
                                                 ),
                                               ],
                                             ),
                                             SizedBox(
-                                              width: MediaQuery.of(context).size.width * 0.5,
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.5,
                                               child: Divider(),
                                             ),
                                             Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
                                               children: [
-                                                Text(
-                                                  doctor['department'],
-                                                  style: GoogleFonts.poppins(
-                                                    fontSize: 13,
-                                                    textStyle: TextStyle(
-                                                      fontWeight: FontWeight.w500,
-                                                      color: Colormanager.grayText,
+                                                SizedBox(
+                                                  width: 100,
+                                                  child: Center(
+                                                    child: Text(
+                                                      overflow: TextOverflow.ellipsis,
+                                                      doctor['department'],
+                                                      style:
+                                                          GoogleFonts.poppins(
+                                                        fontSize: 13,
+                                                        textStyle: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          color: Colormanager
+                                                              .grayText,
+                                                        ),
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
                                                 Text(
                                                   '|',
                                                   style: TextStyle(
-                                                    color: Colormanager.grayText,
+                                                    color:
+                                                        Colormanager.grayText,
                                                     fontWeight: FontWeight.bold,
                                                     fontSize: 18,
                                                   ),
                                                 ),
-                                                Text(
-                                                  doctor['hospitalNAme'],
-                                                  style: GoogleFonts.poppins(
-                                                    textStyle: TextStyle(
-                                                      fontSize: 13,
-                                                      fontWeight: FontWeight.w500,
-                                                      color: Colormanager.grayText,
+                                                SizedBox(
+                                                  width: 100,
+                                                  child: Center(
+                                                    child: Text(
+                                                      overflow: TextOverflow.ellipsis,
+                                                      doctor['hospitalNAme'],
+                                                      style:
+                                                          GoogleFonts.poppins(
+                                                        textStyle: TextStyle(
+                                                          fontSize: 13,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          color: Colormanager
+                                                              .grayText,
+                                                        ),
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
@@ -237,7 +288,8 @@ class _SearchPageState extends State<SearchPage> {
                                                   style: GoogleFonts.poppins(
                                                     fontSize: 13,
                                                     fontWeight: FontWeight.w500,
-                                                    color: Colormanager.grayText,
+                                                    color:
+                                                        Colormanager.grayText,
                                                   ),
                                                 ),
                                                 Spacer(),
@@ -246,11 +298,15 @@ class _SearchPageState extends State<SearchPage> {
                                                   style: GoogleFonts.poppins(
                                                     fontSize: 13,
                                                     fontWeight: FontWeight.w500,
-                                                    color: Colormanager.grayText,
+                                                    color:
+                                                        Colormanager.grayText,
                                                   ),
                                                 ),
                                                 SizedBox(
-                                                  width: MediaQuery.of(context).size.width * 0.1,
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.1,
                                                 ),
                                               ],
                                             ),
@@ -260,17 +316,50 @@ class _SearchPageState extends State<SearchPage> {
                                     ),
                                   ],
                                 ),
-                             
-
-                          height: MediaQuery.of(context).size.height * 0.18,
-                        ),
+                              ),
+                            ),
+                          );
+                        },
                       ),
-                    );
-                  },
-                ),
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class SearchField extends StatelessWidget {
+  final IconData icon;
+  final TextEditingController controller;
+  final ValueChanged<String>? onChanged;
+
+  const SearchField({
+    Key? key,
+    required this.icon,
+    required this.controller,
+    this.onChanged,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15),
+      child: TextField(
+      
+        
+        
+        controller: controller,
+        onChanged: onChanged,
+        decoration: InputDecoration(
+         
+          fillColor: Colormanager.whiteContainer,
+          filled: true,
+          border: OutlineInputBorder(borderSide: BorderSide.none,borderRadius: BorderRadius.circular(10)),
+          prefixIcon: Icon(icon),
+          hintText: 'Search doctors...',
+          
         ),
       ),
     );

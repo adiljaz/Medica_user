@@ -196,7 +196,7 @@ class _PayNowState extends State<PayNow> {
         disease: widget.disease,
         problem: widget.problem));
 
-    print(' alooooooo${widget.uid}');
+    print(' alooooooo${widget.uid }');
 
     ///  user side adding
 

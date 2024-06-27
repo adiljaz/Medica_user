@@ -153,8 +153,10 @@ class _ChatPageState extends State<ChatPage> {
                   itemCount: _messages.length,
                   itemBuilder: (context, index) {
                     DocumentSnapshot document = _messages[index];
-                    Map<String, dynamic> data =
-                        document.data() as Map<String, dynamic>;
+                    Map<String, dynamic>? data =
+                        document.data() as Map<String, dynamic>?;
+
+                    if (data == null) return SizedBox.shrink(); // Skip if data is null
 
                     // Check if the sender ID matches the current user's ID
                     var isCurrentUser = data['senderId'] ==
@@ -182,7 +184,7 @@ class _ChatPageState extends State<ChatPage> {
                                 ),
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
-                                  data['message'],
+                                  data['messages'], // Use 'messages' instead of 'message'
                                   style: const TextStyle(color: Colors.white),
                                 ),
                               ),
@@ -195,7 +197,7 @@ class _ChatPageState extends State<ChatPage> {
                                 ),
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
-                                  data['message'],
+                                  data['messages'], // Use 'messages' instead of 'message'
                                   style: const TextStyle(color: Colors.black),
                                 ),
                               ),

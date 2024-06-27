@@ -1,5 +1,7 @@
+import 'package:fire_login/blocs/savedoctor/savedoctor_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 class UpcomingAppointments extends StatelessWidget {
@@ -201,32 +203,34 @@ class UpcomingAppointments extends StatelessWidget {
     );
   }
 
-  void _showCancelDialog(BuildContext context, String appointmentId, String doctorId) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Cancel Appointment'),
-          content: Text('Do you want to cancel this appointment?'),
-          actions: [
-            TextButton(
-              child: Text('No'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: Text('Yes'),
-              onPressed: () async {
-                await _cancelAppointment(appointmentId, doctorId);
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
+ void _showCancelDialog(BuildContext context, String appointmentId, String doctorId) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Cancel Appointment'),
+        content: Text('Do you want to cancel this appointment?'),
+        actions: [
+          TextButton(
+            child: Text('No'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          TextButton(
+            child: Text('Yes'),
+            onPressed: () async {
+              final saveDoctorBloc = BlocProvider.of<SaveDoctorBloc>(context);
+                 saveDoctorBloc.onCancelAppointment(appointmentId, doctorId);
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
 
   Future<void> _cancelAppointment(String appointmentId, String doctorId) async {
     try {

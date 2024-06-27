@@ -6,6 +6,9 @@ import 'package:fire_login/blocs/department/bloc/department_bloc.dart';
 import 'package:fire_login/blocs/edit_user/edit_user_bloc.dart';
 import 'package:fire_login/blocs/bottomnav/landing_state_bloc.dart';
 import 'package:fire_login/blocs/intro/nextpage_bloc.dart';
+import 'package:fire_login/blocs/news/news_bloc.dart';
+import 'package:fire_login/blocs/news/news_event.dart';
+import 'package:fire_login/blocs/news/news_state.dart';
 import 'package:fire_login/blocs/profile/AddUser/add_user_bloc.dart';
 import 'package:fire_login/blocs/profile/Delete/delete_bloc.dart';
 import 'package:fire_login/blocs/profile/ImageAdding/image_adding_bloc.dart';
@@ -13,6 +16,7 @@ import 'package:fire_login/blocs/profile/ImageUrl/image_url_bloc.dart';
 import 'package:fire_login/blocs/savedoctor/savedoctor_bloc.dart';
 import 'package:fire_login/blocs/saveuser/bloc/saveuser_bloc.dart';
 import 'package:fire_login/blocs/search/bloc/search_bloc.dart';
+import 'package:fire_login/screens/news/repository/repository.dart';
 import 'package:fire_login/screens/splash/splash_view.dart';
 import 'package:fire_login/blocs/Forgot/forgot_password_bloc.dart';
 import 'package:fire_login/blocs/Google/google_auth_bloc.dart';
@@ -32,8 +36,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+     final NewsaRepository newsaRepository = NewsaRepository();
     return MultiBlocProvider(
       providers: [
+        
         BlocProvider(
           create: (context) => AuthBloc()..add(CheckLoginStatusEvent()),
           child: const SplashScreen(),
@@ -64,7 +70,6 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => ImageUrlBloc(),
           child: Container(),
-
         ),
         BlocProvider(
           create: (context) => DeleteBloc(),
@@ -77,30 +82,35 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => ObscureBloc(),
           child: Container(),
-        ), 
+        ),
         BlocProvider(
-          create: (context) => GenderBloc(), 
+          create: (context) => GenderBloc(),
           child: Container(),
         ),
-      BlocProvider(
-        create: (context) => CalendarBloc(),
+        BlocProvider(
+          create: (context) => CalendarBloc(),
+          child: Container(),
+        ),
+        BlocProvider(
+          create: (context) => SearchBloc(),
+          child: Container(),
+        ),
+        BlocProvider(
+          create: (context) => FavoriteBloc(),
+          child: Container(),
+        ),
+        BlocProvider(
+          create: (context) => SaveUserBloc(),
+          child: Container(),
+        ),
+        BlocProvider(
+          create: (context) => SaveDoctorBloc(),
+          child: Container(),
+        ),
+       BlocProvider(
+          create: (context) => NewsBloc(newsaRepository: newsaRepository)..add(StartEvent()),
         child: Container(),
-      ),
-      BlocProvider(
-        create: (context) => SearchBloc(),
-        child: Container(),
-      ),
-      BlocProvider(
-        create: (context) => FavoriteBloc(), 
-        child: Container(),
-      ),
-      BlocProvider(
-        create: (context) => SaveUserBloc(),
-        child: Container(),
-      ),BlocProvider(
-        create: (context) => SaveDoctorBloc(),
-        child: Container(), 
-      )
+       )
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -110,5 +120,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-
