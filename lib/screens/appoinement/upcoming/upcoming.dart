@@ -1,5 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
 class UpcomingAppointments extends StatelessWidget {
@@ -39,6 +39,7 @@ class UpcomingAppointments extends StatelessWidget {
                 return Padding(
                   padding: const EdgeInsets.all(13),
                   child: Container(
+                    height: mediaQuery.size.height * 0.25,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
                       color: Colors.white,
@@ -139,7 +140,16 @@ class UpcomingAppointments extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             Container(
-                              child: Center(
+                              width: mediaQuery.size.width * 0.4,
+                              height: mediaQuery.size.height * 0.05,
+                              decoration: BoxDecoration(
+                                color: Colors.blue,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: TextButton(
+                                onPressed: () {
+                                  // Implement reschedule logic
+                                },
                                 child: Text(
                                   'Reschedule',
                                   style: TextStyle(
@@ -149,28 +159,12 @@ class UpcomingAppointments extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              width: mediaQuery.size.width * 0.4,
-                              height: mediaQuery.size.height * 0.05,
-                              decoration: BoxDecoration(
-                                color: Colors.blue,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
                             ),
                             GestureDetector(
                               onTap: () {
-                                _showCancelDialog(context, appointment.id);
+                                _showCancelDialog(context, appointment.id, appointment['uid']);
                               },
                               child: Container(
-                                child: Center(
-                                  child: Text(
-                                    'Cancel Appointment',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.blue,
-                                    ),
-                                  ),
-                                ),
                                 width: mediaQuery.size.width * 0.44,
                                 height: mediaQuery.size.height * 0.05,
                                 decoration: BoxDecoration(
@@ -181,13 +175,22 @@ class UpcomingAppointments extends StatelessWidget {
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(20),
                                 ),
+                                child: Center(
+                                  child: Text(
+                                    'Cancel Appointment',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.blue,
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
                           ],
                         ),
                       ],
                     ),
-                    height: mediaQuery.size.height * 0.25,
                   ),
                 );
               },
@@ -198,7 +201,7 @@ class UpcomingAppointments extends StatelessWidget {
     );
   }
 
-  void _showCancelDialog(BuildContext context, String appointmentId) {
+  void _showCancelDialog(BuildContext context, String appointmentId, String doctorId) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -215,7 +218,7 @@ class UpcomingAppointments extends StatelessWidget {
             TextButton(
               child: Text('Yes'),
               onPressed: () async {
-                await _cancelAppointment(appointmentId);
+                await _cancelAppointment(appointmentId, doctorId);
                 Navigator.of(context).pop();
               },
             ),
@@ -225,7 +228,7 @@ class UpcomingAppointments extends StatelessWidget {
     );
   }
 
-  Future<void> _cancelAppointment(String appointmentId) async {
+  Future<void> _cancelAppointment(String appointmentId, String doctorId) async {
     try {
       final appointmentSnapshot = await FirebaseFirestore.instance
           .collection('userbooking')
@@ -235,7 +238,6 @@ class UpcomingAppointments extends StatelessWidget {
       if (appointmentSnapshot.exists) {
         final selectedDay = appointmentSnapshot['selectedDay'];
         final selectedTimeSlot = appointmentSnapshot['selectedTimeSlot'];
-        final doctorId = appointmentSnapshot.id; // Assuming you have doctorId in appointment data
 
         // Delete the appointment from 'userbooking' collection
         await appointmentSnapshot.reference.delete();
@@ -258,3 +260,4 @@ class UpcomingAppointments extends StatelessWidget {
     }
   }
 }
+ 

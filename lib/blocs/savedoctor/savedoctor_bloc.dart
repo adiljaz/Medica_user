@@ -34,6 +34,7 @@ class SaveDoctorBloc extends Bloc<SaveDoctorEvent, SaveDoctorState> {
         'image': event.image,
         'disease': event.disease,
         'problem': event.problem,
+        'uid':event.uid,
       });
 
       emit(CalendarSuccess());

@@ -148,8 +148,7 @@ class _PayNowState extends State<PayNow> {
     print(widget.formtime);
     print(widget.selectedDay);
 
-    FirebaseAuth _auth = FirebaseAuth.instance;
-    final id = _auth.currentUser!.uid;
+    
 
     context.read<SaveUserBloc>().add(
           SaveUserBooking(
@@ -157,7 +156,7 @@ class _PayNowState extends State<PayNow> {
             selectedTimeSlot: widget.selectedTimeSlot,
             fromTime: widget.formtime,
             toTime: widget.totime,
-            uid: id,
+            uid: widget.uid,
             age: _ageController.text,
             disease: _diseaseController.text,
             gender: selectedGender,
@@ -197,7 +196,7 @@ class _PayNowState extends State<PayNow> {
         disease: widget.disease,
         problem: widget.problem));
 
-    print(' alooooooo${id}');
+    print(' alooooooo${widget.uid}');
 
     ///  user side adding
 

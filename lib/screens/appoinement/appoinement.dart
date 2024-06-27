@@ -24,6 +24,7 @@ class Appointment extends StatelessWidget {
         backgroundColor: Colormanager.scaffold,
 
         appBar: AppBar(
+          backgroundColor: Colormanager.scaffold,
           leading: Image.asset(
             'assets/images/logo.png',
             width: 100,
@@ -37,6 +38,7 @@ class Appointment extends StatelessWidget {
           ),
           centerTitle: true,
           bottom: TabBar(
+          
             
             labelStyle:
                 GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 13),
