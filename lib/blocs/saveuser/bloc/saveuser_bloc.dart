@@ -30,6 +30,7 @@ class SaveUserBloc extends Bloc<SaveUserEvent, SaveUserState> {
         'age': event.age,
         'disease': event.disease,
         'problem': event.problem,
+        'uid':event.uid, 
       });
 
       final bookedSlots = await _fetchBookedSlots(event.selectedDay, event.uid);

@@ -220,6 +220,7 @@ class UpcomingAppointments extends StatelessWidget {
           TextButton(
             child: Text('Yes'),
             onPressed: () async {
+              _cancelAppointment(appointmentId, doctorId);
               final saveDoctorBloc = BlocProvider.of<SaveDoctorBloc>(context);
                  saveDoctorBloc.onCancelAppointment(appointmentId, doctorId);
               Navigator.of(context).pop();
