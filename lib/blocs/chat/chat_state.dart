@@ -4,7 +4,9 @@ abstract class ChatState {}
 
 class ChatInitial extends ChatState {}
 
-class ChatLoading extends ChatState {}
+class ChatMessageSent extends ChatState {}
+
+class ChatMessageDeleted extends ChatState {}
 
 class ChatLoaded extends ChatState {
   final List<DocumentSnapshot> messages;
@@ -13,11 +15,7 @@ class ChatLoaded extends ChatState {
 }
 
 class ChatError extends ChatState {
-  final String error;
+  final String errorMessage;
 
-  ChatError(this.error);
+  ChatError(this.errorMessage);
 }
-
-class ChatMessageSent extends ChatState {}
-
-class ChatMessageDeleted extends ChatState {}

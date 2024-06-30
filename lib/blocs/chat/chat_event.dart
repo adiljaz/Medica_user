@@ -3,27 +3,28 @@ import 'dart:io';
 abstract class ChatEvent {}
 
 class SendMessageEvent extends ChatEvent {
-  final String reciveUserid;
+  final String receiveUserId;
   final String text;
 
-  SendMessageEvent(this.reciveUserid, this.text);
+  SendMessageEvent(this.receiveUserId, this.text);
 }
 
 class SendImageEvent extends ChatEvent {
-  final String reciveUserid;
+  final String receiveUserId;
   final File imageFile;
 
-  SendImageEvent(this.reciveUserid, this.imageFile);
+  SendImageEvent(this.receiveUserId, this.imageFile);
 }
 
 class DeleteMessageEvent extends ChatEvent {
+  final String chatId;
   final String docId;
 
-  DeleteMessageEvent(this.docId);
+  DeleteMessageEvent(this.chatId, this.docId);
 }
 
 class FetchMessagesEvent extends ChatEvent {
-  final String reciveUserid;
+  final String receiveUserId;
 
-  FetchMessagesEvent(this.reciveUserid);
+  FetchMessagesEvent(this.receiveUserId);
 }

@@ -1,12 +1,14 @@
 import 'dart:io';
+import 'package:fire_login/blocs/chat/chat_bloc.dart';
+import 'package:fire_login/blocs/chat/chat_event.dart';
+import 'package:fire_login/blocs/chat/chat_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fire_login/blocs/chat/chat_bloc.dart';
-import 'package:fire_login/blocs/chat/chat_event.dart';
-import 'package:fire_login/blocs/chat/chat_state.dart';
+import 'package:intl/intl.dart';
+
 
 class ChatPage extends StatefulWidget {
   const ChatPage({
@@ -43,7 +45,7 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   void dispose() {
-    _chatBloc.close(); // Close the bloc to avoid memory leaks
+    _chatBloc.close();
     super.dispose();
   }
 
@@ -57,6 +59,14 @@ class _ChatPageState extends State<ChatPage> {
 
   void sendImage() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      File imageFile = File(pickedFile.path);
+      _chatBloc.add(SendImageEvent(widget.receiveUserId, imageFile));
+    }
+  }
+
+  void captureImage() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.camera);
     if (pickedFile != null) {
       File imageFile = File(pickedFile.path);
       _chatBloc.add(SendImageEvent(widget.receiveUserId, imageFile));
@@ -88,7 +98,7 @@ class _ChatPageState extends State<ChatPage> {
           ),
           TextButton(
             onPressed: () {
-              _chatBloc.add(DeleteMessageEvent(docId));
+              _chatBloc.add(DeleteMessageEvent(widget.receiveUserId, docId));
               Navigator.of(context).pop();
             },
             child: const Text('Delete'),
@@ -102,155 +112,165 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.white,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.of(context).pop(),
         ),
-        centerTitle: false,
         title: Row(
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(50),
-              child: Image.network(
-                widget.image,
-                fit: BoxFit.cover,
-                width: 40,
-                height: 40,
-              ),
+            CircleAvatar(
+              backgroundImage: NetworkImage(widget.image),
+              radius: 16,
             ),
             const SizedBox(width: 10),
             Text(
               widget.name,
-              style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                  color: Colors.white),
+              style: const TextStyle(color: Colors.black, fontSize: 16),
             ),
           ],
         ),
-        backgroundColor: const Color.fromARGB(255, 0, 140, 255),
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: BlocConsumer<ChatBloc, ChatState>(
-              bloc: _chatBloc,
-              listener: (context, state) {
-                if (state is ChatMessageSent || state is ChatMessageDeleted) {
-                  _chatBloc.add(FetchMessagesEvent(widget.receiveUserId));
-                } else if (state is ChatLoaded) {
-                  setState(() {
-                    _messages = state.messages;
-                  });
-                }
-              },
-              builder: (context, state) {
-                return ListView.builder(
-                  reverse: true,
-                  controller: _scrollController,
-                  itemCount: _messages.length,
-                  itemBuilder: (context, index) {
-                    DocumentSnapshot document = _messages[index];
-                    Map<String, dynamic>? data =
-                        document.data() as Map<String, dynamic>?;
-
-                    if (data == null) return SizedBox.shrink(); // Skip if data is null
-
-                    // Check if the sender ID matches the current user's ID
-                    var isCurrentUser = data['senderId'] ==
-                        FirebaseAuth.instance.currentUser!.uid;
-
-                    return GestureDetector(
-                      onLongPress: () => _deleteMessage(document.id),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 8.0, horizontal: 16.0),
-                        alignment: isCurrentUser
-                            ? Alignment.centerRight
-                            : Alignment.centerLeft,
-                        child: Column(
-                          crossAxisAlignment: isCurrentUser
-                              ? CrossAxisAlignment.end
-                              : CrossAxisAlignment.start,
-                          children: [
-                            if (isCurrentUser) ...[
-                              // Message sent by the current user
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.blue,
-                                  borderRadius: BorderRadius.circular(8.0),
-                                ),
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  data['messages'], // Use 'messages' instead of 'message'
-                                  style: const TextStyle(color: Colors.white),
-                                ),
-                              ),
-                            ] else ...[
-                              // Message sent by the doctor
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.grey,
-                                  borderRadius: BorderRadius.circular(8.0),
-                                ),
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  data['messages'], // Use 'messages' instead of 'message'
-                                  style: const TextStyle(color: Colors.black),
-                                ),
-                              ),
-                            ],
-                            const SizedBox(height: 4),
-                            Text(
-                              '10:30 AM', // Replace with your timestamp logic
-                              style: const TextStyle(
-                                  fontSize: 12, color: Colors.black54),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.phone, color: Colors.black),
+            onPressed: () {/* Implement voice call */},
           ),
-          _buildMessageInput(),
+          IconButton(
+            icon: const Icon(Icons.video_call, color: Colors.black),
+            onPressed: () {/* Implement video call */},
+          ),
         ],
+      ),
+      body: Container(
+        color: Colors.white,
+        child: Column(
+          children: [
+            Expanded(
+              child: BlocConsumer<ChatBloc, ChatState>(
+                bloc: _chatBloc,
+                listener: (context, state) {
+                  if (state is ChatMessageSent || state is ChatMessageDeleted) {
+                    _chatBloc.add(FetchMessagesEvent(widget.receiveUserId));
+                  } else if (state is ChatLoaded) {
+                    setState(() {
+                      _messages = state.messages;
+                    });
+                    _scrollToBottom(); // Scroll to bottom when new messages are loaded
+                  }
+                },
+                builder: (context, state) {
+                  return ListView.builder(
+                    reverse: true,
+                    controller: _scrollController,
+                    itemCount: _messages.length,
+                    itemBuilder: (context, index) {
+                      DocumentSnapshot document = _messages[index];
+                      Map<String, dynamic>? data = document.data() as Map<String, dynamic>?;
+
+                      if (data == null || data.isEmpty) {
+                        return SizedBox.shrink(); // or any placeholder widget
+                      }
+
+                      var isCurrentUser = data['senderId'] == FirebaseAuth.instance.currentUser!.uid;
+                      var messageType = data['type'];
+                      var messageContent = data['message'];
+                      var timestamp = data['timestamp'] as Timestamp?;
+                      var messageTime = timestamp != null
+                          ? DateFormat('HH:mm').format(timestamp.toDate())
+                          : '';
+
+                      return GestureDetector(
+                        onLongPress: () => _deleteMessage(document.id),
+                        child: Align(
+                          alignment: isCurrentUser ? Alignment.centerRight : Alignment.centerLeft,
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: isCurrentUser ? Colors.blue[100] : Colors.grey[200],
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                if (messageType == 'text')
+                                  Text(
+                                    messageContent ?? '',
+                                    style: TextStyle(color: isCurrentUser ? Colors.black : Colors.black),
+                                  )
+                                else if (messageType == 'image')
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: Image.network(
+                                      messageContent ?? '',
+                                      width: 200,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  messageTime,
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+            _buildMessageInput(),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildMessageInput() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border(top: BorderSide(color: Colors.grey[300]!)),
+      ),
       child: Row(
         children: [
           IconButton(
-            icon: Icon(Icons.image), // Changed camera icon to image icon
-            onPressed: sendImage,
+            icon: const Icon(Icons.camera_alt, color: Colors.blue),
+            onPressed: captureImage,
           ),
           Expanded(
             child: TextField(
               controller: _messageController,
               decoration: InputDecoration(
-                hintText: 'Type a message...',
+                hintText: 'Message...',
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16.0),
+                  borderRadius: BorderRadius.circular(20.0),
+                  borderSide: BorderSide.none,
                 ),
-                suffixIcon: IconButton(
-                  // Added send icon inside text field
-                  icon: Icon(Icons.send),
-                  onPressed: sendMessage,
-                ),
+                filled: true,
+                fillColor: Colors.grey[200],
+                contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               ),
             ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.photo, color: Colors.blue),
+            onPressed: sendImage,
+          ),
+          IconButton(
+            icon: const Icon(Icons.send, color: Colors.blue),
+            onPressed: sendMessage,
           ),
         ],
       ),
     );
   }
 }
- 

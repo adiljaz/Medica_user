@@ -1,10 +1,13 @@
 import 'dart:async';
+import 'dart:io';
+
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fire_login/blocs/chat/chat_state.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+
 import 'chat_event.dart';
+import 'chat_state.dart';
 
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -18,73 +21,84 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     on<FetchMessagesEvent>(_onFetchMessages);
   }
 
-  Future<void> _onSendMessage(SendMessageEvent event, Emitter<ChatState> emit) async {
+  void _onSendMessage(SendMessageEvent event, Emitter<ChatState> emit) async {
     try {
       final User? user = _firebaseAuth.currentUser;
-      await _firestore.collection('chats').add({
-        'senderId': user?.uid,
-        'reciveUserid': event.reciveUserid,
-        'messages': event.text,
+      final chatId = _getChatId(user!.uid, event.receiveUserId);
+
+      await _firestore.collection('chats').doc(chatId).collection('messages').add({
+        'senderId': user.uid,
+        'message': event.text,
         'timestamp': FieldValue.serverTimestamp(),
         'type': 'text',
       });
+
       emit(ChatMessageSent());
-      emit(ChatInitial()); // Emit ChatInitial to avoid blinking
     } catch (e) {
       emit(ChatError(e.toString()));
     }
   }
 
-  Future<void> _onSendImage(SendImageEvent event, Emitter<ChatState> emit) async {
+  void _onSendImage(SendImageEvent event, Emitter<ChatState> emit) async {
     try {
       final User? user = _firebaseAuth.currentUser;
+      final chatId = _getChatId(user!.uid, event.receiveUserId);
       String fileName = '${DateTime.now().millisecondsSinceEpoch}.jpg';
+
       UploadTask uploadTask = _storage
           .ref()
           .child('images')
+          .child(user.uid)
+          .child(chatId)
           .child(fileName)
           .putFile(event.imageFile);
 
-      TaskSnapshot snapshot = await uploadTask;
-      String imageUrl = await snapshot.ref.getDownloadURL();
+      TaskSnapshot storageTaskSnapshot = await uploadTask;
+      String downloadUrl = await storageTaskSnapshot.ref.getDownloadURL();
 
-      await _firestore.collection('chats').add({
-        'senderId': user?.uid,
-        'reciveUserid': event.reciveUserid,
-        'messages': imageUrl,
+      await _firestore.collection('chats').doc(chatId).collection('messages').add({
+        'senderId': user.uid,
+        'message': downloadUrl,
         'timestamp': FieldValue.serverTimestamp(),
         'type': 'image',
       });
 
       emit(ChatMessageSent());
-      emit(ChatInitial()); // Emit ChatInitial to avoid blinking
     } catch (e) {
       emit(ChatError(e.toString()));
     }
   }
 
-  Future<void> _onDeleteMessage(DeleteMessageEvent event, Emitter<ChatState> emit) async {
+  void _onDeleteMessage(DeleteMessageEvent event, Emitter<ChatState> emit) async {
     try {
-      await _firestore.collection('chats').doc(event.docId).delete();
+      await _firestore.collection('chats').doc(event.chatId).collection('messages').doc(event.docId).delete();
       emit(ChatMessageDeleted());
-      emit(ChatInitial()); // Emit ChatInitial to avoid blinking
     } catch (e) {
       emit(ChatError(e.toString()));
     }
   }
 
-  Future<void> _onFetchMessages(FetchMessagesEvent event, Emitter<ChatState> emit) async {
+  void _onFetchMessages(FetchMessagesEvent event, Emitter<ChatState> emit) async {
     try {
-      final QuerySnapshot querySnapshot = await _firestore
+      final User? user = _firebaseAuth.currentUser;
+      final chatId = _getChatId(user!.uid, event.receiveUserId);
+
+      QuerySnapshot querySnapshot = await _firestore
           .collection('chats')
-          .where('reciveUserid', isEqualTo: event.reciveUserid)
+          .doc(chatId)
+          .collection('messages')
           .orderBy('timestamp', descending: true)
           .get();
 
-      final List<DocumentSnapshot> documents = querySnapshot.docs;
-      emit(ChatLoaded(messages: documents));
+      List<DocumentSnapshot> messages = querySnapshot.docs;
+      emit(ChatLoaded(messages: messages));
     } catch (e) {
       emit(ChatError(e.toString()));
     }
   }
-} 
+
+  String _getChatId(String userId, String otherUserId) {
+    List<String> participants = [userId, otherUserId]..sort();
+    return participants.join('_');
+  }
+}

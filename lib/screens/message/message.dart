@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart'; // Import intl for DateFormat
 import 'chat.dart'; // Ensure you have the ChatPage imported
 
 class Message extends StatelessWidget {
@@ -84,7 +85,7 @@ class Message extends StatelessWidget {
       String uid = doc['uid'];
       QuerySnapshot chatSnapshot = await _firestore
           .collection('chats')
-          .where('reciveUserid', isEqualTo: uid)
+          .where('receiveUserId', isEqualTo: uid)
           .get();
 
       if (chatSnapshot.docs.isNotEmpty) {
@@ -101,7 +102,6 @@ class Message extends StatelessWidget {
     String? uid = data['uid'];
     String? profile = data['imageUrl'];
     String name = data['name'] ?? 'Unknown';
-    String time = data['time'] ?? '';
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
@@ -129,15 +129,13 @@ class Message extends StatelessWidget {
             ],
           ),
           child: ListTile(
-            contentPadding:
-                EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
+            contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
             leading: Stack(
               children: [
                 CircleAvatar(
                   backgroundImage: profile != null
                       ? NetworkImage(profile)
-                      : AssetImage('assets/default_avatar.png')
-                          as ImageProvider,
+                      : AssetImage('assets/default_avatar.png') as ImageProvider,
                   radius: 25,
                 ),
                 Positioned(
@@ -160,9 +158,9 @@ class Message extends StatelessWidget {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             subtitle: StreamBuilder<QuerySnapshot>(
-              stream: _firestore
+              stream: FirebaseFirestore.instance
                   .collection('chats')
-                  .where('reciveUserid', isEqualTo: uid)
+                  .where('receiveUserId', isEqualTo: uid)
                   .orderBy('timestamp', descending: true)
                   .limit(1) // Limit to the last message
                   .snapshots(),
@@ -176,8 +174,11 @@ class Message extends StatelessWidget {
                 DocumentSnapshot lastMessage = snapshot.data!.docs.first;
                 Map<String, dynamic> lastMessageData =
                     lastMessage.data() as Map<String, dynamic>;
-                String message =
-                    lastMessageData['messages'] ?? 'No messages yet';
+                String message = lastMessageData['message'] ?? 'No messages yet';
+                Timestamp timestamp = lastMessageData['timestamp'] as Timestamp;
+                DateTime messageTime = timestamp.toDate();
+
+                String formattedTime = DateFormat('h:mm a').format(messageTime); // Format timestamp in 12-hour clock with AM/PM
 
                 return Text(
                   message,
@@ -187,11 +188,41 @@ class Message extends StatelessWidget {
               },
             ),
             trailing: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  time,
-                  style: TextStyle(color: Colors.grey),
+                StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection('chats')
+                      .where('receiveUserId', isEqualTo: uid)
+                      .orderBy('timestamp', descending: true)
+                      .limit(1) // Limit to the last message
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError ||
+                        !snapshot.hasData ||
+                        snapshot.data!.docs.isEmpty) {
+                      return Text(
+                        'No messages yet',
+                        style: TextStyle(color: Colors.grey, fontSize: 12),
+                      );
+                    }
+
+                    DocumentSnapshot lastMessage = snapshot.data!.docs.first;
+                    Map<String, dynamic> lastMessageData =
+                        lastMessage.data() as Map<String, dynamic>;
+                    Timestamp timestamp =
+                        lastMessageData['timestamp'] as Timestamp;
+                    DateTime messageTime = timestamp.toDate();
+
+                    String formattedTime =
+                        DateFormat('h:mm a').format(messageTime); // Format timestamp in 12-hour clock with AM/PM
+
+                    return Text(
+                      formattedTime,
+                      style: TextStyle(color: Colors.grey, fontSize: 12),
+                    );
+                  },
                 ),
               ],
             ),
@@ -201,3 +232,5 @@ class Message extends StatelessWidget {
     );
   }
 }
+
+ 
