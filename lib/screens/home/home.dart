@@ -44,7 +44,7 @@ class Home extends StatelessWidget {
                     CircleAvatar(
                       radius: 27,
                       child: Image.network(''),
-                    ),
+                    ), 
                     SizedBox(
                       width: mediaquerry.size.width * 0.013,
                     ),

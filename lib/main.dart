@@ -8,7 +8,6 @@ import 'package:fire_login/blocs/bottomnav/landing_state_bloc.dart';
 import 'package:fire_login/blocs/intro/nextpage_bloc.dart';
 import 'package:fire_login/blocs/news/news_bloc.dart';
 import 'package:fire_login/blocs/news/news_event.dart';
-import 'package:fire_login/blocs/news/news_state.dart';
 import 'package:fire_login/blocs/profile/AddUser/add_user_bloc.dart';
 import 'package:fire_login/blocs/profile/Delete/delete_bloc.dart';
 import 'package:fire_login/blocs/profile/ImageAdding/image_adding_bloc.dart';
@@ -110,7 +109,9 @@ class MyApp extends StatelessWidget {
        BlocProvider(
           create: (context) => NewsBloc(newsaRepository: newsaRepository)..add(StartEvent()),
         child: Container(),
-       )
+       ),
+
+     
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
