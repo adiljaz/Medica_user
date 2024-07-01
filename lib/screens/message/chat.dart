@@ -9,7 +9,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
-
 class ChatPage extends StatefulWidget {
   const ChatPage({
     Key? key,
@@ -177,7 +176,7 @@ class _ChatPageState extends State<ChatPage> {
                       var messageContent = data['message'];
                       var timestamp = data['timestamp'] as Timestamp?;
                       var messageTime = timestamp != null
-                          ? DateFormat('HH:mm').format(timestamp.toDate())
+                          ? DateFormat('h:mm a').format(timestamp.toDate())
                           : '';
 
                       return GestureDetector(
@@ -273,4 +272,5 @@ class _ChatPageState extends State<ChatPage> {
       ),
     );
   }
-}
+} 
+ 
