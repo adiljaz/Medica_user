@@ -1,12 +1,13 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:intl/intl.dart'; // Import intl for DateFormat
-import 'chat.dart'; // Ensure you have the ChatPage imported
+import 'package:intl/intl.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'chat.dart'; // Ensure this import points to your ChatPage
 
 class Message extends StatelessWidget {
   Message({Key? key}) : super(key: key);
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -53,47 +54,11 @@ class Message extends StatelessWidget {
           return Center(child: Text('No doctors available'));
         }
 
-        return FutureBuilder<List<DocumentSnapshot>>(
-          future: _getDoctorsWithChat(snapshot.data!.docs),
-          builder: (context, doctorsSnapshot) {
-            if (doctorsSnapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
-            }
-
-            List<DocumentSnapshot> doctorsWithChat = doctorsSnapshot.data ?? [];
-
-            if (doctorsWithChat.isEmpty) {
-              return Center(child: Text('No doctors available for chat'));
-            }
-
-            return ListView(
-              children: doctorsWithChat
-                  .map<Widget>((doc) => _buildUserListItem(doc, context))
-                  .toList(),
-            );
-          },
+        return ListView(
+          children: snapshot.data!.docs.map((doc) => _buildUserListItem(doc, context)).toList(),
         );
       },
     );
-  }
-
-  Future<List<DocumentSnapshot>> _getDoctorsWithChat(
-      List<DocumentSnapshot> doctors) async {
-    List<DocumentSnapshot> doctorsWithChat = [];
-
-    for (var doc in doctors) {
-      String uid = doc['uid'];
-      QuerySnapshot chatSnapshot = await _firestore
-          .collection('chats')
-          .where('receiveUserId', isEqualTo: uid)
-          .get();
-
-      if (chatSnapshot.docs.isNotEmpty) {
-        doctorsWithChat.add(doc);
-      }
-    }
-
-    return doctorsWithChat;
   }
 
   Widget _buildUserListItem(DocumentSnapshot document, BuildContext context) {
@@ -146,7 +111,7 @@ class Message extends StatelessWidget {
                     height: 10,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: Colors.green, // Online status indicator
+                      color: Colors.green,
                       border: Border.all(color: Colors.white, width: 1.5),
                     ),
                   ),
@@ -158,79 +123,66 @@ class Message extends StatelessWidget {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             subtitle: StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection('chats')
-                  .where('receiveUserId', isEqualTo: uid)
-                  .orderBy('timestamp', descending: true)
-                  .limit(1) // Limit to the last message
-                  .snapshots(),
+              stream: _getLastMessageStream(uid!),
               builder: (context, snapshot) {
-                if (snapshot.hasError ||
-                    !snapshot.hasData ||
-                    snapshot.data!.docs.isEmpty) {
+                if (snapshot.hasError || !snapshot.hasData || snapshot.data!.docs.isEmpty) {
                   return Text('No messages yet');
                 }
 
                 DocumentSnapshot lastMessage = snapshot.data!.docs.first;
-                Map<String, dynamic> lastMessageData =
-                    lastMessage.data() as Map<String, dynamic>;
+                Map<String, dynamic> lastMessageData = lastMessage.data() as Map<String, dynamic>;
                 String message = lastMessageData['message'] ?? 'No messages yet';
-                Timestamp timestamp = lastMessageData['timestamp'] as Timestamp;
-                DateTime messageTime = timestamp.toDate();
-
-                String formattedTime = DateFormat('h:mm a').format(messageTime); // Format timestamp in 12-hour clock with AM/PM
+                String messageType = lastMessageData['type'] ?? 'text';
 
                 return Text(
-                  message,
+                  messageType == 'image' ? 'Image' : message,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 );
               },
             ),
-            trailing: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                StreamBuilder<QuerySnapshot>(
-                  stream: FirebaseFirestore.instance
-                      .collection('chats')
-                      .where('receiveUserId', isEqualTo: uid)
-                      .orderBy('timestamp', descending: true)
-                      .limit(1) // Limit to the last message
-                      .snapshots(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasError ||
-                        !snapshot.hasData ||
-                        snapshot.data!.docs.isEmpty) {
-                      return Text(
-                        'No messages yet',
-                        style: TextStyle(color: Colors.grey, fontSize: 12),
-                      );
-                    }
+            trailing: StreamBuilder<QuerySnapshot>(
+              stream: _getLastMessageStream(uid),
+              builder: (context, snapshot) {
+                if (snapshot.hasError || !snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                  return SizedBox.shrink();
+                }
 
-                    DocumentSnapshot lastMessage = snapshot.data!.docs.first;
-                    Map<String, dynamic> lastMessageData =
-                        lastMessage.data() as Map<String, dynamic>;
-                    Timestamp timestamp =
-                        lastMessageData['timestamp'] as Timestamp;
-                    DateTime messageTime = timestamp.toDate();
+                DocumentSnapshot lastMessage = snapshot.data!.docs.first;
+                Map<String, dynamic> lastMessageData = lastMessage.data() as Map<String, dynamic>;
+                Timestamp timestamp = lastMessageData['timestamp'] as Timestamp;
+                DateTime messageTime = timestamp.toDate();
 
-                    String formattedTime =
-                        DateFormat('h:mm a').format(messageTime); // Format timestamp in 12-hour clock with AM/PM
+                String formattedTime = DateFormat('h:mm a').format(messageTime);
 
-                    return Text(
-                      formattedTime,
-                      style: TextStyle(color: Colors.grey, fontSize: 12),
-                    );
-                  },
-                ),
-              ],
+                return Text(
+                  formattedTime,
+                  style: TextStyle(color: Colors.grey, fontSize: 12),
+                );
+              },
             ),
           ),
         ),
       ),
     );
   }
-}
 
- 
+  Stream<QuerySnapshot> _getLastMessageStream(String doctorUid) {
+    String currentUserUid = _auth.currentUser!.uid;
+    String chatId = _getChatId(currentUserUid, doctorUid);
+
+    return _firestore
+        .collection('chats')
+        .doc(chatId)
+        .collection('messages')
+        .orderBy('timestamp', descending: true)
+        .limit(1)
+        .snapshots(); 
+  }
+
+  String _getChatId(String userId1, String userId2) {
+    List<String> ids = [userId1, userId2];
+    ids.sort();
+    return ids.join('_');
+  }
+}
