@@ -2,10 +2,13 @@ import 'package:fire_login/blocs/Favorite/favorite_bloc.dart';
 import 'package:fire_login/blocs/Obascure/obscure_bloc.dart';
 import 'package:fire_login/blocs/auth/auth_bloc.dart';
 import 'package:fire_login/blocs/calendar/bloc/calendar_bloc.dart';
-import 'package:fire_login/blocs/department/bloc/department_bloc.dart';
+import 'package:fire_login/blocs/dateofbirth/bloc/date_of_birth_bloc.dart';
+
 import 'package:fire_login/blocs/edit_user/edit_user_bloc.dart';
 import 'package:fire_login/blocs/bottomnav/landing_state_bloc.dart';
+import 'package:fire_login/blocs/gender/bloc/gender_bloc.dart';
 import 'package:fire_login/blocs/intro/nextpage_bloc.dart';
+import 'package:fire_login/blocs/location/location_bloc.dart';
 import 'package:fire_login/blocs/news/news_bloc.dart';
 import 'package:fire_login/blocs/news/news_event.dart';
 import 'package:fire_login/blocs/profile/AddUser/add_user_bloc.dart';
@@ -108,6 +111,19 @@ class MyApp extends StatelessWidget {
         ),
        BlocProvider(
           create: (context) => NewsBloc(newsaRepository: newsaRepository)..add(StartEvent()),
+        child: Container(),
+       ),
+
+       BlocProvider(
+        create: (context) => LocationBlocBloc(),
+        child: Container(), 
+       ),
+       BlocProvider(
+        create: (context) => DateOfBirthBloc(),
+        child: Container(),
+       ),
+       BlocProvider(
+        create: (context) => GenderBloc(), 
         child: Container(),
        ),
 

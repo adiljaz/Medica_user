@@ -7,13 +7,13 @@ class EditUserClick extends EditUserEvent {
   final String name;
   final int age;
   final String location;
-  final int dob;
+  final String dob;
   final int mobile;
   final String gender;
   final String imaage;
   final String uid;
 
-  final Map<String,Object> data;
+  final Map<String,Object?> data;
 
   EditUserClick(
       {required this.name,

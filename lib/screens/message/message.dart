@@ -1,8 +1,10 @@
+import 'package:fire_login/utils/colors/colormanager.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'chat.dart'; // Ensure this import points to your ChatPage
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'chat.dart';
 
 class Message extends StatelessWidget {
   Message({Key? key}) : super(key: key);
@@ -11,51 +13,68 @@ class Message extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
+    return Scaffold( 
+      backgroundColor: Colormanager.scaffold,
       appBar: AppBar(
         title: Text(
-          'Chats',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          'Medica Chat',
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold,color: Colormanager.blackText),
         ),
+        centerTitle: true,
         actions: [
           IconButton(
-            icon: Icon(Icons.search),
+            icon: Icon(Icons.search, color: Color(0xFFE94560)),
             onPressed: () {
               // Implement search functionality
             },
           ),
-          IconButton(
-            icon: Icon(Icons.more_vert),
-            onPressed: () {
-              // Implement more options
-            },
-          ),
         ],
-        backgroundColor: Colors.blueAccent,
+    backgroundColor: Colormanager.scaffold,
+        elevation: 0,
       ),
       body: _buildDoctorList(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Implement new chat functionality
+        },
+        child: Icon(Icons.add, color: Color(0xFF1A1A2E)),
+        backgroundColor: Color(0xFFE94560),
+      ),
     );
-  }
+  } 
 
   Widget _buildDoctorList() {
     return StreamBuilder<QuerySnapshot>(
       stream: _firestore.collection('doctor').snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
+          return Center(child: Text('Error: ${snapshot.error}', style: TextStyle(color: Colors.white)));
         }
 
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
+          return Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color.fromARGB(255, 0, 4, 255))));
         }
 
         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-          return Center(child: Text('No doctors available'));
+          return Center(child: Text('No doctors available', style: TextStyle(color: Colors.white)));
         }
 
-        return ListView(
-          children: snapshot.data!.docs.map((doc) => _buildUserListItem(doc, context)).toList(),
+        return AnimationLimiter(
+          child: ListView.builder(
+            itemCount: snapshot.data!.docs.length,
+            itemBuilder: (context, index) {
+              return AnimationConfiguration.staggeredList(
+                position: index,
+                duration: const Duration(milliseconds: 375),
+                child: SlideAnimation(
+                  verticalOffset: 50.0,
+                  child: FadeInAnimation(
+                    child: _buildUserListItem(snapshot.data!.docs[index], context),
+                  ),
+                ),
+              );
+            },
+          ),
         );
       },
     );
@@ -76,95 +95,116 @@ class Message extends StatelessWidget {
             builder: (context) => ChatPage(
               name: name,
               image: profile!,
-              receiveUserId: uid!,
+              receiveUserId: uid,
             ),
           ));
         },
         child: Container(
           decoration: BoxDecoration(
-            color: Color.fromARGB(255, 189, 206, 251),
-            borderRadius: BorderRadius.circular(15),
+           color: Color.fromRGBO(13, 100, 250, 0.507),
+            borderRadius: BorderRadius.circular(20),
             boxShadow: [
               BoxShadow(
-                color: Colors.grey.withOpacity(0.5),
+                color: Color.fromARGB(255, 69, 167, 233).withOpacity(0.3),
                 spreadRadius: 2,
-                blurRadius: 5,
-                offset: Offset(0, 3),
+                blurRadius: 8,
+                offset: Offset(0, 4),
               ),
             ],
           ),
-          child: ListTile(
-            contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
-            leading: Stack(
-              children: [
-                CircleAvatar(
-                  backgroundImage: profile != null
-                      ? NetworkImage(profile)
-                      : AssetImage('assets/default_avatar.png') as ImageProvider,
-                  radius: 25,
-                ),
-                Positioned(
-                  bottom: 0,
-                  right: 0,
+          child: Stack(
+            children: [
+              ListTile(
+                contentPadding: EdgeInsets.all(16),
+                leading: Hero(
+                  tag: 'profile_${uid}',
                   child: Container(
-                    width: 10,
-                    height: 10,
+                    width: 60,
+                    height: 60,
                     decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.green,
-                      border: Border.all(color: Colors.white, width: 1.5),
+                      shape: BoxShape.circle, 
+                       
+                      image: DecorationImage(
+                        fit: BoxFit.cover,
+                        image: profile != null
+                            ? NetworkImage(profile)
+                            : AssetImage('assets/default_avatar.png') as ImageProvider,
+                      ),
                     ),
                   ),
                 ),
-              ],
-            ),
-            title: Text(
-              name,
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            subtitle: StreamBuilder<QuerySnapshot>(
-              stream: _getLastMessageStream(uid!),
-              builder: (context, snapshot) {
-                if (snapshot.hasError || !snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                  return Text('No messages yet');
-                }
+                title: Text(
+                  name,
+                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
+                ),
+                subtitle: StreamBuilder<QuerySnapshot>(
+                  stream: _getLastMessageStream(uid!),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError || !snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                      return Text('Start a conversation', style: TextStyle(color: Colors.grey[400]));
+                    }
 
-                DocumentSnapshot lastMessage = snapshot.data!.docs.first;
-                Map<String, dynamic> lastMessageData = lastMessage.data() as Map<String, dynamic>;
-                String message = lastMessageData['message'] ?? 'No messages yet';
-                String messageType = lastMessageData['type'] ?? 'text';
+                    DocumentSnapshot lastMessage = snapshot.data!.docs.first;
+                    Map<String, dynamic> lastMessageData = lastMessage.data() as Map<String, dynamic>;
+                    String message = lastMessageData['message'] ?? 'No messages yet';
+                    String messageType = lastMessageData['type'] ?? 'text';
 
-                return Text(
-                  messageType == 'image' ? 'Image' : message,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                );
-              },
-            ),
-            trailing: StreamBuilder<QuerySnapshot>(
-              stream: _getLastMessageStream(uid),
-              builder: (context, snapshot) {
-                if (snapshot.hasError || !snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                  return SizedBox.shrink();
-                }
+                    return Text(
+                      messageType == 'image' ? 'Sent an image' : message,
+                      style: TextStyle(color: Colors.grey[400]),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    );
+                  },
+                ),
+              ),
+              Positioned(
+                top: 10,
+                right: 10,
+                child: StreamBuilder<QuerySnapshot>(
+                  stream: _getLastMessageStream(uid!),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError || !snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                      return SizedBox.shrink();
+                    }
 
-                DocumentSnapshot lastMessage = snapshot.data!.docs.first;
-                Map<String, dynamic> lastMessageData = lastMessage.data() as Map<String, dynamic>;
-                Timestamp timestamp = lastMessageData['timestamp'] as Timestamp;
-                DateTime messageTime = timestamp.toDate();
+                    DocumentSnapshot lastMessage = snapshot.data!.docs.first;
+                    Map<String, dynamic> lastMessageData = lastMessage.data() as Map<String, dynamic>;
+                    Timestamp timestamp = lastMessageData['timestamp'] as Timestamp;
+                    DateTime messageTime = timestamp.toDate();
 
-                String formattedTime = DateFormat('h:mm a').format(messageTime);
+                    String formattedTime = _getFormattedTime(messageTime);
 
-                return Text(
-                  formattedTime,
-                  style: TextStyle(color: Colors.grey, fontSize: 12),
-                );
-              },
-            ),
+                    return Container(
+                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                     
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(
+                        formattedTime,
+                        style: TextStyle(color: Colors.white, fontSize: 12),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
         ),
       ),
     );
+  }
+
+  String _getFormattedTime(DateTime messageTime) {
+    DateTime now = DateTime.now();
+    if (now.difference(messageTime).inDays == 0) {
+      return DateFormat('h:mm a').format(messageTime);
+    } else if (now.difference(messageTime).inDays < 7) {
+      return DateFormat('E').format(messageTime); // Day of week
+    } else {
+      return DateFormat('MMM d').format(messageTime);
+    }
   }
 
   Stream<QuerySnapshot> _getLastMessageStream(String doctorUid) {
@@ -185,4 +225,4 @@ class Message extends StatelessWidget {
     ids.sort();
     return ids.join('_');
   }
-}
+} 

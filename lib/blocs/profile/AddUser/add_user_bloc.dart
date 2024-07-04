@@ -45,7 +45,7 @@ class AddUserBloc extends Bloc<AddUserEvent, AddUserState> {
     required String name,
     required int age,
     required String? imageUrl,
-    required int dob,
+    required String dob,
     required String gender,
     required String location,
     required String? uid,

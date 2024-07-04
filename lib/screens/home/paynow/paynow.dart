@@ -1,7 +1,9 @@
 import 'package:fire_login/blocs/bottomnav/landing_state_bloc.dart';
 import 'package:fire_login/blocs/calendar/bloc/calendar_bloc.dart';
 import 'package:fire_login/blocs/calendar/bloc/calendar_event.dart';
-import 'package:fire_login/blocs/department/bloc/department_bloc.dart';
+import 'package:fire_login/blocs/gender/bloc/gender_bloc.dart';
+import 'package:fire_login/blocs/gender/bloc/gender_event.dart';
+import 'package:fire_login/blocs/gender/bloc/gender_state.dart';
 import 'package:fire_login/blocs/savedoctor/savedoctor_bloc.dart';
 import 'package:fire_login/blocs/savedoctor/savedoctor_event.dart';
 import 'package:fire_login/blocs/saveuser/bloc/saveuser_bloc.dart';
@@ -299,7 +301,7 @@ class _PayNowState extends State<PayNow> {
                         onChange: (value) {
                           if (value != null) {
                             BlocProvider.of<GenderBloc>(context)
-                                .add(GenderSelected(selecteGender: value));
+                                .add(GenderSelected( value));
                           }
                           print(selectedGender);
                         },

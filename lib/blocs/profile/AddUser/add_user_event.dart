@@ -6,7 +6,7 @@ sealed class AddUserEvent {}
 class AddUserClick extends AddUserEvent {
   final String name;
   final int age;
-  final int dob;
+  final String dob;
   final String imageUrl;
   final String gender;
   final String location;

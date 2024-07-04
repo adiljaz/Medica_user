@@ -1,8 +1,17 @@
+import 'package:fire_login/blocs/dateofbirth/bloc/date_of_birth_bloc.dart';
+import 'package:fire_login/blocs/dateofbirth/bloc/date_of_birth_event.dart';
+import 'package:fire_login/blocs/dateofbirth/bloc/date_of_birth_state.dart';
+import 'package:fire_login/blocs/gender/bloc/gender_bloc.dart';
+import 'package:fire_login/blocs/gender/bloc/gender_event.dart';
+import 'package:fire_login/blocs/gender/bloc/gender_state.dart';
 import 'package:fire_login/blocs/profile/AddUser/add_user_bloc.dart';
 import 'package:fire_login/blocs/profile/ImageAdding/image_adding_bloc.dart';
 import 'package:fire_login/screens/bottomnav/home.dart';
+import 'package:fire_login/screens/profile/location/location.dart';
+import 'package:fire_login/screens/profile/widget/dob.dart';
 import 'package:fire_login/screens/profile/widget/userimage.dart';
 import 'package:fire_login/utils/colors/colormanager.dart';
+import 'package:fire_login/widgets/dropdown/dropdown.dart';
 import 'package:fire_login/widgets/profiletexfield/profiletetfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,6 +30,14 @@ class AddProfile extends StatelessWidget {
 
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   String imageUrl = '';
+    FocusNode myFocusNode = FocusNode();
+
+    String? genderselectedvalue;
+  
+  final List<String> genderItems = [
+    'Male',
+    'Female',
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +58,7 @@ class AddProfile extends StatelessWidget {
             imageUrl = state.imageUrl; // Update imageUrl when state changes
           }
 
-          return BlocConsumer<AddUserBloc, AddUserState>(
+          return BlocConsumer<AddUserBloc, AddUserState>( 
             listener: (context, state) {
               if (state is AddUserLOadingState) {
                 // Show loading indicator
@@ -126,35 +143,62 @@ class AddProfile extends StatelessWidget {
                       SizedBox(
                         height: mediaquery.size.height * 0.02,
                       ),
-                      ProfileTextFormField(
-                          keyboardtype: TextInputType.number,
-                          fonrmtype: 'Date of Birth',
-                          formColor: Colormanager.wittextformfield,
-                          textcolor: Colormanager.grayText,
-                          controller: _datofbirthController,
-                          value: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Add Date of Birth ';
-                            }
+                      SizedBox(
+                            height: mediaquery.size.height * 0.07,
+                            child:
+                                BlocBuilder<DateOfBirthBloc, DateOfBirthState>(
+                              builder: (context, state) {
+                                if (state is DateOfBirthSelectedState) {
+                                  _datofbirthController.text =
+                                      state.dateOfBirth;
+                                }
 
-                            return null;
-                          }),
+                                return DateofBirth(
+                                    value: (value) {
+                                      if (value!.isEmpty) {
+                                        return 'Add Date of Birth';
+                                      }
+                                      return null;
+                                    },
+                                    controller: _datofbirthController,
+                                    labeltext: 'Date of birth',
+                                    onTap: () {
+                                      _selectDate(context);
+
+                                      FocusScope.of(context)
+                                          .requestFocus(myFocusNode);
+                                    });
+                              },
+                            ),
+                          ), 
                       SizedBox(
                         height: mediaquery.size.height * 0.02,
                       ),
-                      ProfileTextFormField(
-                          keyboardtype: TextInputType.text,
-                          fonrmtype: 'Gender ',
-                          formColor: Colormanager.wittextformfield,
-                          textcolor: Colormanager.grayText,
-                          controller: _gendercontroller,
-                          value: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Add Gender';
-                            }
 
-                            return null;
-                          }),
+                           Padding(
+                            padding:
+                                const EdgeInsets.only(left: 20, right: 20),
+                            child: BlocBuilder<GenderBloc, GenderState>(
+                              builder: (context, state) {
+                                if (state is GenderSelectedState) {
+                                  genderselectedvalue = state.selectedGender;
+                                }
+                                return Drobdown( 
+                                  onChange: (value) {
+                                    if (value != null) {
+                                      BlocProvider.of<GenderBloc>(context)
+                                          .add(GenderSelected( genderselectedvalue.toString()));
+                                    }
+                                  },
+                                  genderItems: genderItems,
+                                  typeText: 'Select Your Gender',
+                                );
+                              },
+                            )),
+
+
+
+
                       SizedBox(
                         height: mediaquery.size.height * 0.02,
                       ),
@@ -174,23 +218,7 @@ class AddProfile extends StatelessWidget {
                       SizedBox(
                         height: mediaquery.size.height * 0.02,
                       ),
-                      ProfileTextFormField(
-                          keyboardtype: TextInputType.text,
-                          fonrmtype: 'Location',
-                          formColor: Colormanager.wittextformfield,
-                          textcolor: Colormanager.grayText,
-                          controller: _locationcontroler,
-                          suficon: const Icon(
-                            Icons.location_on,
-                            color: Color.fromARGB(255, 211, 14, 0),
-                          ),
-                          value: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Add Location';
-                            }
-
-                            return null;
-                          }),
+                        Location(locationcontroler: _locationcontroler),
                       SizedBox(
                         height: mediaquery.size.height * 0.02,
                       ),
@@ -210,7 +238,7 @@ class AddProfile extends StatelessWidget {
                             Navigator.of(context).pop();
                             FocusScope.of(context).unfocus();
                             final name = _nameController.text;
-                            final dob = int.parse(_datofbirthController.text);
+                            final dob = _datofbirthController.text;
                             final age = int.parse(_ageController.text);
                             final gender = _gendercontroller.text;
                             final location = _locationcontroler.text;
@@ -277,4 +305,37 @@ class AddProfile extends StatelessWidget {
     _locationcontroler.clear();
     imageUrl = '';
   }
-}
+
+ Future<void> _selectDate(BuildContext context) async {
+  DateTime? _picked = await showDatePicker(
+    initialDate: DateTime.now(),
+    context: context,
+    firstDate: DateTime(2000),
+    lastDate: DateTime.now(),
+    builder: (BuildContext context, Widget? child) {
+      return Theme(
+        data: ThemeData.light().copyWith(
+          primaryColor: Colormanager.blueContainer,
+          colorScheme: ColorScheme.light(
+            primary: Colormanager.blueContainer,
+            onPrimary: Colors.white,
+            onSurface: const Color.fromARGB(255, 223, 223, 223),
+          ),
+          dialogBackgroundColor: const Color.fromARGB(255, 174, 174, 174),
+          textTheme: TextTheme(),
+          datePickerTheme: DatePickerThemeData(
+            backgroundColor: Colors.black,
+            headerBackgroundColor: Colors.grey,
+            headerForegroundColor: Colors.white,
+          ),
+        ),
+        child: child!,
+      );
+    },
+  );
+  if (_picked != null) {
+    // Accessing the DateOfBirthBloc using BlocProvider.of
+    BlocProvider.of<DateOfBirthBloc>(context).add(DateOfBirthSelected(_picked));
+  }
+}  
+} 
