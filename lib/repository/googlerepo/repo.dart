@@ -5,10 +5,15 @@ import 'package:google_sign_in/google_sign_in.dart';
  
 
 class AuthRepo {
+   final GoogleSignIn _googleSignIn = GoogleSignIn();
  
    Future<User?> signinWithGoogle() async {
     try {
-      final googleUser = await GoogleSignIn().signIn();
+
+         _googleSignIn.signOut();
+      final GoogleSignInAccount? googleUser = await  _googleSignIn.signIn();
+
+     
       if (googleUser == null) return null;
       final googleAuth = await googleUser.authentication;
       final credentials = GoogleAuthProvider.credential(

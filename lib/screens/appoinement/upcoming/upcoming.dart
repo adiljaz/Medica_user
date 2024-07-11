@@ -414,4 +414,4 @@ class UpcomingAppointments extends StatelessWidget {
       // Handle error here
     }
   }
-}
+}  

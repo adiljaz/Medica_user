@@ -29,8 +29,8 @@ class Nephrology extends StatelessWidget {
                         Navigator.of(context).pop();
                       },
                       child: Icon(Icons.arrow_back_ios)),
-                  Text(
-                    'General Doctors',
+                  Text( 
+                    'Nephrology',
                     style: GoogleFonts.dongle(
                         fontWeight: FontWeight.bold, fontSize: 33),
                   ),

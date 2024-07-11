@@ -79,6 +79,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
         'age': event.age,
         'disease': event.disease,
         'problem': event.problem,
+        'uid': event.uid,
       });
 
       final bookedSlots = await _fetchBookedSlots(event.selectedDay, event.uid);
@@ -106,7 +107,8 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
         .collection('dailyBookings');
 
     final QuerySnapshot snapshot = await userCollection
-        .where('selectedDay', isEqualTo: DateFormat('yyyy-MM-dd').format(selectedDay))
+        .where('selectedDay',
+            isEqualTo: DateFormat('yyyy-MM-dd').format(selectedDay))
         .get();
     final List<DateTime> bookedSlots = [];
 

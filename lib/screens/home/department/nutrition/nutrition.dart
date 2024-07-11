@@ -30,7 +30,7 @@ class Nutrition extends StatelessWidget {
                       },
                       child: Icon(Icons.arrow_back_ios)),
                   Text(
-                    'General Doctors',
+                    'Nutrition', 
                     style: GoogleFonts.dongle(
                         fontWeight: FontWeight.bold, fontSize: 33),
                   ),

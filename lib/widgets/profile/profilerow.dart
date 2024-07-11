@@ -6,10 +6,12 @@ class ProfileOptions extends StatelessWidget {
   final IconData leadingIcon;
   // ignore: prefer_typing_uninitialized_variables
   final String typetext;
-  final IconData ? trialingIcon;
+  final Widget ? trialingIcon;
+  
+
   // ignore: use_key_in_widget_constructors
   const ProfileOptions(
-      {required this.leadingIcon, required this.typetext, this.trialingIcon});
+      {required this.leadingIcon, required this.typetext, this.trialingIcon,});
 
   @override
   Widget build(BuildContext context) {
@@ -37,11 +39,10 @@ class ProfileOptions extends StatelessWidget {
           )),
         ),
         Spacer(),
-        Icon(
-          trialingIcon, 
-          size: 30,
-          color: Colormanager.othericons,
-        ),
+        SizedBox(child: trialingIcon,),
+
+
+      
         SizedBox(
           width: mediaquery.size.width * 0.08,
         ),

@@ -67,7 +67,7 @@ class Appointment extends StatelessWidget {
           children: [
 
             UpcomingAppointments(),
-            CompletedAppointments(),
+            CompletedAppointments(), 
            
             CanceledAppointments(),
           ],

@@ -30,7 +30,7 @@ class Neurologists extends StatelessWidget {
                       },
                       child: Icon(Icons.arrow_back_ios)),
                   Text(
-                    'General Doctors',
+                    'Neurologists',
                     style: GoogleFonts.dongle(
                         fontWeight: FontWeight.bold, fontSize: 33),
                   ),

@@ -16,6 +16,11 @@ class SaveDoctorBooking extends SaveDoctorEvent {
   final String doctorname;
   final String doctordepartment;
   final String hospital;
+  final String?username ;
+  final String?userimage;
+  final String?userGender;
+
+
 
   SaveDoctorBooking({
     required this.selectedDay,
@@ -30,5 +35,8 @@ class SaveDoctorBooking extends SaveDoctorEvent {
     required this.doctorname,
     required this.doctordepartment,
     required this.hospital,
+    this.username,
+    this.userimage, 
+    this.userGender,
   });
 }

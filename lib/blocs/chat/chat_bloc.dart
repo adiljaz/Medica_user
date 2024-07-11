@@ -71,7 +71,10 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   void _onDeleteMessage(DeleteMessageEvent event, Emitter<ChatState> emit) async {
     try {
-      await _firestore.collection('chats').doc(event.chatId).collection('messages').doc(event.docId).delete();
+      final User? user = _firebaseAuth.currentUser;
+      final chatId = _getChatId(user!.uid, event.chatId);
+
+      await _firestore.collection('chats').doc(chatId).collection('messages').doc(event.docId).delete();
       emit(ChatMessageDeleted());
     } catch (e) {
       emit(ChatError(e.toString()));

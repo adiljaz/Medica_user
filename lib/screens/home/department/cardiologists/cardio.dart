@@ -30,7 +30,7 @@ class Cardiologists extends StatelessWidget {
                       },
                       child: Icon(Icons.arrow_back_ios)),
                   Text(
-                    'General Doctors',
+                    'Cardiologists', 
                     style: GoogleFonts.dongle(
                         fontWeight: FontWeight.bold, fontSize: 33),
                   ),

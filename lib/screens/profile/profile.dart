@@ -3,6 +3,9 @@ import 'package:fire_login/blocs/auth/auth_bloc.dart';
 import 'package:fire_login/screens/authentication/login/login_view.dart';
 import 'package:fire_login/screens/profile/addrofile.dart';
 import 'package:fire_login/screens/profile/editprofile.dart';
+import 'package:fire_login/screens/profile/privacypolicy/pricacypoicy.dart';
+import 'package:fire_login/screens/profile/terms/terms.dart';
+import 'package:fire_login/theme/theme.dart';
 import 'package:fire_login/utils/colors/colormanager.dart';
 import 'package:fire_login/widgets/profile/profilerow.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -12,6 +15,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconly/iconly.dart';
+import 'package:page_transition/page_transition.dart';
 
 class Profile extends StatelessWidget {
   Profile({super.key});
@@ -123,7 +127,7 @@ class Profile extends StatelessWidget {
                       child: ProfileOptions(
                         leadingIcon: Icons.account_circle,
                         typetext: 'add profile',
-                        trialingIcon: Icons.navigate_next,
+                        trialingIcon: Icon(Icons.navigate_next),
                       ),
                     ),
 
@@ -133,45 +137,37 @@ class Profile extends StatelessWidget {
                     ProfileOptions(
                         leadingIcon: Icons.visibility,
                         typetext: 'Dark Mode',
-                        trialingIcon: Icons.navigate_next),
+                        trialingIcon: Icon(Icons.navigate_next)),
                     SizedBox(
                       height: mediaquery.size.height * 0.015,
                     ),
                     ProfileOptions(
                         leadingIcon: Icons.groups,
                         typetext: 'Ivite friends',
-                        trialingIcon: Icons.navigate_next),
+                        trialingIcon: Icon(Icons.navigate_next)),
                     SizedBox(
                       height: mediaquery.size.height * 0.015,
                     ),
                     ProfileOptions(
                         leadingIcon: Icons.email,
                         typetext: 'Feed Back',
-                        trialingIcon: Icons.navigate_next),
+                        trialingIcon: Icon(Icons.navigate_next)),
                     SizedBox(
                       height: mediaquery.size.height * 0.015,
                     ),
                     ProfileOptions(
                         leadingIcon: Icons.security,
                         typetext: 'Privacy Policy',
-                        trialingIcon: Icons.navigate_next),
+                        trialingIcon: Icon(Icons.navigate_next)),
                     SizedBox(
                       height: mediaquery.size.height * 0.015,
                     ),
                     GestureDetector(
-                      onTap: () {
-                        final authBloc = BlocProvider.of<AuthBloc>(context);
-                        authBloc.add(LogoutEvent());
-
-                        Navigator.of(context).pushAndRemoveUntil(
-                            MaterialPageRoute(
-                                builder: (context) => LoginPage()),
-                            (route) => false);
-                      },
+                      onTap: () {},
                       child: ProfileOptions(
                           leadingIcon: IconlyLight.logout,
                           typetext: 'Logout ',
-                          trialingIcon: Icons.navigate_next),
+                          trialingIcon: Icon(Icons.navigate_next)),
                     ),
                   ],
                 ),
@@ -266,12 +262,12 @@ class Profile extends StatelessWidget {
                       height: mediaquery.size.height * 0.03,
                     ),
                     GestureDetector(
-                      onTap: () {
+                      onTap: () { 
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => EditProfile(
                                   age: userData['age'],
                                   dob: userData['dob'],
-                                  gender: userData['gender'],
+                                  gender: userData['gender'], 
                                   image: userData['imageUrl'],
                                   location: userData['location'],
                                   name: userData['name'],
@@ -280,57 +276,72 @@ class Profile extends StatelessWidget {
                                 )));
                       },
                       child: ProfileOptions(
-                        leadingIcon: Icons.account_circle,
-                        typetext: 'EditProfile',
-                        trialingIcon: Icons.navigate_next,
-                      ),
+                          leadingIcon: Icons.account_circle,
+                          typetext: 'EditProfile',
+                          trialingIcon: Icon(
+                            Icons.navigate_next,
+                          )),
                     ),
-                    SizedBox(
-                      height: mediaquery.size.height * 0.015,
-                    ),
-                    ProfileOptions(
-                        leadingIcon: Icons.visibility,
-                        typetext: 'Dark Mode',
-                        trialingIcon: Icons.navigate_next),
+                  
                     SizedBox(
                       height: mediaquery.size.height * 0.015,
                     ),
                     ProfileOptions(
                         leadingIcon: Icons.groups,
                         typetext: 'Ivite friends',
-                        trialingIcon: Icons.navigate_next),
+                        trialingIcon: Icon(Icons.navigate_next)),
                     SizedBox(
                       height: mediaquery.size.height * 0.015,
                     ),
                     ProfileOptions(
                         leadingIcon: Icons.email,
                         typetext: 'Feed Back',
-                        trialingIcon: Icons.navigate_next),
-                    SizedBox(
-                      height: mediaquery.size.height * 0.015,
-                    ),
-                    ProfileOptions(
-                        leadingIcon: Icons.security,
-                        typetext: 'Privacy Policy',
-                        trialingIcon: Icons.navigate_next),
+                        trialingIcon: Icon(Icons.navigate_next)),
                     SizedBox(
                       height: mediaquery.size.height * 0.015,
                     ),
                     GestureDetector(
                       onTap: () {
-                        final authBloc = BlocProvider.of<AuthBloc>(context);
-                        authBloc.add(LogoutEvent());
+                        Navigator.of(context).push(PageTransition(
+                            child: PrivacyPolicyPage(),
+                            type: PageTransitionType.fade)); 
+                      },
+                      child: ProfileOptions(
+                          leadingIcon: Icons.security,
+                          typetext: 'Privacy Policy',
+                          trialingIcon: Icon(Icons.navigate_next)),
+                    ),
+                    SizedBox(
+                      height: mediaquery.size.height * 0.015,
+                    ),
+               
+                    GestureDetector(
+                      onTap: (){
+                        Navigator.of(context).push(PageTransition(child: TermsAndConditionsPage(), type: PageTransitionType.fade));
 
-                        Navigator.of(context).pushAndRemoveUntil(
-                            MaterialPageRoute(
-                                builder: (context) => LoginPage()),
-                            (route) => false);
+                      },
+                      child: ProfileOptions(
+                        leadingIcon: Icons.local_police,
+                        typetext: 'Terms and conditions',
+                         trialingIcon: Icon(Icons.navigate_next), 
+                      ),
+                    ),
+                           SizedBox(
+                      height: mediaquery.size.height * 0.015,
+                    ), 
+                    GestureDetector(
+                      onTap: () {
+                        showLogoutDialog(context);
                       },
                       child: ProfileOptions(
                           leadingIcon: IconlyLight.logout,
                           typetext: 'Logout ',
-                          trialingIcon: Icons.navigate_next),
+                          trialingIcon: Icon(Icons.navigate_next)),
                     ),
+
+                   SizedBox(  height: mediaquery.size.height * 0.04,), 
+
+                  Text('version 0.01')
                   ],
                 ),
               );
@@ -340,6 +351,53 @@ class Profile extends StatelessWidget {
           },
         ),
       ),
+    );
+  }
+
+  void showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.blueAccent, // Set background color
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0), // Rounded corners
+          ),
+          title: Text(
+            "Confirm Sign Out",
+            style: TextStyle(color: Colors.white), // Title text color
+          ),
+          content: Text(
+            "Are you sure you want to sign out?",
+            style: TextStyle(color: Colors.white), // Content text color
+          ),
+          actions: [
+            TextButton(
+              child: Text(
+                "Cancel",
+                style: TextStyle(color: Colors.white), // Button text color
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text(
+                "Sign Out",
+                style: TextStyle(color: Colors.white), // Button text color
+              ),
+              onPressed: () {
+                final authBloc = BlocProvider.of<AuthBloc>(context);
+                authBloc.add(LogoutEvent());
+
+                Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (context) => LoginPage()),
+                    (route) => false);
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

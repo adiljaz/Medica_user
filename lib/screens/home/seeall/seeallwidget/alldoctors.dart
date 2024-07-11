@@ -7,6 +7,7 @@ import 'package:iconly/iconly.dart';
 import 'package:fire_login/blocs/Favorite/favorite_bloc.dart';
 import 'package:fire_login/utils/colors/colormanager.dart';
 import 'package:fire_login/screens/home/drdetails/details.dart';
+import 'package:shimmer/shimmer.dart';
 
 class AllDoctors extends StatefulWidget {
   const AllDoctors({Key? key}) : super(key: key);
@@ -39,7 +40,7 @@ class _AllDoctorsState extends State<AllDoctors> {
         bloc: favoriteBloc,
         builder: (context, state) {
           if (state is FavoriteLoading) {
-            return Center(child: CircularProgressIndicator());
+            return _buildShimmerEffect(mediaQuery);
           }
 
           if (state is FavoriteError) {
@@ -51,7 +52,7 @@ class _AllDoctorsState extends State<AllDoctors> {
               stream: doctorCollection.snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
+                  return _buildShimmerEffect(mediaQuery);
                 }
 
                 if (snapshot.hasError) {
@@ -71,11 +72,6 @@ class _AllDoctorsState extends State<AllDoctors> {
                       padding: const EdgeInsets.only(left: 13, top: 13, right: 13),
                       child: GestureDetector(
                         onTap: () {
-
-
-
-
-
                           Navigator.of(context).push(PageRouteBuilder(
                             pageBuilder: (context, animation, secondaryAnimation) => DrDetails(
                               about: doctor['about'],
@@ -196,7 +192,7 @@ class _AllDoctorsState extends State<AllDoctors> {
                                             width: 100,
                                             child: Center(
                                               child: Text(
-                                                overflow: TextOverflow.ellipsis , 
+                                                overflow: TextOverflow.ellipsis,
                                                 doctor['department'],
                                                 style: GoogleFonts.poppins(
                                                   fontSize: 13,
@@ -216,9 +212,9 @@ class _AllDoctorsState extends State<AllDoctors> {
                                           ),
                                           SizedBox(
                                             width: 100,
-                                            child: Center( 
+                                            child: Center(
                                               child: Text(
-                                                  overflow: TextOverflow.ellipsis ,  
+                                                overflow: TextOverflow.ellipsis,
                                                 doctor['hospitalNAme'],
                                                 style: GoogleFonts.poppins(
                                                   fontSize: 13,
@@ -260,7 +256,7 @@ class _AllDoctorsState extends State<AllDoctors> {
                                     ],
                                   ),
                                 ),
-                              ), 
+                              ),
                             ],
                           ),
                           height: mediaQuery.size.height * 0.18,
@@ -278,4 +274,27 @@ class _AllDoctorsState extends State<AllDoctors> {
       ),
     );
   }
+
+  Widget _buildShimmerEffect(MediaQueryData mediaQuery) {
+    return ListView.builder(
+      itemCount: 6,
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.all(13),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: mediaQuery.size.height * 0.18,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                color: Colors.white,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
 }
+ 

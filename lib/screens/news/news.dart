@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shimmer/shimmer.dart';
 
 class HealthNewsPage extends StatelessWidget {
   @override
@@ -30,7 +31,15 @@ class HealthNewsPage extends StatelessWidget {
               child: BlocBuilder<NewsBloc, NewsStates>(
                 builder: (context, state) {
                   if (state is NewsLoadingState) {
-                    return Center(child: CircularProgressIndicator());
+                    return Shimmer.fromColors(
+                      baseColor: Colors.grey[300]!,
+                      highlightColor: Colors.grey[100]!,
+                      child: Container(
+                        height: 200,
+                        margin: EdgeInsets.symmetric(horizontal: 16),
+                        color: Colors.white,
+                      ),
+                    );
                   } else if (state is NewsLoadedState) {
                     List<Articles> newsList = state.newsList;
                     List<String> imgList = newsList
@@ -42,7 +51,15 @@ class HealthNewsPage extends StatelessWidget {
                   } else if (state is NewsErrorState) {
                     return Center(child: Text(state.errorMessage));
                   } else {
-                    return Center(child: CircularProgressIndicator());
+                    return Shimmer.fromColors(
+                      baseColor: Colors.grey[300]!,
+                      highlightColor: Colors.grey[100]!,
+                      child: Container(
+                        height: 200,
+                        margin: EdgeInsets.symmetric(horizontal: 16),
+                        color: Colors.white,
+                      ),
+                    );
                   }
                 },
               ),
@@ -61,7 +78,18 @@ class HealthNewsPage extends StatelessWidget {
               builder: (context, state) {
                 if (state is NewsLoadingState) {
                   return SliverFillRemaining(
-                    child: Center(child: CircularProgressIndicator()),
+                    child: Shimmer.fromColors(
+                      baseColor: Colors.grey[300]!,
+                      highlightColor: Colors.grey[100]!,
+                      child: ListView.builder(
+                        itemCount: 5,
+                        itemBuilder: (context, index) => Container(
+                          height: 100,
+                          margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
                   );
                 } else if (state is NewsLoadedState) {
                   List<Articles> newsList = state.newsList;
@@ -89,7 +117,18 @@ class HealthNewsPage extends StatelessWidget {
                   );
                 } else {
                   return SliverFillRemaining(
-                    child: Center(child: CircularProgressIndicator()),
+                    child: Shimmer.fromColors(
+                      baseColor: Colors.grey[300]!,
+                      highlightColor: Colors.grey[100]!,
+                      child: ListView.builder(
+                        itemCount: 5,
+                        itemBuilder: (context, index) => Container( 
+                          height: 100,
+                          margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
                   );
                 }
               },
@@ -239,4 +278,5 @@ class NewsCard extends StatelessWidget {
       ),
     );
   }
-} 
+}
+  

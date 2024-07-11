@@ -13,12 +13,16 @@ class SaveDoctorBloc extends Bloc<SaveDoctorEvent, SaveDoctorState> {
     on<SaveDoctorBooking>(_onSaveBooking);
   }
 
-  Future<void> _onSaveBooking(SaveDoctorBooking event, Emitter<SaveDoctorState> emit) async {
+  Future<void> _onSaveBooking(
+      SaveDoctorBooking event, Emitter<SaveDoctorState> emit) async {
     try {
-      final String formattedDate = DateFormat('yyyy-MM-dd').format(event.selectedDay);
-      final String formattedTime = DateFormat('h:mm a').format(event.selectedTimeSlot);
+      final String formattedDate =
+          DateFormat('yyyy-MM-dd').format(event.selectedDay);
+      final String formattedTime =
+          DateFormat('h:mm a').format(event.selectedTimeSlot);
 
-      final CollectionReference userCollection = _firestore.collection('userbooking');
+      final CollectionReference userCollection =
+          _firestore.collection('userbooking');
 
       await userCollection.add({
         'department': event.doctordepartment,
@@ -30,6 +34,9 @@ class SaveDoctorBloc extends Bloc<SaveDoctorEvent, SaveDoctorState> {
         'disease': event.disease,
         'problem': event.problem,
         'uid': event.uid,
+        'userimage': event.userimage,
+        'usergender': event.userGender,
+        'username': event.username,
       });
 
       emit(CalendarSuccess());
@@ -39,9 +46,13 @@ class SaveDoctorBloc extends Bloc<SaveDoctorEvent, SaveDoctorState> {
     }
   }
 
-  Future<void> onCancelAppointment(String appointmentId, String doctorId) async {
+  Future<void> onCancelAppointment(
+      String appointmentId, String doctorId) async {
     try {
-      final appointmentSnapshot = await FirebaseFirestore.instance.collection('userbooking').doc(appointmentId).get();
+      final appointmentSnapshot = await FirebaseFirestore.instance
+          .collection('userbooking')
+          .doc(appointmentId)
+          .get();
 
       if (appointmentSnapshot.exists) {
         final selectedDay = appointmentSnapshot['selectedDay'];
@@ -51,8 +62,14 @@ class SaveDoctorBloc extends Bloc<SaveDoctorEvent, SaveDoctorState> {
         await appointmentSnapshot.reference.delete();
 
         // Add canceled appointment to 'cancelledappointments' collection
-        final cancelledCollection = _firestore.collection('userbooking').doc(_auth.currentUser!.uid).collection('canceledappoinement');
+        final cancelledCollection = _firestore
+            .collection('userbooking')
+            .doc(_auth.currentUser!.uid)
+            .collection('canceledappoinement');
         await cancelledCollection.add({
+          'userimage': appointmentSnapshot['userimage'],
+          'usergender': appointmentSnapshot['usergender'],
+          'username': appointmentSnapshot['username'],
           'department': appointmentSnapshot['department'],
           'hospitalName': appointmentSnapshot['hospitalName'],
           'selectedDay': selectedDay,

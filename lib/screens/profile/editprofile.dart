@@ -42,12 +42,12 @@ class EditProfile extends StatefulWidget {
 
 class _EditProfileState extends State<EditProfile> {
   late String updateImagePath;
- final List<String> genderItems = [
+  final List<String> genderItems = [
     'Male',
     'Female',
-  ];  
+  ];
 
-    String? genderselectedvalue;
+  String? genderselectedvalue;
 
   @override
   void initState() {
@@ -70,7 +70,6 @@ class _EditProfileState extends State<EditProfile> {
   final TextEditingController _locationController = TextEditingController();
   final TextEditingController _mobileController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  
 
   FocusNode myFocusNode = FocusNode();
 
@@ -183,27 +182,25 @@ class _EditProfileState extends State<EditProfile> {
                   height: mediaQuery.size.height * 0.02,
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
-                  child: BlocBuilder<GenderBloc, GenderState>(
-                    builder: (context, state) {
-                      if (state is GenderSelectedState) {
-                        genderselectedvalue = state.selectedGender;
-                      }
-                      return Drobdown( 
-                        initialvalue: genderselectedvalue,
-                        
-                        onChange: (value) {
-                          if (value != null) {
-                            BlocProvider.of<GenderBloc>(context)
-                                .add(GenderSelected(value));
-                          }
-                        },
-                        genderItems: genderItems,
-                        typeText: 'Select Your Gender',
-                      );
-                    },
-                  ),
-                ),
+                    padding: const EdgeInsets.only(left: 20, right: 20),
+                    child: BlocBuilder<GenderBloc, GenderState>(
+                      builder: (context, state) {
+                        if (state is GenderSelectedState) {
+                          genderselectedvalue = state.selectedGender;
+                        }
+                        return Drobdown(
+                          initialvalue: genderselectedvalue,
+                          onChange: (value) {
+                            if (value != null) {
+                              BlocProvider.of<GenderBloc>(context)
+                                  .add(GenderSelected(value));
+                            }
+                          },
+                          genderItems: genderItems,
+                          typeText: 'Select Your Gender',
+                        );
+                      },
+                    )),  
                 SizedBox(
                   height: mediaQuery.size.height * 0.02,
                 ),
@@ -298,7 +295,6 @@ class _EditProfileState extends State<EditProfile> {
       context: context,
       firstDate: DateTime(2000),
       lastDate: DateTime.now(),
-      
       builder: (BuildContext context, Widget? child) {
         return Theme(
           data: ThemeData.light().copyWith(

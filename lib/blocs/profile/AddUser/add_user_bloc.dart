@@ -59,7 +59,7 @@ class AddUserBloc extends Bloc<AddUserEvent, AddUserState> {
 
     final Map<String, dynamic> userData = {
       'name': name,
-      'age': age,
+      'age': age, 
       'imageUrl': imageUrl,
       'dob': dob,
       'gender': gender,

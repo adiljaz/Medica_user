@@ -37,7 +37,7 @@ class _ChatPageState extends State<ChatPage> {
     super.initState();
     _chatBloc = ChatBloc();
     _chatBloc.add(FetchMessagesEvent(widget.receiveUserId));
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       _scrollToBottom();
     });
   }
@@ -73,7 +73,7 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void _scrollToBottom() {
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_scrollController.hasClients) {
         _scrollController.animateTo(
           _scrollController.position.maxScrollExtent,
@@ -272,5 +272,5 @@ class _ChatPageState extends State<ChatPage> {
       ),
     );
   }
-} 
- 
+}
+  

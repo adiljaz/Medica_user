@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 class CustomTextFormField extends StatelessWidget {
   // ignore: prefer_const_constructors_in_immutables
   CustomTextFormField({
+
     required this.fonrmtype,
     required this.formColor,
     required this.Textcolor,
@@ -12,6 +13,7 @@ class CustomTextFormField extends StatelessWidget {
     this.icons,
     this.suficon,
     this.obscuretext = false,
+    this.textstype,
   });
 
   final FormFieldValidator<String> value;
@@ -21,6 +23,7 @@ class CustomTextFormField extends StatelessWidget {
   final Widget? suficon;
   final Color Textcolor;
   final TextEditingController controller;
+  final TextInputType? textstype; 
 
   bool obscuretext = true;
 
@@ -29,6 +32,7 @@ class CustomTextFormField extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(left: 20, right: 20),
       child: TextFormField(
+        keyboardType: textstype,
         obscureText: obscuretext,
         autovalidateMode: AutovalidateMode.onUserInteraction,
         validator: value,

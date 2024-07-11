@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fire_login/blocs/bottomnav/landing_state_bloc.dart';
 import 'package:fire_login/blocs/calendar/bloc/calendar_bloc.dart';
 import 'package:fire_login/blocs/calendar/bloc/calendar_event.dart';
@@ -90,18 +91,7 @@ class _PayNowState extends State<PayNow> {
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, handlePaymentError);
     _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, handleExternalWallet);
 
-    print(widget.name);
-    print(widget.age);
-    print(widget.disease);
-    print(widget.fees);
-    print(widget.gender);
-    print(widget.image);
-    print(widget.problem);
-    print(widget.selectedTimeSlot);
-    print(widget.totime);
-    print(widget.uid);
-    print(widget.formtime);
-    print(widget.selectedDay);
+
   }
 
   @override
@@ -136,21 +126,25 @@ class _PayNowState extends State<PayNow> {
     }
   }
 
-  void handlePaymentSuccess(PaymentSuccessResponse response) {
-    print(widget.name);
-    print(widget.age);
-    print(widget.disease);
-    print(widget.fees);
-    print(widget.gender);
-    print(widget.image);
-    print(widget.problem);
-    print(widget.selectedTimeSlot);
-    print(widget.totime);
-    print(widget.uid);
-    print(widget.formtime);
-    print(widget.selectedDay);
+  void handlePaymentSuccess(PaymentSuccessResponse response) async {
+  
+    final FirebaseAuth _auth = FirebaseAuth.instance;
 
-    
+    // Fetch the user's profile image URL
+    final userSnapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .where('uid', isEqualTo: _auth.currentUser!.uid)
+        .get();
+
+    String profileImageUrl = '';
+    String username = '';
+    String usergender = '';
+
+    if (userSnapshot.docs.isNotEmpty) {
+      profileImageUrl = userSnapshot.docs.first['imageUrl'] ?? '';
+      username = userSnapshot.docs.first['name'] ?? '';
+      usergender = userSnapshot.docs.first['gender'] ?? '';
+    }
 
     context.read<SaveUserBloc>().add(
           SaveUserBooking(
@@ -162,7 +156,7 @@ class _PayNowState extends State<PayNow> {
             age: _ageController.text,
             disease: _diseaseController.text,
             gender: selectedGender,
-            image: widget.image,
+            image: profileImageUrl,
             name: _fullnameController.text,
             problem: _problemController.text,
           ),
@@ -178,27 +172,31 @@ class _PayNowState extends State<PayNow> {
             age: _ageController.text,
             disease: _diseaseController.text,
             gender: selectedGender,
-            image: widget.image,
+            image: profileImageUrl,
             name: _fullnameController.text,
             problem: _problemController.text,
           ),
         );
 
     context.read<SaveDoctorBloc>().add(SaveDoctorBooking(
-        doctorname: widget.doctorname!,
-        doctordepartment: widget.departmnet!,
-        hospital: widget.hospital!,
-        selectedDay: widget.selectedDay,
-        selectedTimeSlot: widget.selectedTimeSlot,
-        uid: widget.uid,
-        fromTime: widget.formtime,
-        toTime: widget.totime,
-        image: widget.doctorImage!,
-        name: widget.doctorname!,
-        disease: widget.disease,
-        problem: widget.problem));
+          doctorname: widget.doctorname!,
+          doctordepartment: widget.departmnet!,
+          hospital: widget.hospital!,
+          selectedDay: widget.selectedDay,
+          selectedTimeSlot: widget.selectedTimeSlot,
+          uid: widget.uid,
+          fromTime: widget.formtime,
+          toTime: widget.totime,
+          image: widget.doctorImage!,
+          name: widget.doctorname!,
+          disease: widget.disease,
+          problem: widget.problem,
+          userimage: profileImageUrl,
+          userGender: usergender,
+          username: username,
+        ));
 
-    print(' alooooooo${widget.uid }');
+    print(' alooooooo${widget.uid}');
 
     ///  user side adding
 
@@ -301,7 +299,7 @@ class _PayNowState extends State<PayNow> {
                         onChange: (value) {
                           if (value != null) {
                             BlocProvider.of<GenderBloc>(context)
-                                .add(GenderSelected( value));
+                                .add(GenderSelected(value));
                           }
                           print(selectedGender);
                         },
@@ -319,7 +317,10 @@ class _PayNowState extends State<PayNow> {
                         fontWeight: FontWeight.bold, fontSize: 28),
                   ),
                 ),
-                CustomTextFormField(
+                CustomTextFormField(  
+                  textstype: TextInputType.number, 
+                
+
                     fonrmtype: 'your age',
                     formColor: Colormanager.wittextformfield,
                     Textcolor: Colormanager.grayText,

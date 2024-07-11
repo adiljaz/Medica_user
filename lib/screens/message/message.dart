@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:shimmer/shimmer.dart';
 import 'chat.dart';
 
 class Message extends StatelessWidget {
@@ -13,12 +14,12 @@ class Message extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold( 
+    return Scaffold(
       backgroundColor: Colormanager.scaffold,
       appBar: AppBar(
         title: Text(
           'Medica Chat',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold,color: Colormanager.blackText),
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colormanager.blackText),
         ),
         centerTitle: true,
         actions: [
@@ -29,19 +30,12 @@ class Message extends StatelessWidget {
             },
           ),
         ],
-    backgroundColor: Colormanager.scaffold,
+        backgroundColor: Colormanager.scaffold,
         elevation: 0,
       ),
       body: _buildDoctorList(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Implement new chat functionality
-        },
-        child: Icon(Icons.add, color: Color(0xFF1A1A2E)),
-        backgroundColor: Color(0xFFE94560),
-      ),
     );
-  } 
+  }
 
   Widget _buildDoctorList() {
     return StreamBuilder<QuerySnapshot>(
@@ -52,7 +46,7 @@ class Message extends StatelessWidget {
         }
 
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color.fromARGB(255, 0, 4, 255))));
+          return _buildShimmerList();
         }
 
         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
@@ -80,6 +74,48 @@ class Message extends StatelessWidget {
     );
   }
 
+  Widget _buildShimmerList() {
+    return ListView.builder(
+      itemCount: 6, // Adjust the number of shimmer items as needed
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: ListTile(
+                contentPadding: EdgeInsets.all(16),
+                leading: Container(
+                  width: 60,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.grey[300],
+                  ),
+                ),
+                title: Container(
+                  height: 16,
+                  width: 100,
+                  color: Colors.grey[300],
+                ),
+                subtitle: Container(
+                  height: 14,
+                  width: 150,
+                  color: Colors.grey[300],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   Widget _buildUserListItem(DocumentSnapshot document, BuildContext context) {
     Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
 
@@ -101,7 +137,7 @@ class Message extends StatelessWidget {
         },
         child: Container(
           decoration: BoxDecoration(
-           color: Color.fromRGBO(13, 100, 250, 0.507),
+            color: Color.fromRGBO(13, 100, 250, 0.507),
             borderRadius: BorderRadius.circular(20),
             boxShadow: [
               BoxShadow(
@@ -117,13 +153,12 @@ class Message extends StatelessWidget {
               ListTile(
                 contentPadding: EdgeInsets.all(16),
                 leading: Hero(
-                  tag: 'profile_${uid}',
+                  tag: 'profile_$uid',
                   child: Container(
                     width: 60,
                     height: 60,
                     decoration: BoxDecoration(
-                      shape: BoxShape.circle, 
-                       
+                      shape: BoxShape.circle,
                       image: DecorationImage(
                         fit: BoxFit.cover,
                         image: profile != null
@@ -178,7 +213,6 @@ class Message extends StatelessWidget {
                     return Container(
                       padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                     
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
@@ -217,7 +251,7 @@ class Message extends StatelessWidget {
         .collection('messages')
         .orderBy('timestamp', descending: true)
         .limit(1)
-        .snapshots(); 
+        .snapshots();
   }
 
   String _getChatId(String userId1, String userId2) {
@@ -225,4 +259,4 @@ class Message extends StatelessWidget {
     ids.sort();
     return ids.join('_');
   }
-} 
+}

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fire_login/blocs/Favorite/favorite_bloc.dart';
 import 'package:fire_login/screens/home/booking/booking.dart';
+import 'package:fire_login/screens/home/drdetails/seeallreview/seeall.dart';
 import 'package:fire_login/screens/home/reviews/model/reviewmodel.dart';
 import 'package:fire_login/screens/home/reviews/review.dart';
 import 'package:fire_login/screens/message/chat.dart';
@@ -15,6 +16,7 @@ import 'package:iconly/iconly.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:shimmer/shimmer.dart';
 
 class DrDetails extends StatefulWidget {
   final String imageUrl;
@@ -310,19 +312,84 @@ class _DrDetailsState extends State<DrDetails> {
                                         color: Colormanager.blueicon,
                                       ),
                                     ),
-                                    Text('4,942+',
-                                        style: GoogleFonts.poppins(
-                                          fontSize: 13,
-                                          textStyle: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: Colormanager.blueText),
-                                        )),
-                                    Text(
-                                      'Review',
-                                      style: GoogleFonts.poppins(
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.w500),
-                                    )
+                                    StreamBuilder<QuerySnapshot>(
+                                      stream: FirebaseFirestore.instance
+                                          .collection('doctor')
+                                          .doc(widget.uid)
+                                          .collection('reviews')
+                                          .snapshots(),
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.waiting) {
+                                          // Show shimmer effect while loading
+                                          return Shimmer.fromColors( 
+                                            baseColor: Colors.grey[300]!,
+                                            highlightColor: Colors.grey[100]!,
+                                            child: Column(
+                                              children: [
+                                                Container(
+                                                  width: 40,
+                                                  height: 40,
+                                                  color: Colors.white,
+                                                ),
+                                                SizedBox(height: 8),
+                                                Container(
+                                                  width: 60,
+                                                  height: 16,
+                                                  color: Colors.white,
+                                                ),
+                                                SizedBox(height: 4),
+                                                Container(
+                                                  width: 40,
+                                                  height: 16,
+                                                  color: Colors.white,
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        }
+
+                                        if (snapshot.hasError) {
+                                          return Text(
+                                              'Error: ${snapshot.error}');
+                                        }
+
+                                        final reviews =
+                                            snapshot.data?.docs ?? [];
+                                        final totalReviews = reviews.length;
+                                        int doctorReviewsCount = 0;
+
+                                        // Count the number of reviews for this specific doctor
+                                        for (var review in reviews) {
+                                          if (review['doctorId'] ==
+                                              widget.uid) {
+                                            doctorReviewsCount++;
+                                          }
+                                        }
+
+                                        return Column(
+                                          children: [
+                                            Text(
+                                              '$doctorReviewsCount',
+                                              style: GoogleFonts.poppins(
+                                                fontSize: 13,
+                                                textStyle: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colormanager.blueText,
+                                                ),
+                                              ),
+                                            ),
+                                            Text(
+                                              'Review',
+                                              style: GoogleFonts.poppins(
+                                                fontSize: 13,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    ),
                                   ],
                                 ),
                               ],
@@ -393,6 +460,7 @@ class _DrDetailsState extends State<DrDetails> {
                                   color: Colormanager.blueText),
                             ),
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
                                   'Reviews',
@@ -400,38 +468,21 @@ class _DrDetailsState extends State<DrDetails> {
                                       fontWeight: FontWeight.bold,
                                       fontSize: 33),
                                 ),
+
+                                TextButton(onPressed: (){
+                                  Navigator.of(context).push(PageTransition(child:ReviewS(), type: PageTransitionType.fade)); 
+                                }, child: Text('See All',style: GoogleFonts.dongle(fontWeight: FontWeight.bold,fontSize: 25,color: Colormanager.blueText),))
                               ],
                             ),
+                            
                             _buildReviewsList(),
-
-                            SizedBox(height: mediaQuery.size.height*0.02,),
-
-
-                            GestureDetector(
-          onTap: () {
-            Navigator.of(context).push(PageTransition(
-                child: ReviewPage(
-                  doctorId: widget.uid!,
-                ),
-                type: PageTransitionType.fade));
-          },
-          child: Container(
-            child: Center(
-                child: Text('Add Review',
-                    style: GoogleFonts.dongle(
-                        textStyle: TextStyle(
-                            color: Colormanager.whiteText,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 30)))),
-            decoration: BoxDecoration(
-                color: Colormanager.blueicon,
-                borderRadius: BorderRadius.circular(10)),
-            height: mediaQuery.size.height * 0.06,
-            width: mediaQuery.size.width,
-          ),
-        ) ,      SizedBox(height: mediaQuery.size.height*0.04,),
-
-
+                            SizedBox(
+                              height: mediaQuery.size.height * 0.02,
+                            ),
+                             
+                            SizedBox(
+                              height: mediaQuery.size.height * 0.04,
+                            ),
                           ],
                         ),
                       ),
@@ -520,128 +571,127 @@ class _DrDetailsState extends State<DrDetails> {
     );
   }
 
-Widget _buildReviewsList() {
-  MediaQueryData mediaQuery = MediaQuery.of(context);
-  return StreamBuilder<QuerySnapshot>(
-    stream: FirebaseFirestore.instance
-        .collection('doctor')
-        .doc(widget.uid)
-        .collection('reviews')
-        .orderBy('date', descending: true)
-        .snapshots(),
-    builder: (context, snapshot) {
-      if (snapshot.connectionState == ConnectionState.waiting) {
-        return Center(child: CircularProgressIndicator());
-      }
+  Widget _buildReviewsList() {
+    MediaQueryData mediaQuery = MediaQuery.of(context);
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection('doctor')
+          .doc(widget.uid)
+          .collection('reviews')
+          .orderBy('date', descending: true)
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        }
 
-      if (snapshot.hasError) {
-        return Center(child: Text('Error: ${snapshot.error}'));
-      }
+        if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        }
 
-      final reviews = snapshot.data?.docs ?? [];
+        final reviews = snapshot.data?.docs ?? [];
 
-      if (reviews.isEmpty) {
-        return Center(
-            child: GestureDetector(
-          onTap: () {
-            Navigator.of(context).push(PageTransition(
-                child: ReviewPage(
-                  doctorId: widget.uid!,
-                ),
-                type: PageTransitionType.fade));
-          },
-          child: Container(
-            child: Center(
-                child: Text('Add Review',
-                    style: GoogleFonts.dongle(
-                        textStyle: TextStyle(
-                            color: Colormanager.whiteText,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 30)))),
-            decoration: BoxDecoration(
-                color: Colormanager.blueicon,
-                borderRadius: BorderRadius.circular(10)),
-            height: mediaQuery.size.height * 0.06,
-            width: mediaQuery.size.width,
-          ),
-        )
-        );
-      }
-
-      return ListView.builder(
-        shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
-        itemCount: reviews.length > 2 ? 2 : reviews.length,
-        itemBuilder: (context, index) {
-          final review = reviews[index];
-          String userImage = review['userimage'] ?? '';
-          String userName = review['username'] ?? 'Anonymous';
-          String userReview = review['review'] ?? '';
-          double rating = (review['rating'] as num).toDouble();
-          DateTime date = (review['date'] as Timestamp).toDate();
-
-          return Card(
-            color: Colormanager.whiteContainer,
-            margin: EdgeInsets.symmetric(vertical: 8),
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12)),
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      CircleAvatar(
-                        backgroundImage: userImage.isNotEmpty
-                            ? NetworkImage(userImage)
-                            : null,
-                        child: userImage.isEmpty
-                            ? Icon(Icons.person, color: Colors.white)
-                            : null,
-                        radius: 25,
-                        backgroundColor: Colors.blue,
-                      ),
-                      SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              userName,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                  color: Colors.blue),
-                            ),
-                            Text(
-                              DateFormat('MMM d, yyyy').format(date),
-                              style: TextStyle(color: Colors.grey),
-                            ),
-                          ],
-                        ),
-                      ),
-                      RatingBarIndicator(
-                        rating: rating,
-                        itemBuilder: (context, index) =>
-                            Icon(Icons.star, color: Colors.amber),
-                        itemCount: 5,
-                        itemSize: 20,
-                      ),
-                    ],
+        if (reviews.isEmpty) {
+          return Center(
+              child: GestureDetector(
+            onTap: () {
+              Navigator.of(context).push(PageTransition(
+                  child: ReviewPage(
+                    doctorId: widget.uid!,
                   ),
-                  SizedBox(height: 8),
-                  Text(
-                    userReview,
-                    style: TextStyle(fontSize: 14),
-                  ),
-                ],
-              ),
+                  type: PageTransitionType.fade));
+            },
+            child: Container(
+              child: Center(
+                  child: Text('Add Review',
+                      style: GoogleFonts.dongle(
+                          textStyle: TextStyle(
+                              color: Colormanager.whiteText,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 30)))),
+              decoration: BoxDecoration(
+                  color: Colormanager.blueicon,
+                  borderRadius: BorderRadius.circular(10)),
+              height: mediaQuery.size.height * 0.06,
+              width: mediaQuery.size.width,
             ),
-          );
-        },
-      );
-    },
-  );
-}
+          ));
+        }
+
+        return ListView.builder(
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          itemCount: reviews.length > 2 ? 2 : reviews.length,
+          itemBuilder: (context, index) {
+            final review = reviews[index];
+            String userImage = review['userimage'] ?? '';
+            String userName = review['username'] ?? 'Anonymous';
+            String userReview = review['review'] ?? '';
+            double rating = (review['rating'] as num).toDouble();
+            DateTime date = (review['date'] as Timestamp).toDate();
+
+            return Card(
+              color: Colormanager.whiteContainer,
+              margin: EdgeInsets.symmetric(vertical: 8),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        CircleAvatar(
+                          backgroundImage: userImage.isNotEmpty
+                              ? NetworkImage(userImage)
+                              : null,
+                          child: userImage.isEmpty
+                              ? Icon(Icons.person, color: Colors.white)
+                              : null,
+                          radius: 25,
+                          backgroundColor: Colors.blue,
+                        ),
+                        SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                userName,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                    color: Colors.blue),
+                              ),
+                              Text(
+                                DateFormat('MMM d, yyyy').format(date),
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                            ],
+                          ),
+                        ),
+                        RatingBarIndicator(
+                          rating: rating,
+                          itemBuilder: (context, index) =>
+                              Icon(Icons.star, color: Colors.amber),
+                          itemCount: 5,
+                          itemSize: 20,
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      userReview,
+                      style: TextStyle(fontSize: 14),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
 }
