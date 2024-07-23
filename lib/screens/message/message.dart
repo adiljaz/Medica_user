@@ -1,39 +1,157 @@
 import 'package:fire_login/utils/colors/colormanager.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:shimmer/shimmer.dart';
 import 'chat.dart';
 
-class Message extends StatelessWidget {
+class Message extends StatefulWidget {
   Message({Key? key}) : super(key: key);
+
+  @override
+  _MessageState createState() => _MessageState();
+}
+
+class _MessageState extends State<Message> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colormanager.scaffold,
       appBar: AppBar(
-        title: Text(
-          'Medica Chat',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colormanager.blackText),
-        ),
+        title: Text('Messages',
+            style: GoogleFonts.dongle(
+              textStyle: TextStyle(
+                  fontSize: 33,
+                  fontWeight: FontWeight.bold,
+                  color: Colormanager.blackText),
+            )),
         centerTitle: true,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.search, color: Color(0xFFE94560)),
-            onPressed: () {
-              // Implement search functionality
-            },
-          ),
-        ],
         backgroundColor: Colormanager.scaffold,
         elevation: 0,
       ),
-      body: _buildDoctorList(),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+
+      //        TextField(
+      
+        
+        
+      //   controller: controller,
+      //   onChanged: onChanged,
+      //   decoration: InputDecoration(
+         
+      //     fillColor: Colormanager.whiteContainer,
+      //     filled: true,
+      //     border: OutlineInputBorder(borderSide: BorderSide.none,borderRadius: BorderRadius.circular(10)),
+      //     prefixIcon: Icon(icon),
+      //     hintText: 'Search doctors...',
+          
+      //   ),
+      // ),
+
+
+            child: TextField(
+              
+              
+              controller: _searchController,
+              decoration: InputDecoration(
+                  fillColor: Colormanager.whiteContainer,
+                  filled: true,
+                  hintText: 'Search doctors...',
+                  prefixIcon: Icon(Icons.search, color: Colormanager.blueicon),
+                  border: OutlineInputBorder(
+                    
+                    borderSide: BorderSide.none,
+                   
+                    
+                      borderRadius: BorderRadius.circular(10)),
+                      contentPadding: EdgeInsets.all(1),
+                      ),
+              onChanged: (value) {
+                setState(() {
+                  _searchQuery = value.toLowerCase();
+                });
+              },
+            ),
+          ),
+          _buildHorizontalUserList(),
+          Expanded(child: _buildDoctorList()),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHorizontalUserList() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        height: 100,
+        child: StreamBuilder<QuerySnapshot>(
+          stream: _firestore.collection('doctor').snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.hasError || !snapshot.hasData) {
+              return Center(child: CircularProgressIndicator());
+            }
+
+            return ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: snapshot.data!.docs.length,
+              itemBuilder: (context, index) {
+                DocumentSnapshot doc = snapshot.data!.docs[index];
+                Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+                String? uid = data['uid'];
+                String? profile = data['imageUrl'];
+                String name = data['name'] ?? 'Unknown';
+
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => ChatPage(
+                          name: name,
+                          image: profile!,
+                          receiveUserId: uid!,
+                        ),
+                      ));
+                    },
+                    child: Column(
+                      children: [
+                        CircleAvatar(
+                          radius: 30,
+                          backgroundImage: profile != null
+                              ? NetworkImage(profile)
+                              : AssetImage('assets/default_avatar.png')
+                                  as ImageProvider,
+                        ),
+                        SizedBox(height: 4),
+                        Text(
+                          name,
+                          style: TextStyle(
+                              fontSize: 12,
+                              color: Colormanager.blackText,
+                              fontWeight: FontWeight.bold),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            );
+          },
+        ),
+      ),
     );
   }
 
@@ -42,7 +160,9 @@ class Message extends StatelessWidget {
       stream: _firestore.collection('doctor').snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}', style: TextStyle(color: Colors.white)));
+          return Center(
+              child: Text('Error: ${snapshot.error}',
+                  style: TextStyle(color: Colors.white)));
         }
 
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -50,12 +170,26 @@ class Message extends StatelessWidget {
         }
 
         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-          return Center(child: Text('No doctors available', style: TextStyle(color: Colors.white)));
+          return Center(
+              child: Text('No doctors available', 
+                     style: TextStyle(color: Colormanager.blackText)));
+        }
+
+        List<DocumentSnapshot> filteredDocs = snapshot.data!.docs.where((doc) {
+          Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+          String name = (data['name'] ?? '').toLowerCase();
+          return name.contains(_searchQuery);
+        }).toList();
+
+        if (filteredDocs.isEmpty) {
+          return Center(
+              child: Text('No matching doctors found',
+                  style: TextStyle(color: Colormanager.blackText)));
         }
 
         return AnimationLimiter(
           child: ListView.builder(
-            itemCount: snapshot.data!.docs.length,
+            itemCount: filteredDocs.length,
             itemBuilder: (context, index) {
               return AnimationConfiguration.staggeredList(
                 position: index,
@@ -63,7 +197,7 @@ class Message extends StatelessWidget {
                 child: SlideAnimation(
                   verticalOffset: 50.0,
                   child: FadeInAnimation(
-                    child: _buildUserListItem(snapshot.data!.docs[index], context),
+                    child: _buildUserListItem(filteredDocs[index], context),
                   ),
                 ),
               );
@@ -76,7 +210,7 @@ class Message extends StatelessWidget {
 
   Widget _buildShimmerList() {
     return ListView.builder(
-      itemCount: 6, // Adjust the number of shimmer items as needed
+      itemCount: 6,
       itemBuilder: (context, index) {
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
@@ -163,25 +297,34 @@ class Message extends StatelessWidget {
                         fit: BoxFit.cover,
                         image: profile != null
                             ? NetworkImage(profile)
-                            : AssetImage('assets/default_avatar.png') as ImageProvider,
+                            : AssetImage('assets/default_avatar.png')
+                                as ImageProvider,
                       ),
                     ),
                   ),
                 ),
                 title: Text(
                   name,
-                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      fontSize: 18),
                 ),
                 subtitle: StreamBuilder<QuerySnapshot>(
                   stream: _getLastMessageStream(uid!),
                   builder: (context, snapshot) {
-                    if (snapshot.hasError || !snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                      return Text('Start a conversation', style: TextStyle(color: Colors.grey[400]));
+                    if (snapshot.hasError ||
+                        !snapshot.hasData ||
+                        snapshot.data!.docs.isEmpty) {
+                      return Text('Start a conversation',
+                          style: TextStyle(color: Colors.grey[400]));
                     }
 
                     DocumentSnapshot lastMessage = snapshot.data!.docs.first;
-                    Map<String, dynamic> lastMessageData = lastMessage.data() as Map<String, dynamic>;
-                    String message = lastMessageData['message'] ?? 'No messages yet';
+                    Map<String, dynamic> lastMessageData =
+                        lastMessage.data() as Map<String, dynamic>;
+                    String message =
+                        lastMessageData['message'] ?? 'No messages yet';
                     String messageType = lastMessageData['type'] ?? 'text';
 
                     return Text(
@@ -199,13 +342,17 @@ class Message extends StatelessWidget {
                 child: StreamBuilder<QuerySnapshot>(
                   stream: _getLastMessageStream(uid!),
                   builder: (context, snapshot) {
-                    if (snapshot.hasError || !snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                    if (snapshot.hasError ||
+                        !snapshot.hasData ||
+                        snapshot.data!.docs.isEmpty) {
                       return SizedBox.shrink();
                     }
 
                     DocumentSnapshot lastMessage = snapshot.data!.docs.first;
-                    Map<String, dynamic> lastMessageData = lastMessage.data() as Map<String, dynamic>;
-                    Timestamp timestamp = lastMessageData['timestamp'] as Timestamp;
+                    Map<String, dynamic> lastMessageData =
+                        lastMessage.data() as Map<String, dynamic>;
+                    Timestamp timestamp =
+                        lastMessageData['timestamp'] as Timestamp;
                     DateTime messageTime = timestamp.toDate();
 
                     String formattedTime = _getFormattedTime(messageTime);

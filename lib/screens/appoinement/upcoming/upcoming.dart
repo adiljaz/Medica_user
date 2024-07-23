@@ -402,11 +402,11 @@ class UpcomingAppointments extends StatelessWidget {
         final dailyBookingRef = doctorRef.collection('dailyBookings');
         final bookedSlot = await dailyBookingRef
             .where('selectedDay', isEqualTo: selectedDay)
-            .where('selectedTimeSlot', isEqualTo: selectedTimeSlot)
+            .where('selectedTimeSlot', isEqualTo: selectedTimeSlot) 
             .get();
 
         if (bookedSlot.docs.isNotEmpty) {
-          await bookedSlot.docs.first.reference.delete();
+          await bookedSlot.docs.first.reference.delete(); 
         }
       }
     } catch (e) {
@@ -414,4 +414,4 @@ class UpcomingAppointments extends StatelessWidget {
       // Handle error here
     }
   }
-}  
+}   

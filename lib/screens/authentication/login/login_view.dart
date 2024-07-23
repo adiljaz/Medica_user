@@ -70,6 +70,7 @@ class LoginPage extends StatelessWidget {
           });
         }
         return Scaffold(
+          backgroundColor: Colormanager.scaffold,
             body: BlocListener<GoogleAuthBloc, GoogleAuthState>(
           listener: (context, state) {
             if (state is GoogleAuthsuccess) {

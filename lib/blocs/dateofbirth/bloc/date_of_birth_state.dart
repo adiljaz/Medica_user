@@ -1,9 +1,9 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 
 @immutable
-sealed class DateOfBirthState {}
+abstract class DateOfBirthState {}
 
-final class DateOfBirthInitial extends DateOfBirthState {}
+class DateOfBirthInitial extends DateOfBirthState {}
 
 class DateOfBirthSelectedState extends DateOfBirthState {
   final String dateOfBirth;

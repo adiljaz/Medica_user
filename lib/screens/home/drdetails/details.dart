@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fire_login/blocs/Favorite/favorite_bloc.dart';
 import 'package:fire_login/screens/home/booking/booking.dart';
+import 'package:fire_login/screens/home/drdetails/seeallreview/avgrating.dart';
 import 'package:fire_login/screens/home/drdetails/seeallreview/seeall.dart';
+import 'package:fire_login/screens/home/drdetails/seeallreview/usercount.dart';
 import 'package:fire_login/screens/home/reviews/model/reviewmodel.dart';
 import 'package:fire_login/screens/home/reviews/review.dart';
 import 'package:fire_login/screens/message/chat.dart';
@@ -231,31 +233,10 @@ class _DrDetailsState extends State<DrDetails> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Column(
-                                  children: [
-                                    DetailsRound(
-                                      icon: Icon(
-                                        Icons.groups,
-                                        size: 30,
-                                        color: Colormanager.blueicon,
-                                      ),
-                                    ),
-                                    Text('5,000+',
-                                        style: GoogleFonts.poppins(
-                                          fontSize: 13,
-                                          textStyle: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: Colormanager.blueText),
-                                        )),
-                                    Text(
-                                      'Patients',
-                                      style: GoogleFonts.poppins(
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.w500),
-                                    )
-                                  ],
-                                ),
-                                Column(
+                               
+                                   UserCount(doctorUid: widget.uid!,) ,    
+                              
+                                Column( 
                                   children: [
                                     DetailsRound(
                                       icon: Icon(
@@ -279,30 +260,7 @@ class _DrDetailsState extends State<DrDetails> {
                                     )
                                   ],
                                 ),
-                                Column(
-                                  children: [
-                                    DetailsRound(
-                                      icon: Icon(
-                                        IconlyBold.star,
-                                        size: 26,
-                                        color: Colormanager.blueicon,
-                                      ),
-                                    ),
-                                    Text('4.8',
-                                        style: GoogleFonts.poppins(
-                                          fontSize: 13,
-                                          textStyle: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: Colormanager.blueText),
-                                        )),
-                                    Text(
-                                      'Rating',
-                                      style: GoogleFonts.poppins(
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.w500),
-                                    )
-                                  ],
-                                ),
+                                DoctorRatingWidget(doctorId: widget.uid!), 
                                 Column(
                                   children: [
                                     DetailsRound(
@@ -322,7 +280,7 @@ class _DrDetailsState extends State<DrDetails> {
                                         if (snapshot.connectionState ==
                                             ConnectionState.waiting) {
                                           // Show shimmer effect while loading
-                                          return Shimmer.fromColors( 
+                                          return Shimmer.fromColors(
                                             baseColor: Colors.grey[300]!,
                                             highlightColor: Colors.grey[100]!,
                                             child: Column(
@@ -468,18 +426,52 @@ class _DrDetailsState extends State<DrDetails> {
                                       fontWeight: FontWeight.bold,
                                       fontSize: 33),
                                 ),
-
-                                TextButton(onPressed: (){
-                                  Navigator.of(context).push(PageTransition(child:ReviewS(), type: PageTransitionType.fade)); 
-                                }, child: Text('See All',style: GoogleFonts.dongle(fontWeight: FontWeight.bold,fontSize: 25,color: Colormanager.blueText),))
+                                TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).push(PageTransition(
+                                          child: ReviewS(
+                                            doctorId: widget.uid!,
+                                          ),
+                                          type: PageTransitionType.fade));
+                                    },
+                                    child: Text(
+                                      'See All',
+                                      style: GoogleFonts.dongle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 25,
+                                          color: Colormanager.blueText),
+                                    ))
                               ],
                             ),
-                            
                             _buildReviewsList(),
                             SizedBox(
                               height: mediaQuery.size.height * 0.02,
                             ),
-                             
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).push(PageTransition(
+                                    child: ReviewPage(
+                                      doctorId: widget.uid!,
+                                    ),
+                                    type: PageTransitionType.fade));
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: Colormanager.blueContainer,
+                                    borderRadius: BorderRadius.circular(5)),
+                                height: mediaQuery.size.width * 0.12,
+                                width: mediaQuery.size.width * 2,
+                                child: Center(
+                                    child: Text(
+                                  'Add reviews',
+                                  style: GoogleFonts.dongle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 30,
+                                    color: Colormanager.whiteContainer,
+                                  ),
+                                )),
+                              ),
+                            ),
                             SizedBox(
                               height: mediaQuery.size.height * 0.04,
                             ),

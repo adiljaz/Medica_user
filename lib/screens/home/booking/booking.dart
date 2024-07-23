@@ -148,7 +148,7 @@ class BookingView extends StatelessWidget {
                               firstDay: DateTime.now(),
                               lastDay: DateTime(2050),
                               selectedDayPredicate: (day) {
-                                return isSameDay(selectedDay, day);
+                                return isSameDay(selectedDay, day); 
                               },
                               onFormatChanged: (format) {},
                               onDaySelected: (selectedDay, focusedDay) {

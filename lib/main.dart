@@ -3,6 +3,7 @@ import 'package:fire_login/blocs/Obascure/obscure_bloc.dart';
 import 'package:fire_login/blocs/auth/auth_bloc.dart';
 import 'package:fire_login/blocs/calendar/bloc/calendar_bloc.dart';
 import 'package:fire_login/blocs/dateofbirth/bloc/date_of_birth_bloc.dart';
+import 'package:fire_login/blocs/drcount/doctor_details_bloc.dart';
 
 import 'package:fire_login/blocs/edit_user/edit_user_bloc.dart';
 import 'package:fire_login/blocs/bottomnav/landing_state_bloc.dart';
@@ -126,6 +127,10 @@ class MyApp extends StatelessWidget {
         create: (context) => GenderBloc(), 
         child: Container(),
        ),
+       BlocProvider(
+        create: (context) => PatientCountBloc(),
+        child: Container(), 
+       )
 
      
       ],

@@ -19,7 +19,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:iconly/iconly.dart';
 import 'package:page_transition/page_transition.dart';
 
-
 class Home extends StatelessWidget {
   Home({Key? key}) : super(key: key);
 
@@ -39,7 +38,7 @@ class Home extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    HomePageHeader(), 
+                    HomePageHeader(),
                     SizedBox(width: mediaQuery.size.width * 0.013),
                     Expanded(
                       child: Column(
@@ -52,11 +51,7 @@ class Home extends StatelessWidget {
                                 color: Colormanager.grayText,
                                 fontSize: 12),
                           ),
-                          Text(
-                            'Adil jaseem',
-                            style: GoogleFonts.poppins(
-                                fontWeight: FontWeight.bold, fontSize: 17),
-                          ),
+                          HomePageHeader(), // Using the HomePageHeader widget to fetch and display user data
                         ],
                       ),
                     ),
@@ -76,7 +71,7 @@ class Home extends StatelessWidget {
                       ),
                     ),
                   ],
-                ),
+                ), 
                 Padding(
                   padding: const EdgeInsets.only(top: 20, left: 8, right: 8),
                   child: Column(
@@ -129,11 +124,9 @@ class Home extends StatelessWidget {
                             ),
                             GestureDetector(
                               onTap: () {
-
                                 Navigator.of(context).push(PageTransition(
                                     child: const SeeAll(),
                                     type: PageTransitionType.fade));
-                                    
                               },
                               child: Text(
                                 'See All',

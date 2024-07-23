@@ -24,17 +24,17 @@ class EditProfile extends StatefulWidget {
   final String uid;
   final int mobile;
 
-  EditProfile(
-      {Key? key,
-      required this.name,
-      required this.age,
-      required this.dob,
-      required this.gender,
-      required this.location,
-      required this.image,
-      required this.uid,
-      required this.mobile})
-      : super(key: key);
+  EditProfile({
+    Key? key,
+    required this.name,
+    required this.age,
+    required this.dob,
+    required this.gender,
+    required this.location,
+    required this.image,
+    required this.uid,
+    required this.mobile
+  }) : super(key: key);
 
   @override
   State<EditProfile> createState() => _EditProfileState();
@@ -66,7 +66,6 @@ class _EditProfileState extends State<EditProfile> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
   final TextEditingController _dateOfBirthController = TextEditingController();
-
   final TextEditingController _locationController = TextEditingController();
   final TextEditingController _mobileController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -118,9 +117,7 @@ class _EditProfileState extends State<EditProfile> {
                     ],
                   ),
                 ),
-                SizedBox(
-                  height: mediaQuery.size.height * 0.02,
-                ),
+                SizedBox(height: mediaQuery.size.height * 0.02),
                 ProfileTextFormField(
                   keyboardtype: TextInputType.name,
                   fonrmtype: 'Name ',
@@ -134,9 +131,7 @@ class _EditProfileState extends State<EditProfile> {
                     return null;
                   },
                 ),
-                SizedBox(
-                  height: mediaQuery.size.height * 0.02,
-                ),
+                SizedBox(height: mediaQuery.size.height * 0.02),
                 ProfileTextFormField(
                   keyboardtype: TextInputType.number,
                   fonrmtype: 'Age ',
@@ -150,9 +145,7 @@ class _EditProfileState extends State<EditProfile> {
                     return null;
                   },
                 ),
-                SizedBox(
-                  height: mediaQuery.size.height * 0.02,
-                ),
+                SizedBox(height: mediaQuery.size.height * 0.02),
                 SizedBox(
                   height: mediaQuery.size.height * 0.07,
                   child: BlocBuilder<DateOfBirthBloc, DateOfBirthState>(
@@ -162,48 +155,49 @@ class _EditProfileState extends State<EditProfile> {
                       }
 
                       return DateofBirth(
-                          value: (value) {
-                            if (value!.isEmpty) {
-                              return 'Add Date of Birth';
-                            }
-                            return null;
-                          },
-                          controller: _dateOfBirthController,
-                          labeltext: 'Date of birth',
-                          onTap: () {
-                            _selectDate();
-
-                            FocusScope.of(context).requestFocus(myFocusNode);
-                          });
+                        value: (value) {
+                          if (value!.isEmpty) {
+                            return 'Add Date of Birth';
+                          }
+                          return null;
+                        },
+                        controller: _dateOfBirthController,
+                        labeltext: 'Date of birth',
+                        onTap: () {
+                          _selectDate();
+                          FocusScope.of(context).requestFocus(myFocusNode);
+                        }
+                      );
                     },
                   ),
                 ),
-                SizedBox(
-                  height: mediaQuery.size.height * 0.02,
-                ),
+                SizedBox(height: mediaQuery.size.height * 0.02),
                 Padding(
-                    padding: const EdgeInsets.only(left: 20, right: 20),
-                    child: BlocBuilder<GenderBloc, GenderState>(
-                      builder: (context, state) {
-                        if (state is GenderSelectedState) {
-                          genderselectedvalue = state.selectedGender;
-                        }
-                        return Drobdown(
-                          initialvalue: genderselectedvalue,
-                          onChange: (value) {
-                            if (value != null) {
-                              BlocProvider.of<GenderBloc>(context)
-                                  .add(GenderSelected(value));
-                            }
-                          },
-                          genderItems: genderItems,
-                          typeText: 'Select Your Gender',
-                        );
-                      },
-                    )),  
-                SizedBox(
-                  height: mediaQuery.size.height * 0.02,
-                ),
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  child: BlocBuilder<GenderBloc, GenderState>(
+                    builder: (context, state) {
+                      if (state is GenderSelectedState) {
+                        genderselectedvalue = state.selectedGender;
+                      }
+                      // Ensure genderselectedvalue is always a valid option
+                      if (genderselectedvalue == null || !genderItems.contains(genderselectedvalue)) {
+                        genderselectedvalue = genderItems.first;
+                      }
+                      return Drobdown(
+                        initialvalue: genderselectedvalue,
+                        onChange: (value) {
+                          if (value != null) {
+                            BlocProvider.of<GenderBloc>(context)
+                                .add(GenderSelected(value));
+                          }
+                        },
+                        genderItems: genderItems,
+                        typeText: 'Select Your Gender',
+                      );
+                    },
+                  )
+                ),  
+                SizedBox(height: mediaQuery.size.height * 0.02),
                 ProfileTextFormField(
                   keyboardtype: TextInputType.number,
                   fonrmtype: 'Mobile ',
@@ -217,13 +211,9 @@ class _EditProfileState extends State<EditProfile> {
                     return null;
                   },
                 ),
-                SizedBox(
-                  height: mediaQuery.size.height * 0.02,
-                ),
+                SizedBox(height: mediaQuery.size.height * 0.02),
                 Location(locationcontroler: _locationController),
-                SizedBox(
-                  height: mediaQuery.size.height * 0.03,
-                ),
+                SizedBox(height: mediaQuery.size.height * 0.03),
                 GestureDetector(
                   onTap: () async {
                     if (_formKey.currentState!.validate()) {
@@ -231,7 +221,6 @@ class _EditProfileState extends State<EditProfile> {
                       final name = _nameController.text;
                       final age = int.parse(_ageController.text);
                       final dob = _dateOfBirthController.text;
-
                       final mobile = int.parse(_mobileController.text);
                       final location = _locationController.text;
 
@@ -321,4 +310,4 @@ class _EditProfileState extends State<EditProfile> {
       context.read<DateOfBirthBloc>().add(DateOfBirthSelected(_picked));
     }
   }
-}
+}   

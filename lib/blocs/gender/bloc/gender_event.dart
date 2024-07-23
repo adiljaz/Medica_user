@@ -6,3 +6,6 @@ class GenderSelected extends GenderEvent {
 
   GenderSelected(this.selectedGender);
 }
+
+
+class GenderCleared  extends GenderEvent{}

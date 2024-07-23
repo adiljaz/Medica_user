@@ -61,7 +61,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
       SaveBooking event, Emitter<CalendarState> emit) async {
     try {
       final String formattedDate =
-          DateFormat('yyyy-MM-dd').format(event.selectedDay);
+          "${event.selectedDay.day}/${event.selectedDay.month}/${event.selectedDay.year}";
       final String formattedTime =
           DateFormat('h:mm a').format(event.selectedTimeSlot);
 
@@ -108,7 +108,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
 
     final QuerySnapshot snapshot = await userCollection
         .where('selectedDay',
-            isEqualTo: DateFormat('yyyy-MM-dd').format(selectedDay))
+            isEqualTo: "${selectedDay.day}/${selectedDay.month}/${selectedDay.year}")
         .get();
     final List<DateTime> bookedSlots = [];
 
@@ -140,4 +140,4 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
 
     return slots;
   }
-}
+}  

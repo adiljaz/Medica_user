@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fire_login/blocs/bottomnav/landing_state_bloc.dart';
 import 'package:fire_login/blocs/calendar/bloc/calendar_bloc.dart';
 import 'package:fire_login/blocs/calendar/bloc/calendar_event.dart';
+import 'package:fire_login/blocs/drcount/doctor_details_bloc.dart';
+import 'package:fire_login/blocs/drcount/doctor_details_event.dart';
 import 'package:fire_login/blocs/gender/bloc/gender_bloc.dart';
 import 'package:fire_login/blocs/gender/bloc/gender_event.dart';
 import 'package:fire_login/blocs/gender/bloc/gender_state.dart';
@@ -90,8 +92,6 @@ class _PayNowState extends State<PayNow> {
     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, handlePaymentSuccess);
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, handlePaymentError);
     _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, handleExternalWallet);
-
-
   }
 
   @override
@@ -126,90 +126,94 @@ class _PayNowState extends State<PayNow> {
     }
   }
 
-  void handlePaymentSuccess(PaymentSuccessResponse response) async {
-  
-    final FirebaseAuth _auth = FirebaseAuth.instance;
+ void handlePaymentSuccess(PaymentSuccessResponse response) async {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
-    // Fetch the user's profile image URL
-    final userSnapshot = await FirebaseFirestore.instance
-        .collection('users')
-        .where('uid', isEqualTo: _auth.currentUser!.uid)
-        .get();
+  // Fetch the user's profile image URL
+  final userSnapshot = await FirebaseFirestore.instance
+      .collection('users')
+      .where('uid', isEqualTo: _auth.currentUser!.uid)
+      .get();
 
-    String profileImageUrl = '';
-    String username = '';
-    String usergender = '';
+  String profileImageUrl = '';
+  String username = '';
+  String usergender = '';
 
-    if (userSnapshot.docs.isNotEmpty) {
-      profileImageUrl = userSnapshot.docs.first['imageUrl'] ?? '';
-      username = userSnapshot.docs.first['name'] ?? '';
-      usergender = userSnapshot.docs.first['gender'] ?? '';
-    }
-
-    context.read<SaveUserBloc>().add(
-          SaveUserBooking(
-            selectedDay: widget.selectedDay,
-            selectedTimeSlot: widget.selectedTimeSlot,
-            fromTime: widget.formtime,
-            toTime: widget.totime,
-            uid: widget.uid,
-            age: _ageController.text,
-            disease: _diseaseController.text,
-            gender: selectedGender,
-            image: profileImageUrl,
-            name: _fullnameController.text,
-            problem: _problemController.text,
-          ),
-        );
-
-    context.read<CalendarBloc>().add(
-          SaveBooking(
-            selectedDay: widget.selectedDay,
-            selectedTimeSlot: widget.selectedTimeSlot,
-            fromTime: widget.formtime,
-            toTime: widget.totime,
-            uid: widget.uid,
-            age: _ageController.text,
-            disease: _diseaseController.text,
-            gender: selectedGender,
-            image: profileImageUrl,
-            name: _fullnameController.text,
-            problem: _problemController.text,
-          ),
-        );
-
-    context.read<SaveDoctorBloc>().add(SaveDoctorBooking(
-          doctorname: widget.doctorname!,
-          doctordepartment: widget.departmnet!,
-          hospital: widget.hospital!,
-          selectedDay: widget.selectedDay,
-          selectedTimeSlot: widget.selectedTimeSlot,
-          uid: widget.uid,
-          fromTime: widget.formtime,
-          toTime: widget.totime,
-          image: widget.doctorImage!,
-          name: widget.doctorname!,
-          disease: widget.disease,
-          problem: widget.problem,
-          userimage: profileImageUrl,
-          userGender: usergender,
-          username: username,
-        ));
-
-    print(' alooooooo${widget.uid}');
-
-    ///  user side adding
-
-    Navigator.of(context).push(
-        PageTransition(child: Bottomnav(), type: PageTransitionType.fade));
-    context.read<LandingStateBloc>().add(TabChangeEvent(tabindex: 1));
-
-    Fluttertoast.showToast(
-        backgroundColor: Colors.green,
-        msg: 'Payment successful with ID: ${response.paymentId}',
-        toastLength: Toast.LENGTH_LONG);
+  if (userSnapshot.docs.isNotEmpty) {
+    profileImageUrl = userSnapshot.docs.first['imageUrl'] ?? '';
+    username = userSnapshot.docs.first['name'] ?? '';
+    usergender = userSnapshot.docs.first['gender'] ?? '';
   }
 
+  context.read<SaveUserBloc>().add(
+        SaveUserBooking(
+          selectedDay: widget.selectedDay,
+          selectedTimeSlot: widget.selectedTimeSlot,
+          fromTime: widget.formtime,
+          toTime: widget.totime,
+          uid: widget.uid,
+          age: _ageController.text,
+          disease: _diseaseController.text,
+          gender: selectedGender,
+          image: profileImageUrl,
+          name: _fullnameController.text,
+          problem: _problemController.text,
+        ),
+      );
+
+  context.read<CalendarBloc>().add(
+        SaveBooking(
+          selectedDay: widget.selectedDay,
+          selectedTimeSlot: widget.selectedTimeSlot,
+          fromTime: widget.formtime,
+          toTime: widget.totime,
+          uid: widget.uid,
+          age: _ageController.text,
+          disease: _diseaseController.text,
+          gender: selectedGender,
+          image: profileImageUrl,
+          name: _fullnameController.text,
+          problem: _problemController.text,
+        ),
+      );
+
+  context.read<SaveDoctorBloc>().add(SaveDoctorBooking(
+        doctorname: widget.doctorname!,
+        doctordepartment: widget.departmnet!,
+        hospital: widget.hospital!,
+        selectedDay: widget.selectedDay,
+        selectedTimeSlot: widget.selectedTimeSlot,
+        uid: widget.uid,
+        fromTime: widget.formtime,
+        toTime: widget.totime,
+        image: widget.doctorImage!,
+        name: widget.doctorname!,
+        disease: widget.disease,
+        problem: widget.problem,
+        userimage: profileImageUrl,
+        userGender: usergender,
+        username: username,
+      ));
+
+  print(' alooooooo${widget.uid}'); 
+
+  // Increment the patient count
+  context.read<PatientCountBloc>().add(IncrementPatientCount(widget.uid));
+
+  // Wait for the increment operation to complete
+  await Future.delayed(Duration(seconds: 1));
+
+  Navigator.of(context).pushAndRemoveUntil(
+    PageTransition(child: Bottomnav(), type: PageTransitionType.fade),
+    (route) => false,
+  );
+  context.read<LandingStateBloc>().add(TabChangeEvent(tabindex: 1));
+
+  Fluttertoast.showToast(
+      backgroundColor: Colors.green,
+      msg: 'Payment successful with ID: ${response.paymentId}',
+      toastLength: Toast.LENGTH_LONG);
+} 
   void handlePaymentError(PaymentFailureResponse response) {
     Navigator.of(context).pop();
     try {
@@ -317,10 +321,8 @@ class _PayNowState extends State<PayNow> {
                         fontWeight: FontWeight.bold, fontSize: 28),
                   ),
                 ),
-                CustomTextFormField(  
-                  textstype: TextInputType.number, 
-                
-
+                CustomTextFormField(
+                    textstype: TextInputType.number,
                     fonrmtype: 'your age',
                     formColor: Colormanager.wittextformfield,
                     Textcolor: Colormanager.grayText,

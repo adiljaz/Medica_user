@@ -6,10 +6,19 @@ part 'image_adding_state.dart';
 
 class ImageAddingBloc extends Bloc<ImageAddingEvent, ImageAddingState> {
   ImageAddingBloc() : super(ImageAddingInitial()) {
-    on<ImageChangedEvent>(
-      (event, emit) async {
-        emit(ImageSelectedState(imageUrl: event.imageUrl));
-      },
-    );
+    on<ImageChangedEvent>(_onImageChanged);
+    on<ImageCleared>(_onImageCleared);
   }
-}
+
+  void _onImageChanged(ImageChangedEvent event, Emitter<ImageAddingState> emit) {
+    emit(ImageSelectedState(imageUrl: event.imageUrl));
+  }
+
+  void _onImageCleared(ImageCleared event, Emitter<ImageAddingState> emit) {
+    emit(ImageAddingInitial());
+  }
+
+  void clearImage() {
+    add(ImageCleared());
+  }
+} 

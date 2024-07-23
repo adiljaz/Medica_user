@@ -1,21 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fire_login/screens/home/reviews/review.dart';
 import 'package:fire_login/utils/colors/colormanager.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:page_transition/page_transition.dart'; 
+import 'package:page_transition/page_transition.dart';
+
 
 class ReviewS extends StatelessWidget {
-  const ReviewS({super.key});
+  final String doctorId;
+
+  const ReviewS({Key? key, required this.doctorId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    FirebaseAuth _auth = FirebaseAuth.instance;
-
-    MediaQueryData mediaQuery = MediaQuery.of(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colormanager.scaffold,
@@ -29,7 +28,7 @@ class ReviewS extends StatelessWidget {
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('doctor')
-            .doc(_auth.currentUser!.uid)
+            .doc(doctorId)
             .collection('reviews')
             .orderBy('date', descending: true)
             .snapshots(),
@@ -45,20 +44,10 @@ class ReviewS extends StatelessWidget {
           final reviews = snapshot.data?.docs ?? [];
 
           if (reviews.isEmpty) {
-            return Center(child: GestureDetector(
-              onTap: () {
-                // Navigator.of(context).push(PageTransition(
-                //     child: ReviewPage(
-                //       doctorId: widget.uid!,
-                //     ),
-                //     type: PageTransitionType.fade));
-              },
-            ));
+            return Center(child: Text('No reviews yet for this doctor.'));
           }
 
           return ListView.builder(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
             itemCount: reviews.length,
             itemBuilder: (context, index) {
               final review = reviews[index];
@@ -134,6 +123,18 @@ class ReviewS extends StatelessWidget {
           );
         },
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context).push(
+            PageTransition(
+              child: ReviewPage(doctorId: doctorId),
+              type: PageTransitionType.fade,
+            ),
+          ); 
+        },
+        child: Icon(Icons.add,color: Colormanager.whiteContainer,),
+        backgroundColor: Colormanager.blueicon,
+      ),
     );
   }
-}
+} 

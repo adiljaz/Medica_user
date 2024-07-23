@@ -67,6 +67,7 @@ class SignUp extends StatelessWidget {
         }
 
         return Scaffold(
+          backgroundColor: Colormanager.scaffold,  
             body: Container(
           // decoration: BoxDecoration(
           //     image: DecorationImage(

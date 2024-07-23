@@ -1,83 +1,86 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:shimmer/shimmer.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class HomePageHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final FirebaseAuth _auth = FirebaseAuth.instance;
-    final userDocRef = FirebaseFirestore.instance
-        .collection('users')
-        .doc(_auth.currentUser!.uid);
-
     return StreamBuilder<DocumentSnapshot>(
-      stream: userDocRef.snapshots(),
+      stream: _fetchUserData(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return _buildShimmer();
+          return Center(child: CircularProgressIndicator());
         }
 
         if (snapshot.hasError) {
-          return _buildPlaceholder();
+          return Center(child: Text('Error: ${snapshot.error}'));
         }
 
-        if (snapshot.hasData && snapshot.data!.exists) {
-          var userData = snapshot.data!.data() as Map<String, dynamic>;
-          String? imageUrl = userData['imageUrl'];
-
-          return _buildProfileImage(imageUrl);
+        if (!snapshot.hasData || !snapshot.data!.exists) {
+          return Center(child: Text('No user data found.'));
         }
 
-        // If no data or error, show placeholder
-        return _buildPlaceholder();
+        final userData = snapshot.data!.data() as Map<String, dynamic>;
+        final userName = userData['name'] ?? 'Unknown User';
+        final userImage = userData['imageUrl'];
+
+        return Row(
+          children: [
+            if (userImage != null && userImage.isNotEmpty)
+              CircleAvatar(
+                backgroundImage: NetworkImage(userImage),
+                radius: 30,
+              )
+            else
+              CircleAvatar(
+                child: Icon(Icons.person),
+                radius: 30,
+              ),
+            SizedBox(width: 8),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Have a nice day 👋🏻',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      color: Colors.grey,
+                      fontSize: 12,
+                    ),
+                  ),
+                  Text(
+                    userName,
+                    style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 17,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
       },
     );
   }
 
-  Widget _buildShimmer() {
-    return Shimmer.fromColors(
-      baseColor: Colors.grey[300]!,
-      highlightColor: Colors.grey[100]!,
-      child: Container(
-        width: 54,
-        height: 54,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          shape: BoxShape.circle,
-        ),
-      ),
-    );
-  }
+  Stream<DocumentSnapshot> _fetchUserData() {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      return Stream.error('No user logged in');
+    }
 
-  Widget _buildPlaceholder() {
-    return Container(
-      width: 54,
-      height: 54,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        image: DecorationImage(
-          image: AssetImage('assets/images/placeholder_avatar.png'),
-          fit: BoxFit.cover,
-        ),
-      ),
-    );
-  }
+    
 
-  Widget _buildProfileImage(String? imageUrl) {
-    return Container(
-      width: 54,
-      height: 54,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        image: DecorationImage(
-          image: imageUrl != null && imageUrl.isNotEmpty
-              ? NetworkImage(imageUrl)
-              : AssetImage('assets/images/placeholder_avatar.png') as ImageProvider,
-          fit: BoxFit.cover,
-        ),
-      ),
-    );
+    final userDoc = FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid);
+
+     
+
+    return userDoc.snapshots();
   }
 }
   

@@ -1,4 +1,3 @@
-// date_of_birth_event.dart
 abstract class DateOfBirthEvent {}
 
 class DateOfBirthSelected extends DateOfBirthEvent {
@@ -6,3 +5,5 @@ class DateOfBirthSelected extends DateOfBirthEvent {
 
   DateOfBirthSelected(this.selectedDate);
 }
+
+class DateOfBirthCleared extends DateOfBirthEvent {}

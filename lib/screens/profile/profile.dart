@@ -16,6 +16,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconly/iconly.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Profile extends StatelessWidget {
   Profile({super.key});
@@ -41,8 +43,6 @@ class Profile extends StatelessWidget {
 
             if (snapshot.data!.docs.isEmpty) {
               print('hrelloooooooooooooooooo');
-              // var userData = snapshot.data!.docs.first;
-
               return SingleChildScrollView(
                 child: Column(
                   children: [
@@ -107,17 +107,6 @@ class Profile extends StatelessWidget {
                     SizedBox(
                       height: mediaquery.size.height * 0.03,
                     ),
-                    // GestureDetector(
-                    //   onTap: (){
-                    //     // Navigator.of(context).push(MaterialPageRoute(builder: (context)=>EditProfile(age:userData['age'] ,dob:userData['dob'] ,gender:userData['gender'] ,image:userData['imageUrl'] ,location: userData['location'],name:userData['name'] ,uid:userData.id,mobile: userData['mobile'],) ));
-
-                    //   },
-                    //   child: ProfileOptions(
-                    //     leadingIcon: Icons.account_circle,
-                    //     typetext: 'EditProfile',
-                    //     trialingIcon: Icons.navigate_next,
-                    //   ),
-                    // ),
 
                     GestureDetector(
                       onTap: () {
@@ -143,15 +132,18 @@ class Profile extends StatelessWidget {
                     ),
                     ProfileOptions(
                         leadingIcon: Icons.groups,
-                        typetext: 'Ivite friends',
+                        typetext: 'Invite friends',
                         trialingIcon: Icon(Icons.navigate_next)),
                     SizedBox(
                       height: mediaquery.size.height * 0.015,
                     ),
-                    ProfileOptions(
-                        leadingIcon: Icons.email,
-                        typetext: 'Feed Back',
-                        trialingIcon: Icon(Icons.navigate_next)),
+                    GestureDetector(
+                      onTap: () => _launchEmail(), 
+                      child: ProfileOptions(
+                          leadingIcon: Icons.email,
+                          typetext: 'Feed Back',
+                          trialingIcon: Icon(Icons.navigate_next)),
+                    ),
                     SizedBox(
                       height: mediaquery.size.height * 0.015,
                     ),
@@ -163,7 +155,9 @@ class Profile extends StatelessWidget {
                       height: mediaquery.size.height * 0.015,
                     ),
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        showLogoutDialog(context);
+                      },
                       child: ProfileOptions(
                           leadingIcon: IconlyLight.logout,
                           typetext: 'Logout ',
@@ -244,7 +238,7 @@ class Profile extends StatelessWidget {
                       style: GoogleFonts.poppins(
                           textStyle: TextStyle(
                               fontWeight: FontWeight.w600, fontSize: 17)),
-                    ),
+                    ), 
                     Text(
                       userData['mobile'] != null
                           ? userData['mobile'].toString()
@@ -288,15 +282,18 @@ class Profile extends StatelessWidget {
                     ),
                     ProfileOptions(
                         leadingIcon: Icons.groups,
-                        typetext: 'Ivite friends',
+                        typetext: 'Invite friends',
                         trialingIcon: Icon(Icons.navigate_next)),
                     SizedBox(
                       height: mediaquery.size.height * 0.015,
                     ),
-                    ProfileOptions(
-                        leadingIcon: Icons.email,
-                        typetext: 'Feed Back',
-                        trialingIcon: Icon(Icons.navigate_next)),
+                    GestureDetector(
+                      onTap: () =>_launchEmail(), 
+                      child: ProfileOptions(
+                          leadingIcon: Icons.email,
+                          typetext: 'Feed Back',
+                          trialingIcon: Icon(Icons.navigate_next)),
+                    ),
                     SizedBox(
                       height: mediaquery.size.height * 0.015,
                     ),
@@ -359,23 +356,23 @@ class Profile extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Colors.blueAccent, // Set background color
+          backgroundColor: Colors.blueAccent,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0), // Rounded corners
+            borderRadius: BorderRadius.circular(10.0),
           ),
           title: Text(
             "Confirm Sign Out",
-            style: TextStyle(color: Colors.white), // Title text color
+            style: TextStyle(color: Colors.white),
           ),
           content: Text(
             "Are you sure you want to sign out?",
-            style: TextStyle(color: Colors.white), // Content text color
+            style: TextStyle(color: Colors.white),
           ),
           actions: [
             TextButton(
               child: Text(
                 "Cancel",
-                style: TextStyle(color: Colors.white), // Button text color
+                style: TextStyle(color: Colors.white),
               ),
               onPressed: () {
                 Navigator.of(context).pop();
@@ -384,7 +381,7 @@ class Profile extends StatelessWidget {
             TextButton(
               child: Text(
                 "Sign Out",
-                style: TextStyle(color: Colors.white), // Button text color
+                style: TextStyle(color: Colors.white),
               ),
               onPressed: () {
                 final authBloc = BlocProvider.of<AuthBloc>(context);
@@ -400,4 +397,28 @@ class Profile extends StatelessWidget {
       },
     );
   }
+  
+
+ Future<void> _launchEmail() async {
+  final Email email = Email(
+    body: '',
+    subject: '',
+    recipients: ['adiljaz17@gmail.com'],
+    isHTML: false,
+  );
+
+  try {
+    await FlutterEmailSender.send(email);
+  } catch (error) {
+    print('Error sending email: $error');
+    // You might want to show an error dialog to the user here
+  }
+} 
+
+
+String? encodeQueryParameters(Map<String, String> params) {
+  return params.entries
+      .map((e) => '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
+      .join('&');
 }
+}   

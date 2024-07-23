@@ -12,7 +12,7 @@ class CanceledAppointments extends StatelessWidget {
 
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.grey[200],
+        backgroundColor: Colors.grey[200], 
         body: StreamBuilder(
           stream: cancelledCollection.snapshots(),
           builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -149,4 +149,4 @@ class CanceledAppointments extends StatelessWidget {
     );
   }
 }
- 
+  

@@ -7,12 +7,14 @@ import 'package:fire_login/screens/home/drdetails/details.dart';
 import 'package:fire_login/screens/home/seeall/drtype.dart';
 import 'package:fire_login/screens/home/seeall/seeallwidget/alldoctors.dart';
 import 'package:fire_login/screens/home/widgets/doctortype.dart';
+import 'package:fire_login/screens/search/saech.dart';
 import 'package:fire_login/utils/colors/colormanager.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconly/iconly.dart';
+import 'package:page_transition/page_transition.dart';
 
 class SeeAll extends StatelessWidget {
   const SeeAll({super.key});
@@ -25,21 +27,23 @@ class SeeAll extends StatelessWidget {
 
     MediaQueryData mediaQuery = MediaQuery.of(context);
     return DefaultTabController(
-
       length: 6,
       child: SafeArea(
-
         child: Scaffold(
-          
-          
             appBar: AppBar(
               backgroundColor: Colormanager.scaffold,
               actions: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Icon(
-                    IconlyLight.search,
-                    size: 28,
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(PageTransition(
+                          child: SearchPage(), type: PageTransitionType.fade));
+                    },
+                    child: Icon(
+                      IconlyLight.search,
+                      size: 28,
+                    ),
                   ),
                 )
               ],

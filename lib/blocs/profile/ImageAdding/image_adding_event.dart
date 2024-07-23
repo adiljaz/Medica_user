@@ -8,3 +8,6 @@ class ImageChangedEvent extends ImageAddingEvent {
 
   ImageChangedEvent(this.imageUrl);
 }
+
+class ImageCleared extends ImageAddingEvent {}
+ 

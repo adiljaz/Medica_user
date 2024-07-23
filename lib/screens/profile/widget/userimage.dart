@@ -1,12 +1,11 @@
 import 'dart:io';
-import 'package:fire_login/blocs/profile/ImageUrl/image_url_bloc.dart';
+import 'package:fire_login/blocs/profile/ImageAdding/image_adding_bloc.dart';
 import 'package:fire_login/screens/profile/widget/approunderwidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_cropper/image_cropper.dart';
-import 'package:image_picker/image_picker.dart';
-// ignore: depend_on_referenced_packages
+import 'package:image_picker/image_picker.dart'; 
 import 'package:path/path.dart' as p;
 import 'package:firebase_storage/firebase_storage.dart' as storage;
 import 'package:path_provider/path_provider.dart';
@@ -21,27 +20,34 @@ class Userimage extends StatefulWidget {
 
 class _UserimageState extends State<Userimage> {
   final ImagePicker _picker = ImagePicker();
-  String? imageUrl;
+  String? imageUrl; 
 
   @override
   Widget build(BuildContext context) {
     MediaQueryData mediaquery = MediaQuery.of(context);
-    return BlocBuilder<ImageUrlBloc, ImageUrlState>(
+    return BlocBuilder<ImageAddingBloc, ImageAddingState>(
       builder: (context, state) {
         if (state is ImageSelectedState) {
           imageUrl = state.imageUrl;
+        } else if (state is ImageAddingInitial) {
+          imageUrl = null;
         }
 
         return Column(
           children: [
             if (imageUrl == null)
-             Image.asset('assets/images/profileno.png',height: mediaquery.size.height*0.25,width: mediaquery.size.width*0.5, fit: BoxFit.cover,),
+              Image.asset(
+                'assets/images/profileno.png',
+                height: mediaquery.size.height * 0.25, 
+                width: mediaquery.size.width * 0.5,
+                fit: BoxFit.cover,
+              ),
             if (imageUrl != null)
               InkWell(
                 splashColor: Colors.transparent,
                 highlightColor: Colors.transparent,
                 onTap: () => _selectPhoto(),
-                child: AppRoundedImage.url(imageUrl!, height: 80, width: 80),
+                child: AppRoundedImage.url(imageUrl!, height: 185, width: 185),
               ),
             InkWell(
               onTap: () => _selectPhoto(),
@@ -86,9 +92,8 @@ class _UserimageState extends State<Userimage> {
     );
   }
 
-  Future<void> _pickImage(ImageSource source) async {
-    final pickedFile =
-        await _picker.pickImage(source: source, imageQuality: 50);
+ Future<void> _pickImage(ImageSource source) async {
+    final pickedFile = await _picker.pickImage(source: source, imageQuality: 50);
     if (pickedFile == null) {
       return;
     }
@@ -123,8 +128,8 @@ class _UserimageState extends State<Userimage> {
     final result = await ref.putFile(File(path));
     final fileUrl = await result.ref.getDownloadURL();
 
-    BlocProvider.of<ImageUrlBloc>(context)
-        .add(ImageAddedEvent(imageUrl: fileUrl));
+    BlocProvider.of<ImageAddingBloc>(context)
+        .add(ImageChangedEvent(fileUrl));
 
     widget.onFileChange(fileUrl);
   }

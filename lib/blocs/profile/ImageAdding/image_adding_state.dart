@@ -13,5 +13,4 @@ class ImageSelectedState extends ImageAddingState {
 
 class ImageSelectedNotDone extends ImageAddingState {}
 
-class ImageSeectedError extends ImageAddingState {}
- 
+class ImageSelectedError extends ImageAddingState {}

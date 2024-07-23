@@ -19,7 +19,7 @@ class Appointment extends StatelessWidget {
 
     return DefaultTabController(
       
-      length: 3,
+      length: 2, 
       child: Scaffold(
         backgroundColor: Colormanager.scaffold,
 
@@ -51,11 +51,11 @@ class Appointment extends StatelessWidget {
             labelColor: Colormanager.blueText,
 
           
-            tabs: [
+            tabs: const [
                 Tab(text: 'Upcoming'), 
-              Tab(
-                text: 'Completed',
-              ),
+              // Tab(
+              //   text: 'Completed',
+              // ),
               Tab(
                 text: 'Canceled  ',
               ),
@@ -67,7 +67,7 @@ class Appointment extends StatelessWidget {
           children: [
 
             UpcomingAppointments(),
-            CompletedAppointments(), 
+            // CompletedAppointments(),  
            
             CanceledAppointments(),
           ],
