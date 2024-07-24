@@ -38,23 +38,9 @@ class Home extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    HomePageHeader(),
+                    Expanded(child: HomePageHeader()),
                     SizedBox(width: mediaQuery.size.width * 0.013),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Have a nice day 👋🏻 ',
-                            style: TextStyle(
-                                fontWeight: FontWeight.w500,
-                                color: Colormanager.grayText,
-                                fontSize: 12),
-                          ),
-                          HomePageHeader(), // Using the HomePageHeader widget to fetch and display user data
-                        ],
-                      ),
-                    ),
+                    
                     Padding(
                       padding: EdgeInsets.all(8.0),
                       child: IconButton(

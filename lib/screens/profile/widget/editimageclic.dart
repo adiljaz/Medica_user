@@ -49,7 +49,7 @@ class _UserimageState extends State<EditUserimage> {
             splashColor: Colors.transparent,
             highlightColor: Colors.transparent,
             onTap: () => _selectPhoto(),
-            child: AppRoundedImage.url(imageUrl!, height: 80, width: 80),
+            child: AppRoundedImage.url(imageUrl!, height: 180, width: 180), 
           ),
         InkWell(
           onTap: () => _selectPhoto(),

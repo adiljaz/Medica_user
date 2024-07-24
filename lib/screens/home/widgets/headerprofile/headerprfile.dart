@@ -6,24 +6,29 @@ import 'package:google_fonts/google_fonts.dart';
 class HomePageHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<DocumentSnapshot>(
-      stream: _fetchUserData(),
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection('users')
+          .where('uid', isEqualTo: _auth.currentUser!.uid)
+          .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
+          return CircularProgressIndicator();
         }
 
         if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
+          return Text('Error: ${snapshot.error}');
         }
 
-        if (!snapshot.hasData || !snapshot.data!.exists) {
-          return Center(child: Text('No user data found.'));
+        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+          return Text('No user data found.');
         }
 
-        final userData = snapshot.data!.data() as Map<String, dynamic>;
-        final userName = userData['name'] ?? 'Unknown User';
-        final userImage = userData['imageUrl'];
+        var userData = snapshot.data!.docs.first.data() as Map<String, dynamic>;
+        var userName = userData['name'] ?? 'Unknown User';
+        var userImage = userData['imageUrl'];
 
         return Row(
           children: [
@@ -41,20 +46,22 @@ class HomePageHeader extends StatelessWidget {
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
+                 
                   Text(
+                    userName,
+                    style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.bold, 
+                      fontSize: 17,
+                    ),
+                  ), 
+                   Text(
                     'Have a nice day 👋🏻',
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
                       color: Colors.grey,
                       fontSize: 12,
-                    ),
-                  ),
-                  Text(
-                    userName,
-                    style: GoogleFonts.poppins(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 17,
                     ),
                   ),
                 ],
@@ -65,22 +72,4 @@ class HomePageHeader extends StatelessWidget {
       },
     );
   }
-
-  Stream<DocumentSnapshot> _fetchUserData() {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user == null) {
-      return Stream.error('No user logged in');
-    }
-
-    
-
-    final userDoc = FirebaseFirestore.instance
-        .collection('users')
-        .doc(user.uid);
-
-     
-
-    return userDoc.snapshots();
-  }
 }
-  

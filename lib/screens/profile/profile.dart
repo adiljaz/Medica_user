@@ -399,7 +399,7 @@ class Profile extends StatelessWidget {
   }
   
 
- Future<void> _launchEmail() async {
+ Future<void> _launchEmail() async { 
   final Email email = Email(
     body: '',
     subject: '',
