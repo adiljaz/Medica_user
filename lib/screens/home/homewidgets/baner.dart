@@ -1,6 +1,9 @@
+import 'package:fire_login/screens/home/seeall/seeall.dart';
+import 'package:fire_login/screens/home/seeall/seeallwidget/alldoctors.dart';
 import 'package:fire_login/utils/colors/colormanager.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:page_transition/page_transition.dart';
 
 class BannerImage extends StatelessWidget {
   const BannerImage({super.key});
@@ -99,7 +102,9 @@ class BannerImage extends StatelessWidget {
                   ),
                 ),
               ),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).push(PageTransition(child: SeeAll(), type: PageTransitionType.fade ));  
+              },
               child: Text(
                 'Check now',
                 style: GoogleFonts.dongle(

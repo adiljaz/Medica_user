@@ -30,6 +30,28 @@ class _AllDoctorsState extends State<AllDoctors> {
     favoriteBloc.add(LoadFavoritesEvent());
   }
 
+  Future<Map<String, dynamic>> _getDoctorRatingAndReviews(String doctorId) async {
+    QuerySnapshot reviewsSnapshot = await FirebaseFirestore.instance
+        .collection('doctor')
+        .doc(doctorId)
+        .collection('reviews')
+        .get();
+
+    int reviewCount = reviewsSnapshot.docs.length;
+    double totalRating = 0;
+
+    for (var doc in reviewsSnapshot.docs) {
+      totalRating += (doc['rating'] as num).toDouble();
+    }
+
+    double averageRating = reviewCount > 0 ? totalRating / reviewCount : 0;
+
+    return {
+      'reviewCount': reviewCount,
+      'averageRating': averageRating,
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
     MediaQueryData mediaQuery = MediaQuery.of(context);
@@ -88,18 +110,7 @@ class _AllDoctorsState extends State<AllDoctors> {
                             transitionsBuilder: (context, animation, secondaryAnimation, child) => Align(
                               child: SizeTransition(
                                 sizeFactor: animation,
-                                child: DrDetails(
-                                  about: doctor['about'],
-                                  departmnet: doctor['department'],
-                                  experiance: doctor['experiance'],
-                                  fees: doctor['fees'],
-                                  from: doctor['form'],
-                                  hospital: doctor['hospitalNAme'],
-                                  imageUrl: doctor['imageUrl'],
-                                  name: doctor['name'],
-                                  to: doctor['to'],
-                                  uid: doctor.id,
-                                ),
+                                child: child,
                               ),
                             ),
                           ));
@@ -226,32 +237,45 @@ class _AllDoctorsState extends State<AllDoctors> {
                                           ),
                                         ],
                                       ),
-                                      Row(
-                                        children: [
-                                          Icon(
-                                            IconlyBold.star,
-                                            color: Colormanager.blueicon,
-                                          ),
-                                          Spacer(),
-                                          Text(
-                                            '4.3',
-                                            style: GoogleFonts.poppins(
-                                              fontSize: 13,
-                                              fontWeight: FontWeight.w500,
-                                              color: Colormanager.grayText,
-                                            ),
-                                          ),
-                                          Spacer(),
-                                          Text(
-                                            '(3,837 reviews)',
-                                            style: GoogleFonts.poppins(
-                                              fontSize: 13,
-                                              fontWeight: FontWeight.w500,
-                                              color: Colormanager.grayText,
-                                            ),
-                                          ),
-                                          SizedBox(width: mediaQuery.size.width * 0.1)
-                                        ],
+                                      FutureBuilder<Map<String, dynamic>>(
+                                        future: _getDoctorRatingAndReviews(doctor.id),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.connectionState == ConnectionState.waiting) {
+                                            return _buildRatingShimmer();
+                                          }
+                                          if (snapshot.hasError || !snapshot.hasData) {
+                                            return Text('Error loading rating');
+                                          }
+                                          final data = snapshot.data!;
+                                          return Row(
+                                            children: [
+                                               SizedBox(width:mediaQuery.size.width*0.03), 
+                                              Icon(
+                                                IconlyBold.star,
+                                                color: Colormanager.blueicon,
+                                              ),
+                                              SizedBox(width:mediaQuery.size.width*0.02), 
+                                              Text(
+                                                data['averageRating'].toStringAsFixed(1),
+                                                style: GoogleFonts.poppins(
+                                                  fontSize: 13,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: Colormanager.grayText,
+                                                ),
+                                              ),
+                                             SizedBox(width:mediaQuery.size.width*0.02),  
+                                              Text(
+                                                '(${data['reviewCount']} reviews)',
+                                                style: GoogleFonts.poppins(
+                                                  fontSize: 13,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: Colormanager.grayText,
+                                                ),
+                                              ),
+                                              SizedBox(width: mediaQuery.size.width * 0.1)
+                                            ],
+                                          );
+                                        },
                                       )
                                     ],
                                   ),
@@ -296,5 +320,20 @@ class _AllDoctorsState extends State<AllDoctors> {
       },
     );
   }
-}
- 
+
+  Widget _buildRatingShimmer() {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: Row(
+        children: [
+          Container(width: 24, height: 24, color: Colors.white),
+          Spacer(),
+          Container(width: 30, height: 16, color: Colors.white),
+          Spacer(),
+          Container(width: 100, height: 16, color: Colors.white),
+        ],
+      ),
+    );
+  }
+} 

@@ -583,32 +583,32 @@ class _DrDetailsState extends State<DrDetails> {
 
         final reviews = snapshot.data?.docs ?? [];
 
-        if (reviews.isEmpty) {
-          return Center(
-              child: GestureDetector(
-            onTap: () {
-              Navigator.of(context).push(PageTransition(
-                  child: ReviewPage(
-                    doctorId: widget.uid!,
-                  ),
-                  type: PageTransitionType.fade));
-            },
-            child: Container(
-              child: Center(
-                  child: Text('Add Review',
-                      style: GoogleFonts.dongle(
-                          textStyle: TextStyle(
-                              color: Colormanager.whiteText,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 30)))),
-              decoration: BoxDecoration(
-                  color: Colormanager.blueicon,
-                  borderRadius: BorderRadius.circular(10)),
-              height: mediaQuery.size.height * 0.06,
-              width: mediaQuery.size.width,
-            ),
-          ));
-        }
+        // if (reviews.isEmpty) { 
+        //   return Center(
+        //       child: GestureDetector(
+        //     onTap: () {
+        //       Navigator.of(context).push(PageTransition(
+        //           child: ReviewPage(
+        //             doctorId: widget.uid!,
+        //           ),
+        //           type: PageTransitionType.fade));
+        //     },
+        //     child: Container(
+        //       child: Center(
+        //           child: Text('Add Review',
+        //               style: GoogleFonts.dongle(
+        //                   textStyle: TextStyle(
+        //                       color: Colormanager.whiteText,
+        //                       fontWeight: FontWeight.bold,
+        //                       fontSize: 30)))),
+        //       decoration: BoxDecoration(
+        //           color: Colormanager.blueicon,
+        //           borderRadius: BorderRadius.circular(10)),
+        //       height: mediaQuery.size.height * 0.06,
+        //       width: mediaQuery.size.width,
+        //     ),
+        //   ));
+        // }
 
         return ListView.builder(
           shrinkWrap: true,

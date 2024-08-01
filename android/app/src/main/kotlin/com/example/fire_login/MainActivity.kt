@@ -1,4 +1,4 @@
-package com.example.fire_login
+package com.example.healthhub
 
 import io.flutter.embedding.android.FlutterActivity
 

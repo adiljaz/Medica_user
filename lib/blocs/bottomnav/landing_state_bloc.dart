@@ -8,7 +8,7 @@ part 'landing_state_state.dart';
 
 class LandingStateBloc extends Bloc<LandingStateEvent, LandingStateState> {
   LandingStateBloc() : super(LandingStateInitial(tabindex: 0)) {
-    on<LandingStateEvent>((event, emit) {
+    on<LandingStateEvent>((event, emit) { 
       if (event is TabChangeEvent) {
         emit(LandingStateInitial(tabindex: event.tabindex));
       }

@@ -1,10 +1,5 @@
-import 'package:fire_login/screens/home/department/Neurologists/neurologi.dart';
-import 'package:fire_login/screens/home/department/cardiologists/Cardio.dart';
-import 'package:fire_login/screens/home/department/dentist/dentist.dart';
-import 'package:fire_login/screens/home/department/general/general.dart';
-import 'package:fire_login/screens/home/department/nephrology/nephrology.dart';
-import 'package:fire_login/screens/home/department/nutrition/nutrition.dart';
-import 'package:fire_login/screens/home/department/pediatrics/pediatrics.dart';
+
+import 'package:fire_login/screens/home/department/special.dart';
 import 'package:fire_login/screens/home/favourite/favourite.dart';
 import 'package:fire_login/screens/home/homewidgets/baner.dart';
 import 'package:fire_login/screens/home/seeall/seeall.dart';
@@ -156,28 +151,29 @@ class Home extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               _buildDoctorTypeItem(
-                  context, General(), IconlyBold.home, 'General'),
+                  context, HomeDepartment(department: 'General'), IconlyBold.home, 'General'),
               _buildDoctorTypeItem(
-                  context, Dentist(), FontAwesomeIcons.tooth, 'dentist'),
-              _buildDoctorTypeItem(context, Nephrology(), null, 'Nephrolo..',
+                  context, HomeDepartment(department: 'Dentist'), FontAwesomeIcons.tooth, 'dentist'),
+              _buildDoctorTypeItem(context, HomeDepartment(department: 'Nephrology'), null, 'Nephrolo..',
                   imagePath: 'assets/images/nephrology.png'),
               _buildDoctorTypeItem(
-                  context, Neurologists(), FontAwesomeIcons.brain, 'neurol..'),
+                  context, HomeDepartment(department: 'Nephrology'), FontAwesomeIcons.brain, 'neurol..'),
             ],
           ),
         ),
         Padding(
-          padding: const EdgeInsets.only(left: 8, right: 8),
+          padding: const EdgeInsets.only(left: 8, right: 8), 
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _buildDoctorTypeItem(context, Nutrition(), null, 'Nutrition',
+            
+              _buildDoctorTypeItem(context, HomeDepartment(department: 'Nutrition'), null, 'Nutrition',
                   imagePath: 'assets/images/Nutrition.png'),
               _buildDoctorTypeItem(
-                  context, Pediatrics(), FontAwesomeIcons.baby, 'pediatri..'),
+                  context, HomeDepartment(department: 'Pediatrics'), FontAwesomeIcons.baby, 'pediatri..'),
               _buildDoctorTypeItem(
-                  context, Cardiologists(), Icons.remove_red_eye, 'Cardiol..'),
-              _buildDoctorTypeItem(context, SeeAll(), Icons.more_horiz, 'More'),
+                  context, HomeDepartment(department: 'Cardiologists'), Icons.remove_red_eye, 'Cardiol..'),
+              _buildDoctorTypeItem(context, SeeAll(), Icons.more_horiz, 'More'), 
             ],
           ),
         ),

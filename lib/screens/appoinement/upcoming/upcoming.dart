@@ -145,156 +145,159 @@ class UpcomingAppointments extends StatelessWidget {
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                showBottomSheet(
-                                  context: context,
-                                  builder: (context) => Container(
-                                    height: mediaQuery.size.height * 0.3,
-                                    width: mediaQuery.size.width,
-                                    decoration: BoxDecoration(
-                                        color: Colormanager.whiteContainer,
-                                        borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(50),
-                                            topRight: Radius.circular(50))),
-                                    child: Column(
-                                      children: [
-                                        SizedBox(
-                                          height: mediaQuery.size.height * 0.02,
-                                        ),
-                                        Text(
-                                          'Reschedule Appoinement',
-                                          style: GoogleFonts.dongle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 33,
-                                              color: Colormanager.blueText),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 12, right: 12),
-                                          child: Divider(),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 20.0, right: 20, top: 30),
-                                          child: Text(
-                                            '''Are you sure you want to Reschedule  Appoinement ?''',
-                                            style: GoogleFonts.poppins(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 15),
-                                          ),
-                                        ),
-                                        Spacer(),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
-                                          children: [
-                                            GestureDetector(
-                                              onTap: () {
-                                                Navigator.of(context).pop();
-                                              },
-                                              child: Container(
-                                                width:
-                                                    mediaQuery.size.width * 0.4,
-                                                height: mediaQuery.size.height *
-                                                    0.05,
-                                                decoration: BoxDecoration(
-                                                  color: Color.fromARGB(
-                                                      255, 216, 237, 255),
-                                                  borderRadius:
-                                                      BorderRadius.circular(20),
-                                                ),
-                                                child: Center(
-                                                  child: Text(
-                                                    'Back',
-                                                    style: TextStyle(
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      color:
-                                                          Colormanager.blueText,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            GestureDetector(
-                                              onTap: () {
-                                                Navigator.of(context).pop();
+                          children: [ 
+                            // GestureDetector(
+                            //   onTap: () { 
+                            //     // showBottomSheet(
+                            //     //   context: context,
+                            //     //   builder: (context) => Container(
+                            //     //     height: mediaQuery.size.height * 0.3,
+                            //     //     width: mediaQuery.size.width,
+                            //     //     decoration: BoxDecoration(
+                            //     //         color: Colormanager.whiteContainer,
+                            //     //         borderRadius: BorderRadius.only(
+                            //     //             topLeft: Radius.circular(50),
+                            //     //             topRight: Radius.circular(50))),
+                            //     //     child: Column(
+                            //     //       children: [
+                            //     //         SizedBox(
+                            //     //           height: mediaQuery.size.height * 0.02,
+                            //     //         ),
+                            //     //         Text(
+                            //     //           'Reschedule Appoinement',
+                            //     //           style: GoogleFonts.dongle(
+                            //     //               fontWeight: FontWeight.bold,
+                            //     //               fontSize: 33,
+                            //     //               color: Colormanager.blueText),
+                            //     //         ),
+                            //     //         Padding(
+                            //     //           padding: const EdgeInsets.only(
+                            //     //               left: 12, right: 12),
+                            //     //           child: Divider(),
+                            //     //         ),
+                            //     //         Padding(
+                            //     //           padding: const EdgeInsets.only(
+                            //     //               left: 20.0, right: 20, top: 30),
+                            //     //           child: Text(
+                            //     //             '''Are you sure you want to Reschedule  Appoinement ?''',
+                            //     //             style: GoogleFonts.poppins(
+                            //     //                 fontWeight: FontWeight.bold,
+                            //     //                 fontSize: 15),
+                            //     //           ),
+                            //     //         ),
+                            //     //         Spacer(),
+                            //     //         Row(
+                            //     //           mainAxisAlignment:
+                            //     //               MainAxisAlignment.spaceAround,
+                            //     //           children: [
+                            //     //             GestureDetector(
+                            //     //               onTap: () {
+                            //     //                 Navigator.of(context).pop();
+                            //     //               },
+                            //     //               child: Container(
+                            //     //                 width:
+                            //     //                     mediaQuery.size.width * 0.4,
+                            //     //                 height: mediaQuery.size.height *
+                            //     //                     0.05,
+                            //     //                 decoration: BoxDecoration(
+                            //     //                   color: Color.fromARGB(
+                            //     //                       255, 216, 237, 255),
+                            //     //                   borderRadius:
+                            //     //                       BorderRadius.circular(20),
+                            //     //                 ),
+                            //     //                 child: Center(
+                            //     //                   child: Text(
+                            //     //                     'Back',
+                            //     //                     style: TextStyle(
+                            //     //                       fontSize: 12,
+                            //     //                       fontWeight:
+                            //     //                           FontWeight.w600,
+                            //     //                       color:
+                            //     //                           Colormanager.blueText,
+                            //     //                     ),
+                            //     //                   ),
+                            //     //                 ),
+                            //     //               ),
+                            //     //             ),
+                            //     //             GestureDetector(
+                            //     //               onTap: () {
+                            //     //                 Navigator.of(context).pop();
                                                
-                                                _cancelAppointment(
-                                                    appointment.id,
-                                                    appointment['uid']);
-                                              },
-                                              child: Container(
-                                                width:
-                                                    mediaQuery.size.width * 0.4,
-                                                height: mediaQuery.size.height *
-                                                    0.05,
-                                                decoration: BoxDecoration(
-                                                  color: Colors.blue,
-                                                  borderRadius:
-                                                      BorderRadius.circular(20),
-                                                ),
-                                                child: Center(
-                                                  child: Text(
-                                                    'Reschedule',
-                                                    style: TextStyle(
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      color: Colors.white,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(
-                                          height:
-                                              mediaQuery.size.height * 0.025,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              },
-                              child: Container(
-                                width: mediaQuery.size.width * 0.4,
-                                height: mediaQuery.size.height * 0.05,
-                                decoration: BoxDecoration(
-                                  color: Colors.blue,
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    'Reschedule',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
+                            //     //                 _cancelAppointment(
+                            //     //                     appointment.id,
+                            //     //                     appointment['uid']);
+                            //     //               },
+                            //     //               child: Container(
+                            //     //                 width:
+                            //     //                     mediaQuery.size.width * 0.4,
+                            //     //                 height: mediaQuery.size.height *
+                            //     //                     0.05,
+                            //     //                 decoration: BoxDecoration(
+                            //     //                   color: Colors.blue,
+                            //     //                   borderRadius:
+                            //     //                       BorderRadius.circular(20),
+                            //     //                 ),
+                            //     //                 child: Center(
+                            //     //                   child: Text(
+                            //     //                     'Reschedule',
+                            //     //                     style: TextStyle(
+                            //     //                       fontSize: 12,
+                            //     //                       fontWeight:
+                            //     //                           FontWeight.w600,
+                            //     //                       color: Colors.white,
+                            //     //                     ),
+                            //     //                   ),
+                            //     //                 ),
+                            //     //               ),
+                            //     //             ),
+                            //     //           ],
+                            //     //         ),
+                            //     //         SizedBox(
+                            //     //           height:
+                            //     //               mediaQuery.size.height * 0.025,
+                            //     //         ),
+                            //     //       ],
+                            //     //     ),
+                            //     //   ),
+                            //     // );
+                            //   },
+                            //   child: Container(
+                            //     width: mediaQuery.size.width * 0.4,
+                            //     height: mediaQuery.size.height * 0.05,
+                            //     decoration: BoxDecoration(
+                            //       color: Colors.blue,
+                            //       borderRadius: BorderRadius.circular(20),
+                            //     ),
+                            //     child: Center(
+                            //       child: Text(
+                            //         'Reschedule',
+                            //         style: TextStyle(
+                            //           fontSize: 12,
+                            //           fontWeight: FontWeight.w600,
+                            //           color: Colors.white,
+                            //         ),
+                            //       ),
+                            //     ),
+                            //   ),
+                            // ),
                             GestureDetector(
                               onTap: () {
                                 _showCancelDialog(context, appointment.id,
                                     appointment['uid']);
                               },
-                              child: Container(
-                                width: mediaQuery.size.width * 0.44,
+                              child: Container( 
+                               
+                                width: mediaQuery.size.width * 0.85,
                                 height: mediaQuery.size.height * 0.05,
                                 decoration: BoxDecoration(
-                                  border: Border.all(
-                                    width: 2,
-                                    color: Colors.blue,
-                                  ),
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(20),
+                                  
+                                  
+
+                                  
+
+                                  
+                                  color: Colormanager.blueContainer,
+                                  borderRadius: BorderRadius.circular(7), 
                                 ),
                                 child: Center(
                                   child: Text(
@@ -302,7 +305,7 @@ class UpcomingAppointments extends StatelessWidget {
                                     style: TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w500,
-                                      color: Colors.blue,
+                                      color: Colormanager.whiteText,
                                     ),
                                   ),
                                 ),
@@ -321,8 +324,7 @@ class UpcomingAppointments extends StatelessWidget {
       ),
     );
   }
-
-  void _showCancelDialog(
+ void _showCancelDialog(
       BuildContext context, String appointmentId, String doctorId) {
     showDialog(
       context: context,
@@ -349,14 +351,13 @@ class UpcomingAppointments extends StatelessWidget {
           ],
         );
       },
-    );
+    );  
   }
-
   void _showCResheduleDialog(
       BuildContext context, String appointmentId, String doctorId) {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (BuildContext context) { 
         return AlertDialog(
           title: Text('Cancel Appointment'),
           content: Text('Do you want to cancel this appointment?'),
@@ -415,3 +416,7 @@ class UpcomingAppointments extends StatelessWidget {
     }
   }
 }   
+
+
+
+

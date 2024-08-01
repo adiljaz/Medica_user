@@ -52,7 +52,7 @@ class SplashScreen extends StatelessWidget {
                   width: mediaQuery.size.height * 0.12,
                 ),
                 Text(
-                  'Medica',
+                  'HealthHub', 
                   style: GoogleFonts.signika(
                       textStyle:
                           const TextStyle(fontWeight: FontWeight.bold, fontSize: 35)),

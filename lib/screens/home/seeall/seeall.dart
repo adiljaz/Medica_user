@@ -1,10 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fire_login/screens/home/department/dentist/dentist.dart';
-import 'package:fire_login/screens/home/department/general/general.dart';
-import 'package:fire_login/screens/home/department/nephrology/nephrology.dart';
-import 'package:fire_login/screens/home/department/pediatrics/pediatrics.dart';
+import 'package:fire_login/screens/home/department/department.dart';
 import 'package:fire_login/screens/home/drdetails/details.dart';
-import 'package:fire_login/screens/home/seeall/drtype.dart';
+import 'package:fire_login/screens/home/seeall/drtype.dart'; 
 import 'package:fire_login/screens/home/seeall/seeallwidget/alldoctors.dart';
 import 'package:fire_login/screens/home/widgets/doctortype.dart';
 import 'package:fire_login/screens/search/saech.dart';
@@ -14,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconly/iconly.dart';
-import 'package:page_transition/page_transition.dart';
+import 'package:page_transition/page_transition.dart'; 
 
 class SeeAll extends StatefulWidget {
   const SeeAll({Key? key}) : super(key: key);
@@ -29,9 +26,9 @@ class _SeeAllState extends State<SeeAll> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 6, vsync: this);
+    _tabController = TabController(length: 7, vsync: this);
     _tabController.addListener(() {
-      setState(() {});
+      setState(() {});  
     });
   }
 
@@ -119,17 +116,26 @@ class _SeeAllState extends State<SeeAll> with SingleTickerProviderStateMixin {
                   isSelected: _tabController.index == 3,
                 ),
               ),
+              
               Tab(
                 child: Drtype(
-                  typeText: 'ophthalmologist',
-                  width: mediaQuery.size.width * 0.4,
+                  typeText: 'Nephrology',
+                  width: mediaQuery.size.width * 0.3,
                   height: mediaQuery.size.height * 0.045,
-                  isSelected: _tabController.index == 4,
+                  isSelected: _tabController.index == 5,
+                ),
+              ),
+               Tab(
+                child: Drtype(
+                  typeText: 'Nutrition',
+                  width: mediaQuery.size.width * 0.3,
+                  height: mediaQuery.size.height * 0.045,
+                  isSelected: _tabController.index == 5,
                 ),
               ),
               Tab(
                 child: Drtype(
-                  typeText: 'Nephrology',
+                  typeText: 'Cardiologists', 
                   width: mediaQuery.size.width * 0.3,
                   height: mediaQuery.size.height * 0.045,
                   isSelected: _tabController.index == 5,
@@ -143,14 +149,17 @@ class _SeeAllState extends State<SeeAll> with SingleTickerProviderStateMixin {
           controller: _tabController,
           children: [
             AllDoctors(),
-            General(),
-            Dentist(),
-            Pediatrics(),
-            Nephrology(),
-            Dentist(),
+            Department(department: 'General'), 
+             Department(department: 'Dentist'), 
+             Department(department: 'Pediatrics'),  
+             Department(department: 'Nephrology'), 
+              Department(department: 'Nutrition'), 
+                Department(department: 'Cardiologists'), 
+             
+             
           ],
         ),
       ),
     );
   }
-} 
+}  

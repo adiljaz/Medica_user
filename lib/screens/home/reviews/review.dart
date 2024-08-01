@@ -231,7 +231,7 @@ class _ReviewPageState extends State<ReviewPage> {
                 hintText: 'Write your review here',
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none),
+                    borderSide: BorderSide.none), 
                 fillColor: Colors.white,
                 filled: true,
                 prefixIcon: Icon(Icons.rate_review, color: Colors.blue),

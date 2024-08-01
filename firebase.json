@@ -1,1 +1,33 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"medica-146ad","appId":"1:1006499750145:android:e87bd659765b8c67e63b00","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"medica-146ad","configurations":{"android":"1:1006499750145:android:e87bd659765b8c67e63b00","ios":"1:1006499750145:ios:5d835159982609d2e63b00","macos":"1:1006499750145:ios:5d835159982609d2e63b00","web":"1:1006499750145:web:06775c8e357b5f70e63b00","windows":"1:1006499750145:web:c0de23558be2d9a3e63b00"}}}}}}
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "medica-146ad",
+          "appId": "1:1006499750145:android:e87bd659765b8c67e63b00",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "medica-146ad",
+          "configurations": {
+            "android": "1:1006499750145:android:e87bd659765b8c67e63b00",
+            "ios": "1:1006499750145:ios:5d835159982609d2e63b00",
+            "macos": "1:1006499750145:ios:5d835159982609d2e63b00",
+            "web": "1:1006499750145:web:06775c8e357b5f70e63b00",
+            "windows": "1:1006499750145:web:c0de23558be2d9a3e63b00"
+          }
+        }
+      }
+    }
+  },
+  "hosting": {
+    "public": "build/web",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}
