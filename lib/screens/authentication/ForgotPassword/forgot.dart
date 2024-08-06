@@ -17,7 +17,7 @@ class ForgotPassword extends StatelessWidget {
 
     MediaQueryData mediaQuery = MediaQuery.of(context);
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+      backgroundColor: Colormanager.whiteContainer, 
       body: Form(
         key: _formkey,
         child: BlocConsumer<ForgotPasswordBloc, ForgotPasswordState>(

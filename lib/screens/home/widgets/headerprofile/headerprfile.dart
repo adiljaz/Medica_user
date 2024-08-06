@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shimmer/shimmer.dart';
 
 class HomePageHeader extends StatelessWidget {
   @override
@@ -15,7 +16,7 @@ class HomePageHeader extends StatelessWidget {
           .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator();
+          return _buildShimmerLoading();
         }
 
         if (snapshot.hasError) {
@@ -48,15 +49,14 @@ class HomePageHeader extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                 
                   Text(
                     userName,
                     style: GoogleFonts.poppins(
-                      fontWeight: FontWeight.bold, 
+                      fontWeight: FontWeight.bold,
                       fontSize: 17,
                     ),
-                  ), 
-                   Text(
+                  ),
+                  Text(
                     'Have a nice day 👋🏻',
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
@@ -72,4 +72,45 @@ class HomePageHeader extends StatelessWidget {
       },
     );
   }
-}
+
+  Widget _buildShimmerLoading() {
+    return Row(
+      children: [
+        Shimmer.fromColors(
+          baseColor: Colors.grey[300]!,
+          highlightColor: Colors.grey[100]!,
+          child: CircleAvatar(
+            radius: 30,
+            backgroundColor: Colors.white,
+          ),
+        ),
+        SizedBox(width: 8),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Shimmer.fromColors(
+                baseColor: Colors.grey[300]!,
+                highlightColor: Colors.grey[100]!,
+                child: Container(
+                  height: 17,
+                  width: double.infinity,
+                  color: Colors.white,
+                ),
+              ),
+              Shimmer.fromColors(
+                baseColor: Colors.grey[300]!,
+                highlightColor: Colors.grey[100]!,
+                child: Container(
+                  height: 12,
+                  width: 150,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+} 

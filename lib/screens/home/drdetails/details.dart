@@ -52,7 +52,7 @@ class DrDetails extends StatefulWidget {
 
 class _DrDetailsState extends State<DrDetails> {
   late FavoriteBloc favoriteBloc;
-  late FirebaseAuth _auth;
+  late FirebaseAuth _auth =FirebaseAuth.instance;  
   late CollectionReference doctorCollection;
   @override
   void initState() {
@@ -532,7 +532,9 @@ class _DrDetailsState extends State<DrDetails> {
                                   fromTime: widget.from,
                                   toTime: widget.to,
                                   uid: widget.uid.toString(),
-                                  fees: widget.fees),
+                                  fees: widget.fees
+                                  
+                                  ),
                               type: PageTransitionType.fade,
                             ));
                           },

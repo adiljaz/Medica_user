@@ -123,13 +123,8 @@ class Profile extends StatelessWidget {
                     SizedBox(
                       height: mediaquery.size.height * 0.015,
                     ),
-                    ProfileOptions(
-                        leadingIcon: Icons.visibility,
-                        typetext: 'Dark Mode',
-                        trialingIcon: Icon(Icons.navigate_next)),
-                    SizedBox(
-                      height: mediaquery.size.height * 0.015,
-                    ),
+                    
+               
                     ProfileOptions(
                         leadingIcon: Icons.groups,
                         typetext: 'Invite friends',
@@ -138,7 +133,7 @@ class Profile extends StatelessWidget {
                       height: mediaquery.size.height * 0.015,
                     ),
                     GestureDetector(
-                      onTap: () => _launchEmail(), 
+                      onTap: () =>_launchEmail(), 
                       child: ProfileOptions(
                           leadingIcon: Icons.email,
                           typetext: 'Feed Back',
@@ -147,13 +142,35 @@ class Profile extends StatelessWidget {
                     SizedBox(
                       height: mediaquery.size.height * 0.015,
                     ),
-                    ProfileOptions(
-                        leadingIcon: Icons.security,
-                        typetext: 'Privacy Policy',
-                        trialingIcon: Icon(Icons.navigate_next)),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(PageTransition(
+                            child: PrivacyPolicyPage(),
+                            type: PageTransitionType.fade)); 
+                      },
+                      child: ProfileOptions(
+                          leadingIcon: Icons.security,
+                          typetext: 'Privacy Policy',
+                          trialingIcon: Icon(Icons.navigate_next)),
+                    ),
                     SizedBox(
                       height: mediaquery.size.height * 0.015,
                     ),
+               
+                    GestureDetector(
+                      onTap: (){
+                        Navigator.of(context).push(PageTransition(child: TermsAndConditionsPage(), type: PageTransitionType.fade));
+
+                      },
+                      child: ProfileOptions(
+                        leadingIcon: Icons.local_police,
+                        typetext: 'Terms and conditions',
+                         trialingIcon: Icon(Icons.navigate_next), 
+                      ),
+                    ),
+                           SizedBox(
+                      height: mediaquery.size.height * 0.015,
+                    ), 
                     GestureDetector(
                       onTap: () {
                         showLogoutDialog(context);
@@ -162,7 +179,7 @@ class Profile extends StatelessWidget {
                           leadingIcon: IconlyLight.logout,
                           typetext: 'Logout ',
                           trialingIcon: Icon(Icons.navigate_next)),
-                    ),
+                    ), 
                   ],
                 ),
               );

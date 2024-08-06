@@ -1,4 +1,3 @@
-
 import 'package:fire_login/screens/home/department/special.dart';
 import 'package:fire_login/screens/home/favourite/favourite.dart';
 import 'package:fire_login/screens/home/homewidgets/baner.dart';
@@ -35,7 +34,6 @@ class Home extends StatelessWidget {
                   children: [
                     Expanded(child: HomePageHeader()),
                     SizedBox(width: mediaQuery.size.width * 0.013),
-                    
                     Padding(
                       padding: EdgeInsets.all(8.0),
                       child: IconButton(
@@ -52,7 +50,7 @@ class Home extends StatelessWidget {
                       ),
                     ),
                   ],
-                ), 
+                ),
                 Padding(
                   padding: const EdgeInsets.only(top: 20, left: 8, right: 8),
                   child: Column(
@@ -98,10 +96,12 @@ class Home extends StatelessWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              'Doctor Speciality',
-                              style: GoogleFonts.dongle(
-                                  fontWeight: FontWeight.bold, fontSize: 33),
+                            Flexible(
+                              child: Text(
+                                'Doctor Speciality',
+                                style: GoogleFonts.dongle(
+                                    fontWeight: FontWeight.bold, fontSize: 28),
+                              ),
                             ),
                             GestureDetector(
                               onTap: () {
@@ -114,7 +114,7 @@ class Home extends StatelessWidget {
                                 style: GoogleFonts.dongle(
                                     fontWeight: FontWeight.bold,
                                     color: Colormanager.blueContainer,
-                                    fontSize: 25),
+                                    fontSize: 20), // Adjusted font size
                               ),
                             ),
                           ],
@@ -141,8 +141,7 @@ class Home extends StatelessWidget {
     );
   }
 
-  Widget _buildDoctorSpecialities(
-      BuildContext context, MediaQueryData mediaQuery) {
+  Widget _buildDoctorSpecialities(BuildContext context, MediaQueryData mediaQuery) {
     return Column(
       children: [
         Padding(
@@ -150,30 +149,29 @@ class Home extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _buildDoctorTypeItem(
+              _buildAnimatedDoctorTypeItem(
                   context, HomeDepartment(department: 'General'), IconlyBold.home, 'General'),
-              _buildDoctorTypeItem(
-                  context, HomeDepartment(department: 'Dentist'), FontAwesomeIcons.tooth, 'dentist'),
-              _buildDoctorTypeItem(context, HomeDepartment(department: 'Nephrology'), null, 'Nephrolo..',
+              _buildAnimatedDoctorTypeItem(
+                  context, HomeDepartment(department: 'Dentist'), FontAwesomeIcons.tooth, 'Dentist'),
+              _buildAnimatedDoctorTypeItem(context, HomeDepartment(department: 'Nephrology'), null, 'Nephrolo..',
                   imagePath: 'assets/images/nephrology.png'),
-              _buildDoctorTypeItem(
-                  context, HomeDepartment(department: 'Nephrology'), FontAwesomeIcons.brain, 'neurol..'),
+              _buildAnimatedDoctorTypeItem(
+                  context, HomeDepartment(department: 'Neurology'), FontAwesomeIcons.brain, 'Neurol..'),
             ],
           ),
         ),
         Padding(
-          padding: const EdgeInsets.only(left: 8, right: 8), 
+          padding: const EdgeInsets.only(left: 8, right: 8),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-            
-              _buildDoctorTypeItem(context, HomeDepartment(department: 'Nutrition'), null, 'Nutrition',
+              _buildAnimatedDoctorTypeItem(context, HomeDepartment(department: 'Nutrition'), null, 'Nutrition',
                   imagePath: 'assets/images/Nutrition.png'),
-              _buildDoctorTypeItem(
-                  context, HomeDepartment(department: 'Pediatrics'), FontAwesomeIcons.baby, 'pediatri..'),
-              _buildDoctorTypeItem(
+              _buildAnimatedDoctorTypeItem(
+                  context, HomeDepartment(department: 'Pediatrics'), FontAwesomeIcons.baby, 'Pediatri..'),
+              _buildAnimatedDoctorTypeItem(
                   context, HomeDepartment(department: 'Cardiologists'), Icons.remove_red_eye, 'Cardiol..'),
-              _buildDoctorTypeItem(context, SeeAll(), Icons.more_horiz, 'More'), 
+              _buildAnimatedDoctorTypeItem(context, SeeAll(), Icons.more_horiz, 'More'),
             ],
           ),
         ),
@@ -181,31 +179,35 @@ class Home extends StatelessWidget {
     );
   }
 
-  Widget _buildDoctorTypeItem(
+  Widget _buildAnimatedDoctorTypeItem(
       BuildContext context, Widget page, IconData? iconData, String text,
       {String? imagePath}) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.of(context)
-            .push(PageTransition(child: page, type: PageTransitionType.fade));
-      },
-      child: DoctorType(
-        icon: iconData != null
-            ? Icon(iconData, size: 28, color: Colormanager.blueicon)
-            : null,
-        image: imagePath != null
-            ? Opacity(
-                opacity: 0.65,
-                child: Image.asset(
-                  imagePath,
-                  fit: BoxFit.cover,
-                  height: 36,
-                  width: 36,
-                ),
-              )
-            : null,
-        text: text,
-      ),
+    return AnimatedOpacity(
+      opacity: 1.0,
+      duration: Duration(milliseconds: 300),
+      child: GestureDetector(
+        onTap: () {
+          Navigator.of(context)
+              .push(PageTransition(child: page, type: PageTransitionType.fade));
+        },
+        child: DoctorType(
+          icon: iconData != null
+              ? Icon(iconData, size: 28, color: Colormanager.blueicon)
+              : null,
+          image: imagePath != null
+              ? Opacity(
+                  opacity: 0.65,
+                  child: Image.asset(
+                    imagePath,
+                    fit: BoxFit.cover,
+                    height: 36,
+                    width: 36,
+                  ),
+                )
+              : null,
+          text: text,
+        ),
+      ), 
     );
   }
-}
+} 

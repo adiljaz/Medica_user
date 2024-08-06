@@ -42,12 +42,11 @@ class HealthNewsPage extends StatelessWidget {
                     );
                   } else if (state is NewsLoadedState) {
                     List<Articles> newsList = state.newsList;
-                    List<String> imgList = newsList
-                        .where((article) => article.urlToImage != null)
-                        .map((article) => article.urlToImage!)
+                    List<Articles> articlesWithImages = newsList
+                        .where((article) => article.urlToImage != null && article.urlToImage!.isNotEmpty)
                         .toList();
 
-                    return NewsCarousel(imgList: imgList, articles: newsList);
+                    return NewsCarousel(articles: articlesWithImages);
                   } else if (state is NewsErrorState) {
                     return Center(child: Text(state.errorMessage));
                   } else {
@@ -141,10 +140,9 @@ class HealthNewsPage extends StatelessWidget {
 }
 
 class NewsCarousel extends StatefulWidget {
-  final List<String> imgList;
   final List<Articles> articles;
 
-  NewsCarousel({required this.imgList, required this.articles});
+  NewsCarousel({required this.articles});
 
   @override
   _NewsCarouselState createState() => _NewsCarouselState();
@@ -158,21 +156,29 @@ class _NewsCarouselState extends State<NewsCarousel> {
     return Column(
       children: [
         CarouselSlider(
-          items: widget.imgList.asMap().entries.map((entry) {
-            int index = entry.key;
-            String item = entry.value;
+          items: widget.articles.map((article) {
             return GestureDetector(
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => NewsDetailPage(article: widget.articles[index]),
+                    builder: (context) => NewsDetailPage(article: article),
                   ),
                 );
               },
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(15),
-                child: Image.network(item, fit: BoxFit.cover, width: 1000),
+                child: Image.network(
+                  article.urlToImage!,
+                  fit: BoxFit.cover,
+                  width: 1000,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      color: Colors.grey[300],
+                      child: Icon(Icons.error, color: Colors.red),
+                    );
+                  },
+                ),
               ),
             );
           }).toList(),
@@ -196,7 +202,7 @@ class _NewsCarouselState extends State<NewsCarousel> {
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: widget.imgList.asMap().entries.map((entry) {
+          children: widget.articles.asMap().entries.map((entry) {
             return Container(
               width: 8.0,
               height: 8.0,
@@ -232,12 +238,27 @@ class NewsCard extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
-              child: Image.network(
-                article.urlToImage ?? 'https://example.com/placeholder.jpg',
-                height: 200,
-                width: double.infinity,
-                fit: BoxFit.cover,
-              ),
+              child: article.urlToImage != null && article.urlToImage!.isNotEmpty
+                  ? Image.network(
+                      article.urlToImage!,
+                      height: 200,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          height: 200,
+                          width: double.infinity,
+                          color: Colors.grey[300],
+                          child: Icon(Icons.error, color: Colors.red),
+                        );
+                      },
+                    )
+                  : Container(
+                      height: 200,
+                      width: double.infinity,
+                      color: Colors.grey[300],
+                      child: Icon(Icons.image, color: Colors.grey[600]),
+                    ),
             ),
             Padding(
               padding: const EdgeInsets.all(16.0),
@@ -278,5 +299,4 @@ class NewsCard extends StatelessWidget {
       ),
     );
   }
-}
-  
+} 

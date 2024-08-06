@@ -35,6 +35,12 @@ class Booking extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+
+      FirebaseAuth _auth =FirebaseAuth.instance; 
+      print(_auth.currentUser!.uid);
+
+
     return BlocProvider(
       create: (_) => CalendarBloc()
         ..add(GenerateTimeSlots(
@@ -83,6 +89,8 @@ class BookingView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+  
     final FirebaseAuth _auth = FirebaseAuth.instance;
 
     final user = FirebaseFirestore.instance

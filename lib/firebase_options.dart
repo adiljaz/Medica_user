@@ -52,7 +52,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyDUMjSG1X3jeqBOdYEjRhx6PUhSNJG9i1U',
-    appId: '1:1006499750145:android:e87bd659765b8c67e63b00',
+    appId: '1:1006499750145:android:df6365d88fbd49e5e63b00',
     messagingSenderId: '1006499750145',
     projectId: 'medica-146ad',
     storageBucket: 'medica-146ad.appspot.com',
@@ -60,19 +60,23 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyBx7iD8NL9Its08RZOoY47sMXEpsgXeMgw',
-    appId: '1:1006499750145:ios:5d835159982609d2e63b00',
+    appId: '1:1006499750145:ios:23f722ba02c71777e63b00',
     messagingSenderId: '1006499750145',
     projectId: 'medica-146ad',
     storageBucket: 'medica-146ad.appspot.com',
+    androidClientId: '1006499750145-3kj8kied042aaru19bhoiga0rj96q6p2.apps.googleusercontent.com',
+    iosClientId: '1006499750145-6kae06b3q5qop523il1et0va3gopp6e5.apps.googleusercontent.com',
     iosBundleId: 'com.example.fireLogin',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyBx7iD8NL9Its08RZOoY47sMXEpsgXeMgw',
-    appId: '1:1006499750145:ios:5d835159982609d2e63b00',
+    appId: '1:1006499750145:ios:23f722ba02c71777e63b00',
     messagingSenderId: '1006499750145',
     projectId: 'medica-146ad',
     storageBucket: 'medica-146ad.appspot.com',
+    androidClientId: '1006499750145-3kj8kied042aaru19bhoiga0rj96q6p2.apps.googleusercontent.com',
+    iosClientId: '1006499750145-6kae06b3q5qop523il1et0va3gopp6e5.apps.googleusercontent.com',
     iosBundleId: 'com.example.fireLogin',
   );
 
@@ -85,5 +89,4 @@ class DefaultFirebaseOptions {
     storageBucket: 'medica-146ad.appspot.com',
     measurementId: 'G-WNNEBXM3G3',
   );
-
 }

@@ -71,6 +71,8 @@ class PayNow extends StatefulWidget {
 }
 
 class _PayNowState extends State<PayNow> {
+
+
   GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
   TextEditingController _fullnameController = TextEditingController();
@@ -145,7 +147,10 @@ class _PayNowState extends State<PayNow> {
     usergender = userSnapshot.docs.first['gender'] ?? '';
   }
 
+  print(widget.uid); 
+
   context.read<SaveUserBloc>().add(
+  
         SaveUserBooking(
           selectedDay: widget.selectedDay,
           selectedTimeSlot: widget.selectedTimeSlot,
@@ -183,7 +188,7 @@ class _PayNowState extends State<PayNow> {
         hospital: widget.hospital!,
         selectedDay: widget.selectedDay,
         selectedTimeSlot: widget.selectedTimeSlot,
-        uid: widget.uid,
+        uid: _auth.currentUser!.uid,  
         fromTime: widget.formtime,
         toTime: widget.totime,
         image: widget.doctorImage!,
@@ -201,7 +206,7 @@ class _PayNowState extends State<PayNow> {
   context.read<PatientCountBloc>().add(IncrementPatientCount(widget.uid));
 
   // Wait for the increment operation to complete
-  await Future.delayed(Duration(seconds: 1));
+  
 
   Navigator.of(context).pushAndRemoveUntil(
     PageTransition(child: Bottomnav(), type: PageTransitionType.fade),
@@ -237,6 +242,8 @@ class _PayNowState extends State<PayNow> {
 
   @override
   Widget build(BuildContext context) {
+
+    print(widget.uid);
     MediaQueryData mediaQuery = MediaQuery.of(context);
     return Scaffold(
         backgroundColor: Colormanager.scaffold,

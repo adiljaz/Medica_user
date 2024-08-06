@@ -155,7 +155,7 @@ class _ChatPageState extends State<ChatPage> {
                     setState(() {
                       _messages = state.messages;
                     });
-                    _scrollToBottom(); // Scroll to bottom when new messages are loaded
+                    _scrollToBottom();
                   }
                 },
                 builder: (context, state) {
@@ -168,7 +168,7 @@ class _ChatPageState extends State<ChatPage> {
                       Map<String, dynamic>? data = document.data() as Map<String, dynamic>?;
 
                       if (data == null || data.isEmpty) {
-                        return SizedBox.shrink(); // or any placeholder widget
+                        return SizedBox.shrink();
                       }
 
                       var isCurrentUser = data['senderId'] == FirebaseAuth.instance.currentUser!.uid;
@@ -179,46 +179,58 @@ class _ChatPageState extends State<ChatPage> {
                           ? DateFormat('h:mm a').format(timestamp.toDate())
                           : '';
 
-                      return GestureDetector(
-                        onLongPress: () => _deleteMessage(document.id),
-                        child: Align(
-                          alignment: isCurrentUser ? Alignment.centerRight : Alignment.centerLeft,
-                          child: Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: isCurrentUser ? Colors.blue[100] : Colors.grey[200],
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                if (messageType == 'text')
-                                  Text(
-                                    messageContent ?? '',
-                                    style: TextStyle(color: isCurrentUser ? Colors.black : Colors.black),
-                                  )
-                                else if (messageType == 'image')
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(10),
-                                    child: Image.network(
-                                      messageContent ?? '',
-                                      width: 200,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  messageTime,
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    color: Colors.grey[600],
-                                  ),
+                      // Add date header
+                      Widget? dateHeader;
+                      if (index == _messages.length - 1 || 
+                          !isSameDay(timestamp, _messages[index + 1]['timestamp'] as Timestamp?)) {
+                        dateHeader = _buildDateHeader(timestamp);
+                      }
+
+                      return Column(
+                        children: [
+                          if (dateHeader != null) dateHeader,
+                          GestureDetector(
+                            onLongPress: () => _deleteMessage(document.id),
+                            child: Align(
+                              alignment: isCurrentUser ? Alignment.centerRight : Alignment.centerLeft,
+                              child: Container(
+                                margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  color: isCurrentUser ? Colors.blue[100] : Colors.grey[200],
+                                  borderRadius: BorderRadius.circular(20),
                                 ),
-                              ],
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    if (messageType == 'text')
+                                      Text(
+                                        messageContent ?? '',
+                                        style: TextStyle(color: isCurrentUser ? Colors.black : Colors.black),
+                                      )
+                                    else if (messageType == 'image')
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(10),
+                                        child: Image.network(
+                                          messageContent ?? '',
+                                          width: 200,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      messageTime,
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                        color: Colors.grey[600],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
                           ),
-                        ),
+                        ],
                       );
                     },
                   );
@@ -230,6 +242,47 @@ class _ChatPageState extends State<ChatPage> {
         ),
       ),
     );
+  }
+
+  Widget _buildDateHeader(Timestamp? timestamp) {
+    if (timestamp == null) return SizedBox.shrink();
+    
+    final date = timestamp.toDate();
+    final now = DateTime.now();
+    final yesterday = DateTime(now.year, now.month, now.day - 1);
+    
+    String dateText;
+    if (isSameDay(timestamp, Timestamp.fromDate(now))) {
+      dateText = 'Today';
+    } else if (isSameDay(timestamp, Timestamp.fromDate(yesterday))) {
+      dateText = 'Yesterday';
+    } else {
+      dateText = DateFormat('MMMM d, y').format(date);
+    }
+
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 8),
+      child: Center(
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+          decoration: BoxDecoration(
+            color: Colors.grey[300],
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Text(
+            dateText,
+            style: TextStyle(fontSize: 12, color: Colors.black54),
+          ),
+        ),
+      ),
+    );
+  }
+
+  bool isSameDay(Timestamp? date1, Timestamp? date2) {
+    if (date1 == null || date2 == null) return false;
+    final d1 = date1.toDate();
+    final d2 = date2.toDate();
+    return d1.year == d2.year && d1.month == d2.month && d1.day == d2.day;
   }
 
   Widget _buildMessageInput() {
@@ -272,5 +325,4 @@ class _ChatPageState extends State<ChatPage> {
       ),
     );
   }
-}
-  
+} 

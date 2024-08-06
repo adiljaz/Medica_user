@@ -52,7 +52,7 @@ class SaveUserBloc extends Bloc<SaveUserEvent, SaveUserState> {
   void _onCancelBooking(CancelUserBooking event, Emitter<SaveUserState> emit) async {
     try {
       final appointmentSnapshot = await FirebaseFirestore.instance
-          .collection('userbooking')
+          .collection('userbooking') 
           .doc(event.appointmentId)
           .get();
 

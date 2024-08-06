@@ -29,10 +29,21 @@ class NewsDetailPage extends StatelessWidget {
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
-              background: Image.network(
-                article.urlToImage ?? 'https://example.com/placeholder.jpg',
-                fit: BoxFit.cover,
-              ),
+              background: article.urlToImage != null && article.urlToImage!.isNotEmpty
+                  ? Image.network(
+                      article.urlToImage!,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          color: Colors.grey[300],
+                          child: Icon(Icons.error, color: Colors.red, size: 50),
+                        );
+                      },
+                    )
+                  : Container(
+                      color: Colors.grey[300],
+                      child: Icon(Icons.image, color: Colors.grey[600], size: 50),
+                    ),
             ),
           ),
           SliverToBoxAdapter(
@@ -57,7 +68,7 @@ class NewsDetailPage extends StatelessWidget {
                   ),
                   SizedBox(height: 16),
                   Text(
-                    'Published at: ${article.publishedAt ?? ''}',
+                    'Published at: ${article.publishedAt ?? 'Unknown'}',
                     style: GoogleFonts.poppins(
                       fontSize: 14,
                       color: Colors.grey[600],
@@ -72,7 +83,6 @@ class NewsDetailPage extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 16),
-                
                 ],
               ),
             ),
@@ -81,4 +91,4 @@ class NewsDetailPage extends StatelessWidget {
       ),
     );
   }
-}
+} 

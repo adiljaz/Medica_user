@@ -15,10 +15,11 @@ class AllDoctorsHorizontal extends StatefulWidget {
   _AllDoctorsState createState() => _AllDoctorsState();
 }
 
-class _AllDoctorsState extends State<AllDoctorsHorizontal> {
+class _AllDoctorsState extends State<AllDoctorsHorizontal> with TickerProviderStateMixin {
   late FavoriteBloc favoriteBloc;
   late FirebaseAuth _auth;
   late CollectionReference doctorCollection;
+  late AnimationController _controller;
 
   @override
   void initState() {
@@ -27,6 +28,17 @@ class _AllDoctorsState extends State<AllDoctorsHorizontal> {
     _auth = FirebaseAuth.instance;
     doctorCollection = FirebaseFirestore.instance.collection('doctor');
     favoriteBloc.add(LoadFavoritesEvent());
+
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -57,105 +69,121 @@ class _AllDoctorsState extends State<AllDoctorsHorizontal> {
             itemBuilder: (context, index) {
               final doctor = snapshot.data!.docs[index];
 
-              return Padding(
-                padding: const EdgeInsets.only(left: 8, top: 8, right: 8),
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).push(PageRouteBuilder(
-                      pageBuilder: (context, animation, secondaryAnimation) =>
-                          DrDetails(
-                        about: doctor['about'],
-                        departmnet: doctor['department'],
-                        experiance: doctor['experiance'],
-                        fees: doctor['fees'],
-                        from: doctor['form'],
-                        hospital: doctor['hospitalNAme'],
-                        imageUrl: doctor['imageUrl'],
-                        name: doctor['name'],
-                        to: doctor['to'],
-                        uid: doctor.id,
-                      ),
-                      transitionsBuilder:
-                          (context, animation, secondaryAnimation, child) =>
-                              Align(
-                        child: SizeTransition(
-                          sizeFactor: animation,
-                          child: DrDetails(
-                            about: doctor['about'],
-                            departmnet: doctor['department'],
-                            experiance: doctor['experiance'],
-                            fees: doctor['fees'],
-                            from: doctor['form'],
-                            hospital: doctor['hospitalNAme'],
-                            imageUrl: doctor['imageUrl'],
-                            name: doctor['name'],
-                            to: doctor['to'],
-                            uid: doctor.id,
+              return SlideTransition(
+                position: Tween<Offset>(
+                  begin: const Offset(1.0, 0.0), // Start from the right
+                  end: Offset.zero, // End at the original position
+                ).animate(CurvedAnimation(
+                  parent: _controller..forward(),
+                  curve: Curves.easeInOut,
+                )),
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 8, top: 8, right: 8),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(PageRouteBuilder(
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            DrDetails(
+                          about: doctor['about'],
+                          departmnet: doctor['department'],
+                          experiance: doctor['experiance'],
+                          fees: doctor['fees'],
+                          from: doctor['form'],
+                          hospital: doctor['hospitalNAme'],
+                          imageUrl: doctor['imageUrl'],
+                          name: doctor['name'],
+                          to: doctor['to'],
+                          uid: doctor.id,
+                        ),
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) =>
+                                Align(
+                          child: SizeTransition(
+                            sizeFactor: animation,
+                            child: DrDetails(
+                              about: doctor['about'],
+                              departmnet: doctor['department'],
+                              experiance: doctor['experiance'],
+                              fees: doctor['fees'],
+                              from: doctor['form'],
+                              hospital: doctor['hospitalNAme'],
+                              imageUrl: doctor['imageUrl'],
+                              name: doctor['name'],
+                              to: doctor['to'],
+                              uid: doctor.id,
+                            ),
                           ),
                         ),
+                      ));
+                    },
+                    child: Container(
+                      height: mediaQuery.size.height * 0.2,
+                      width: mediaQuery.size.width * 0.45,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colormanager.whiteContainer,
                       ),
-                    ));
-                  },
-                  child: Container(
-                    height: mediaQuery.size.height * 0.02,
-                    width: mediaQuery.size.width*0.45,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colormanager.whiteContainer,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10,right: 10,top: 10),
-                          child: Container(
-                            height: mediaQuery.size.height * 0.18,
-                            width: mediaQuery.size.width * 0.5 ,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(5),
-                              child: Image.network(
-                                doctor['imageUrl'] ?? '',
-                                fit: BoxFit.fill,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                left: 10, right: 10, top: 10),
+                            child: Container(
+                              height: mediaQuery.size.height * 0.18,
+                              width: mediaQuery.size.width * 0.5,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(5),
+                                child: Image.network(
+                                  doctor['imageUrl'] ?? '',
+                                  fit: BoxFit.fill,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        SizedBox(
-                            
-                          child: Text(
-                            doctor['name'],
-                            overflow: TextOverflow.fade,
-                            maxLines: 1,
-                            style: GoogleFonts.poppins(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15,
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 100,
-                          child: Center(
+                          SizedBox(
                             child: Text(
-                              overflow: TextOverflow.ellipsis,
-                              doctor['department'],
+                              doctor['name'],
+                              overflow: TextOverflow.fade,
+                              maxLines: 1,
                               style: GoogleFonts.poppins(
-                                fontSize: 11 ,
-                                fontWeight: FontWeight.w500,
-                                color: Colormanager.grayText,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15,
                               ),
                             ),
                           ),
-                        ),
-
-                       Container(
-                        
-                        height: mediaQuery.size.height*0.045,
-                        width: mediaQuery.size.width*0.3,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          color: Colormanager.blueicon),child: Center(child: Text('Book',style: GoogleFonts.poppins(fontWeight: FontWeight.w600,color: Colormanager.whiteText),)),)
-
-                      ],
+                          SizedBox(
+                            width: 100,
+                            child: Center(
+                              child: Text(
+                                doctor['department'],
+                                overflow: TextOverflow.ellipsis,
+                                style: GoogleFonts.poppins(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colormanager.grayText,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            height: mediaQuery.size.height * 0.045,
+                            width: mediaQuery.size.width * 0.3,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              color: Colormanager.blueicon,
+                            ),
+                            child: Center(
+                              child: Text(
+                                'Book',
+                                style: GoogleFonts.poppins(
+                                    fontWeight: FontWeight.w600,
+                                    color: Colormanager.whiteText),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -166,4 +194,4 @@ class _AllDoctorsState extends State<AllDoctorsHorizontal> {
       ),
     );
   }
-}
+}  

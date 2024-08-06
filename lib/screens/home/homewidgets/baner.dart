@@ -42,55 +42,71 @@ class BannerImage extends StatelessWidget {
           ),
           Positioned(
             left: screenWidth * 0.038,
-            top: screenHeight * 0.01,
-            child: Text(
-              'Medical Checks!',
-              style: GoogleFonts.dongle(
-                fontWeight: FontWeight.bold,
-                fontSize: 40,
-                color: Colormanager.whiteText,
+            top: screenHeight * 0.025, // Adjusted position
+            child: Container(
+              width: screenWidth * 0.7,
+              child: Text(
+                'Medical Checks!',
+                style: GoogleFonts.dongle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 40,
+                  color: Colormanager.whiteText,
+                ),
+                overflow: TextOverflow.ellipsis,
               ),
             ),
           ),
           Positioned(
             left: screenWidth * 0.038,
-            top: screenHeight * 0.07,
-            child: Text(
-              "Check your health condition regularly",
-              style: GoogleFonts.poppins(
-                color: Colormanager.whiteText,
-                fontWeight: FontWeight.w500,
-                fontSize: 12,
+            top: screenHeight * 0.09, // Adjusted position
+            child: Container(
+              width: screenWidth * 0.7,
+              child: Text(
+                "Check your health condition regularly",
+                style: GoogleFonts.poppins(
+                  color: Colormanager.whiteText,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 12,
+                ),
+                overflow: TextOverflow.ellipsis,
               ),
             ),
           ),
           Positioned(
             left: screenWidth * 0.038,
-            top: screenHeight * 0.095,
-            child: Text(
-              'to minimize the incidence of disease in',
-              style: GoogleFonts.poppins(
-                color: Colormanager.whiteText,
-                fontWeight: FontWeight.w500,
-                fontSize: 11,
+            top: screenHeight * 0.115, // Adjusted position
+            child: Container(
+              width: screenWidth * 0.7,
+              child: Text(
+                'to minimize the incidence of disease in',
+                style: GoogleFonts.poppins(
+                  color: Colormanager.whiteText,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 11,
+                ),
+                overflow: TextOverflow.ellipsis,
               ),
             ),
           ),
           Positioned(
             left: screenWidth * 0.038,
-            top: screenHeight * 0.12,
-            child: Text(
-              'the future.',
-              style: GoogleFonts.poppins(
-                color: Colormanager.whiteText,
-                fontWeight: FontWeight.w500,
-                fontSize: 12,
+            top: screenHeight * 0.135, // Adjusted position
+            child: Container(
+              width: screenWidth * 0.7,
+              child: Text(
+                'the future.',
+                style: GoogleFonts.poppins(
+                  color: Colormanager.whiteText,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 12,
+                ),
+                overflow: TextOverflow.ellipsis,
               ),
             ),
           ),
           Positioned(
             left: screenWidth * 0.038,
-            top: screenHeight * 0.15,
+            top: screenHeight * 0.16,
             child: ElevatedButton(
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(
@@ -103,7 +119,7 @@ class BannerImage extends StatelessWidget {
                 ),
               ),
               onPressed: () {
-                Navigator.of(context).push(PageTransition(child: SeeAll(), type: PageTransitionType.fade ));  
+                Navigator.of(context).push(PageTransition(child: SeeAll(), type: PageTransitionType.fade));  
               },
               child: Text(
                 'Check now',
@@ -118,6 +134,5 @@ class BannerImage extends StatelessWidget {
         ],
       ),
     );
-  }
-}
-   
+  }  
+}  

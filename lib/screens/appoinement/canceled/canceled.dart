@@ -12,14 +12,11 @@ class CanceledAppointments extends StatelessWidget {
 
     return SafeArea(
       child: Scaffold(
-       
         backgroundColor: Colors.grey[200],
         body: FutureBuilder<List<DocumentSnapshot>>(
           future: _getCanceledAppointments(_firestore, userId),
           builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
-            }
+             
 
             if (snapshot.hasError) {
               return Center(child: Text('Error: ${snapshot.error}'));
@@ -27,7 +24,7 @@ class CanceledAppointments extends StatelessWidget {
 
             if (!snapshot.hasData || snapshot.data!.isEmpty) {
               return Center(child: Text('No canceled appointments.'));
-            }
+            } 
 
             return ListView.builder(
               itemCount: snapshot.data!.length,
@@ -45,107 +42,118 @@ class CanceledAppointments extends StatelessWidget {
   Future<List<DocumentSnapshot>> _getCanceledAppointments(FirebaseFirestore firestore, String userId) async {
     final userCanceled = await firestore.collection('userbooking').doc(userId).collection('canceledappoinement').get();
     final doctorCanceled = await firestore.collection('users').doc(userId).collection('canceledAppointments').get();
-    
+
     List<DocumentSnapshot> allCanceled = [...userCanceled.docs, ...doctorCanceled.docs];
     return allCanceled;
   }
 
   Widget _buildAppointmentCard(BuildContext context, DocumentSnapshot appointment) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 13, right: 13, top: 12),
-      child: Container(
-        height: MediaQuery.of(context).size.height * 0.19,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(15),
-          color: Colors.white,
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(10),
-              child: Container(
-                height: MediaQuery.of(context).size.height * 0.145,
-                width: MediaQuery.of(context).size.width * 0.3,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(15),
-                  child: Image.network(
-                    appointment['image'] ?? '',
-                    fit: BoxFit.cover,
+    MediaQueryData mediaQuery = MediaQuery.of(context);
+
+    return TweenAnimationBuilder(
+      tween: Tween<double>(begin: 0.0, end: 1.0),
+      duration: Duration(milliseconds: 300),
+      builder: (context, opacity, child) {
+        return Opacity(
+          opacity: opacity,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 13, right: 13, top: 12),
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.19,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                color: Colors.white,
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Container(
+                      height: mediaQuery.size.height * 0.145,
+                      width: mediaQuery.size.width * 0.3,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(15),
+                        child: Image.network(
+                          appointment['image'] ?? '',
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 8, top: 12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      appointment['name'] ?? 'N/A',
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold, 
-                        fontSize: 19,
-                      ),
-                    ),
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.25,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(3),
-                        border: Border.all(
-                          color: Colors.red,
-                          width: 1.5,
-                        ),
-                      ),
-                      child: Center(
-                        child: Text(
-                          'Canceled',
-                          style: TextStyle(
-                            color: Colors.red,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 10,
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 8, top: 12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            appointment['name'] ?? 'N/A',
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 19,
+                            ),
                           ),
-                        ),
+                          Container(
+                            width: mediaQuery.size.width * 0.25,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(3),
+                              border: Border.all(
+                                color: Colors.red,
+                                width: 1.5,
+                              ),
+                            ),
+                            child: Center(
+                              child: Text(
+                                'Canceled',
+                                style: TextStyle(
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 10,
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 5),
+                          Text(
+                            'Department: ${appointment['department'] ?? 'N/A'}',
+                            style: TextStyle(
+                              color: Colors.grey[700],
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
+                          SizedBox(height: 5),
+                          Text(
+                            'Date: ${_formatDate(appointment['selectedDay'])}',
+                            style: TextStyle(
+                              color: Colors.grey[700],
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
+                          SizedBox(height: 5),
+                          Text(
+                            'Time: ${appointment['selectedTimeSlot'] ?? 'N/A'}',
+                            style: TextStyle(
+                              color: Colors.grey[700],
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    SizedBox(height: 5),
-                    Text(
-                      'Department: ${appointment['department'] ?? 'N/A'}',
-                      style: TextStyle(
-                        color: Colors.grey[700],
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12,
-                      ),
-                    ),
-                    SizedBox(height: 5),
-                    Text(
-                      'Date: ${_formatDate(appointment['selectedDay'])}',
-                      style: TextStyle(
-                        color: Colors.grey[700],
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12,
-                      ),
-                    ),
-                    SizedBox(height: 5),
-                    Text(
-                      'Time: ${appointment['selectedTimeSlot'] ?? 'N/A'}',
-                      style: TextStyle(
-                        color: Colors.grey[700],
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
@@ -158,4 +166,5 @@ class CanceledAppointments extends StatelessWidget {
       return dateString;
     }
   }
-} 
+}
+ 

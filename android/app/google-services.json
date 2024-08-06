@@ -7,12 +7,17 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1006499750145:android:e87bd659765b8c67e63b00",
+        "mobilesdk_app_id": "1:1006499750145:android:df6365d88fbd49e5e63b00",
         "android_client_info": {
           "package_name": "com.example.healthhub"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "1006499750145-vcph6nrh14vfb6qb5c0nls4681pn289n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDUMjSG1X3jeqBOdYEjRhx6PUhSNJG9i1U"
@@ -20,7 +25,71 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1006499750145-vcph6nrh14vfb6qb5c0nls4681pn289n.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1006499750145-3l3r3uanoarrec63mo2sqircag6rji4l.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.mediaDoctor"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1006499750145:android:17a20fb55b22b578e63b00",
+        "android_client_info": {
+          "package_name": "com.example.media_doctor"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1006499750145-ja6kt2sv9v08ofmljlb3r5du2a8efkct.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.media_doctor",
+            "certificate_hash": "648fc3a74ee1f0e0e5b688066437f5bb0a795bc8"
+          }
+        },
+        {
+          "client_id": "1006499750145-pg144j38m6lvt6rs7cjk0bk2jfn9vnjj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.media_doctor",
+            "certificate_hash": "52379e25923e4d8292db9d9527122c895f9b646c"
+          }
+        },
+        {
+          "client_id": "1006499750145-vcph6nrh14vfb6qb5c0nls4681pn289n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDUMjSG1X3jeqBOdYEjRhx6PUhSNJG9i1U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1006499750145-vcph6nrh14vfb6qb5c0nls4681pn289n.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1006499750145-3l3r3uanoarrec63mo2sqircag6rji4l.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.mediaDoctor"
+              }
+            }
+          ]
         }
       }
     }
