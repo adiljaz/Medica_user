@@ -1,3 +1,5 @@
+import 'package:fire_login/screens/home/home.dart';
+import 'package:fire_login/screens/message/gemini.dart';
 import 'package:fire_login/utils/colors/colormanager.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -5,6 +7,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:lottie/lottie.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:shimmer/shimmer.dart';
 import 'chat.dart';
 
@@ -36,6 +40,7 @@ class _MessageState extends State<Message> {
         centerTitle: true,
         backgroundColor: Colormanager.scaffold,
         elevation: 0,
+         
       ),
       body: Column(
         children: [
@@ -65,6 +70,9 @@ class _MessageState extends State<Message> {
               
               controller: _searchController,
               decoration: InputDecoration(
+                suffixIcon: GestureDetector(onTap: (){ 
+                  Navigator.of(context).push(PageTransition(child: GeminiAi(), type: PageTransitionType.fade));
+                }, child: Lottie.asset('assets/lottie/ai.json',height: 20,width:20)),  
                   fillColor: Colormanager.whiteContainer,
                   filled: true,
                   hintText: 'Search doctors...',
@@ -82,6 +90,7 @@ class _MessageState extends State<Message> {
                   _searchQuery = value.toLowerCase();
                 });
               },
+              
             ),
           ),
           _buildHorizontalUserList(),

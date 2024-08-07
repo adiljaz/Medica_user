@@ -73,6 +73,9 @@ dependencies:
   flutter_email_sender: ^6.0.3
   permission_handler: ^11.3.1
   flutter_launcher_icons: ^0.13.1
+  flutter_gemini: ^2.0.4
+  dash_chat_2: ^0.0.21
+  
   
 
   

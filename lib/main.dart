@@ -19,6 +19,7 @@ import 'package:fire_login/blocs/profile/ImageUrl/image_url_bloc.dart';
 import 'package:fire_login/blocs/savedoctor/savedoctor_bloc.dart';
 import 'package:fire_login/blocs/saveuser/bloc/saveuser_bloc.dart';
 import 'package:fire_login/blocs/search/bloc/search_bloc.dart';
+import 'package:fire_login/screens/message/const.dart';
 import 'package:fire_login/screens/news/repository/repository.dart';
 import 'package:fire_login/screens/splash/splash_view.dart';
 import 'package:fire_login/blocs/Forgot/forgot_password_bloc.dart';
@@ -27,8 +28,11 @@ import 'package:fire_login/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gemini/flutter_gemini.dart';
 
 void main() async {
+    Gemini.init(apiKey: GEMINI_API_KEY); 
+
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
