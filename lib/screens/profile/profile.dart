@@ -5,19 +5,18 @@ import 'package:fire_login/screens/profile/addrofile.dart';
 import 'package:fire_login/screens/profile/editprofile.dart';
 import 'package:fire_login/screens/profile/privacypolicy/pricacypoicy.dart';
 import 'package:fire_login/screens/profile/terms/terms.dart';
-import 'package:fire_login/theme/theme.dart';
+
 import 'package:fire_login/utils/colors/colormanager.dart';
 import 'package:fire_login/widgets/profile/profilerow.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconly/iconly.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
-import 'package:url_launcher/url_launcher.dart';
+
 
 class Profile extends StatelessWidget {
   Profile({super.key});

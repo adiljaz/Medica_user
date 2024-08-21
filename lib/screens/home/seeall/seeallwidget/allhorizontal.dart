@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:iconly/iconly.dart';
+
 import 'package:fire_login/blocs/Favorite/favorite_bloc.dart';
 import 'package:fire_login/utils/colors/colormanager.dart';
 import 'package:fire_login/screens/home/drdetails/details.dart';
@@ -17,6 +17,7 @@ class AllDoctorsHorizontal extends StatefulWidget {
 
 class _AllDoctorsState extends State<AllDoctorsHorizontal> with TickerProviderStateMixin {
   late FavoriteBloc favoriteBloc;
+  // ignore: unused_field
   late FirebaseAuth _auth;
   late CollectionReference doctorCollection;
   late AnimationController _controller;

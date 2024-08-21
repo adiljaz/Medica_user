@@ -1,4 +1,3 @@
-import 'package:fire_login/screens/home/home.dart';
 import 'package:fire_login/screens/message/gemini.dart';
 import 'package:fire_login/utils/colors/colormanager.dart';
 import 'package:flutter/material.dart';
@@ -40,57 +39,57 @@ class _MessageState extends State<Message> {
         centerTitle: true,
         backgroundColor: Colormanager.scaffold,
         elevation: 0,
-         
       ),
       body: Column(
         children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
 
-      //        TextField(
-      
-        
-        
-      //   controller: controller,
-      //   onChanged: onChanged,
-      //   decoration: InputDecoration(
-         
-      //     fillColor: Colormanager.whiteContainer,
-      //     filled: true,
-      //     border: OutlineInputBorder(borderSide: BorderSide.none,borderRadius: BorderRadius.circular(10)),
-      //     prefixIcon: Icon(icon),
-      //     hintText: 'Search doctors...',
-          
-      //   ),
-      // ),
+            //        TextField(
 
+            //   controller: controller,
+            //   onChanged: onChanged,
+            //   decoration: InputDecoration(
+
+            //     fillColor: Colormanager.whiteContainer,
+            //     filled: true,
+            //     border: OutlineInputBorder(borderSide: BorderSide.none,borderRadius: BorderRadius.circular(10)),
+            //     prefixIcon: Icon(icon),
+            //     hintText: 'Search doctors...',
+
+            //   ),
+            // ),
 
             child: TextField(
-              
-              
               controller: _searchController,
               decoration: InputDecoration(
-                suffixIcon: GestureDetector(onTap: (){ 
-                  Navigator.of(context).push(PageTransition(child: GeminiAi(), type: PageTransitionType.fade));
-                }, child: Lottie.asset('assets/lottie/ai.json',height: 20,width:20)),  
-                  fillColor: Colormanager.whiteContainer,
-                  filled: true,
-                  hintText: 'Search doctors...',
-                  prefixIcon: Icon(Icons.search, color: Colormanager.blueicon),
-                  border: OutlineInputBorder(
-                    
-                    borderSide: BorderSide.none,
-                   
-                    
-                      borderRadius: BorderRadius.circular(10)),
-                      contentPadding: EdgeInsets.all(1),
+                suffixIcon: GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(PageTransition(
+                          child: GeminiAi(), type: PageTransitionType.fade));
+                    },
+                    child: Container(
+                      width: 20,
+                      height: 20,
+                      child: Transform.scale(
+                        scale: 0.8,
+                        child: Lottie.asset('assets/lottie/ai.json'),
                       ),
+                    )),
+                fillColor: Colormanager.whiteContainer,
+                filled: true,
+                hintText: 'Search doctors...',
+                prefixIcon: Icon(Icons.search, color: Colormanager.blueicon),
+                border: OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.circular(10)),
+                contentPadding: EdgeInsets.all(1),
+              ),
               onChanged: (value) {
                 setState(() {
                   _searchQuery = value.toLowerCase();
                 });
               },
-              
             ),
           ),
           _buildHorizontalUserList(),
@@ -180,8 +179,8 @@ class _MessageState extends State<Message> {
 
         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
           return Center(
-              child: Text('No doctors available', 
-                     style: TextStyle(color: Colormanager.blackText)));
+              child: Text('No doctors available',
+                  style: TextStyle(color: Colormanager.blackText)));
         }
 
         List<DocumentSnapshot> filteredDocs = snapshot.data!.docs.where((doc) {
@@ -349,7 +348,7 @@ class _MessageState extends State<Message> {
                 top: 10,
                 right: 10,
                 child: StreamBuilder<QuerySnapshot>(
-                  stream: _getLastMessageStream(uid!),
+                  stream: _getLastMessageStream(uid),
                   builder: (context, snapshot) {
                     if (snapshot.hasError ||
                         !snapshot.hasData ||

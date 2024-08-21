@@ -9,6 +9,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   SearchBloc() : super(SearchInitialState());
 
   @override
+  // ignore: override_on_non_overriding_member
   Stream<SearchState> mapEventToState(SearchEvent event) async* {
     if (event is SearchDoctorsEvent) {
       yield SearchLoadingState();

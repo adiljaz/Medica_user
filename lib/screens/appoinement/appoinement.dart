@@ -1,11 +1,9 @@
 import 'package:fire_login/screens/appoinement/canceled/canceled.dart';
-import 'package:fire_login/screens/appoinement/completed/completed.dart';
 import 'package:fire_login/screens/appoinement/upcoming/upcoming.dart';
 import 'package:fire_login/utils/colors/colormanager.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+
 import 'package:google_fonts/google_fonts.dart';
 
 class Appointment extends StatelessWidget {
@@ -15,7 +13,7 @@ class Appointment extends StatelessWidget {
   Widget build(BuildContext context) {
 
 
-    FirebaseAuth _auth =FirebaseAuth.instance;
+  
 
     return DefaultTabController(
       

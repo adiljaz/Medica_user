@@ -6,7 +6,7 @@ import 'package:fire_login/screens/bottomnav/home.dart';
 import 'package:fire_login/blocs/Google/google_auth_bloc.dart';
 import 'package:fire_login/screens/authentication/ForgotPassword/forgot.dart';
 import 'package:fire_login/screens/authentication/signup/user_signup.dart';
-import 'package:fire_login/screens/profile/addrofile.dart';
+
 import 'package:fire_login/widgets/signin/signin.dart';
 import 'package:fire_login/widgets/textformfield/textformfield.dart';
 import 'package:fire_login/utils/colors/colormanager.dart';

@@ -1,9 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fire_login/screens/home/drdetails/details.dart';
+import 'package:fire_login/screens/message/gemini.dart';
 import 'package:fire_login/utils/colors/colormanager.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconly/iconly.dart';
+import 'package:lottie/lottie.dart';
+import 'package:page_transition/page_transition.dart';
 
 class SearchPage extends StatefulWidget {
   SearchPage({super.key});
@@ -28,7 +31,6 @@ class _SearchPageState extends State<SearchPage> {
         _searchResults = doctors.docs;
       });
     } else {
-      // Clear the search results if the query is empty
       setState(() {
         _searchResults = [];
       });
@@ -117,18 +119,7 @@ class _SearchPageState extends State<SearchPage> {
                                         Align(
                                       child: SizeTransition(
                                         sizeFactor: animation,
-                                        child: DrDetails(
-                                          about: doctor['about'],
-                                          departmnet: doctor['department'],
-                                          experiance: doctor['experiance'],
-                                          fees: doctor['fees'],
-                                          from: doctor['form'],
-                                          hospital: doctor['hospitalNAme'],
-                                          imageUrl: doctor['imageUrl'],
-                                          name: doctor['name'],
-                                          to: doctor['to'],
-                                          uid: doctor.id,
-                                        ),
+                                        child: child,
                                       ),
                                     ),
                                   ),
@@ -188,10 +179,9 @@ class _SearchPageState extends State<SearchPage> {
                                                     child: SizedBox(
                                                       width: 100,
                                                       child: Text(
-                                                        
                                                         doctor['name'],
-                                                        overflow:
-                                                            TextOverflow.ellipsis,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
                                                         maxLines: 1,
                                                         style:
                                                             GoogleFonts.poppins(
@@ -231,7 +221,8 @@ class _SearchPageState extends State<SearchPage> {
                                                   width: 100,
                                                   child: Center(
                                                     child: Text(
-                                                      overflow: TextOverflow.ellipsis,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
                                                       doctor['department'],
                                                       style:
                                                           GoogleFonts.poppins(
@@ -259,7 +250,8 @@ class _SearchPageState extends State<SearchPage> {
                                                   width: 100,
                                                   child: Center(
                                                     child: Text(
-                                                      overflow: TextOverflow.ellipsis,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
                                                       doctor['hospitalNAme'],
                                                       style:
                                                           GoogleFonts.poppins(
@@ -278,29 +270,31 @@ class _SearchPageState extends State<SearchPage> {
                                             ),
                                             Row(
                                               children: [
-                                                Icon(
-                                                  IconlyBold.star,
-                                                  color: Colormanager.blueicon,
-                                                ),
+                                                DoctorRatingWidget(doctorId: doctor.id),
                                                 Spacer(),
-                                                Text(
-                                                  '4.3',
-                                                  style: GoogleFonts.poppins(
-                                                    fontSize: 13,
-                                                    fontWeight: FontWeight.w500,
-                                                    color:
-                                                        Colormanager.grayText,
-                                                  ),
-                                                ),
-                                                Spacer(),
-                                                Text(
-                                                  '(3,837 reviews)',
-                                                  style: GoogleFonts.poppins(
-                                                    fontSize: 13,
-                                                    fontWeight: FontWeight.w500,
-                                                    color:
-                                                        Colormanager.grayText,
-                                                  ),
+                                                StreamBuilder<QuerySnapshot>(
+                                                  stream: FirebaseFirestore.instance
+                                                      .collection('doctor')
+                                                      .doc(doctor.id)
+                                                      .collection('reviews')
+                                                      .snapshots(),
+                                                  builder: (context, snapshot) {
+                                                    if (snapshot.connectionState == ConnectionState.waiting) {
+                                                      return CircularProgressIndicator();
+                                                    }
+                                                    if (snapshot.hasError) {
+                                                      return Text('Error: ${snapshot.error}');
+                                                    }
+                                                    final reviewCount = snapshot.data?.docs.length ?? 0;
+                                                    return Text(
+                                                      '($reviewCount reviews)',
+                                                      style: GoogleFonts.poppins(
+                                                        fontSize: 13,
+                                                        fontWeight: FontWeight.w500,
+                                                        color: Colormanager.grayText,
+                                                      ),
+                                                    );
+                                                  },
                                                 ),
                                                 SizedBox(
                                                   width: MediaQuery.of(context)
@@ -347,21 +341,84 @@ class SearchField extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
       child: TextField(
-      
-        
-        
         controller: controller,
         onChanged: onChanged,
         decoration: InputDecoration(
-         
           fillColor: Colormanager.whiteContainer,
           filled: true,
-          border: OutlineInputBorder(borderSide: BorderSide.none,borderRadius: BorderRadius.circular(10)),
+          border: OutlineInputBorder(
+              borderSide: BorderSide.none,
+              borderRadius: BorderRadius.circular(10)),
           prefixIcon: Icon(icon),
           hintText: 'Search doctors...',
-          
+          suffixIcon: GestureDetector(
+            onTap: () {
+              Navigator.of(context).push(PageTransition(
+                  child: GeminiAi(), type: PageTransitionType.fade));
+            },
+            child: Container(
+              width: 30,
+              height: 30,
+              child: Transform.scale(
+                scale: 0.8,
+                child: Lottie.asset('assets/lottie/ai.json'),
+              ),
+            ),
+          ),
         ),
       ),
+    );
+  }
+}
+
+class DoctorRatingWidget extends StatelessWidget {
+  final String doctorId;
+
+  const DoctorRatingWidget({Key? key, required this.doctorId}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection('doctor')
+          .doc(doctorId)
+          .collection('reviews')
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator();
+        }
+
+        if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        }
+
+        final reviews = snapshot.data?.docs ?? [];
+        double averageRating = 0;
+        if (reviews.isNotEmpty) {
+          double totalRating = reviews.fold(0, (sum, review) => sum + (review['rating'] as num));
+          averageRating = totalRating / reviews.length;
+        }
+
+        return Row(
+          children: [
+            Icon(
+              IconlyBold.star,
+              color: Colormanager.blueicon,
+              size: 20,
+            ),
+            SizedBox(width: 4),
+            Text(
+              averageRating.toStringAsFixed(1),
+              style: GoogleFonts.poppins(
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+                color: Colormanager.grayText,
+              ),
+            ),
+          ],
+        );
+      }, 
     );
   }
 }

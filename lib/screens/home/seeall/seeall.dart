@@ -1,14 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fire_login/screens/home/department/department.dart';
-import 'package:fire_login/screens/home/drdetails/details.dart';
+
 import 'package:fire_login/screens/home/seeall/drtype.dart'; 
 import 'package:fire_login/screens/home/seeall/seeallwidget/alldoctors.dart';
-import 'package:fire_login/screens/home/widgets/doctortype.dart';
+
 import 'package:fire_login/screens/search/saech.dart';
 import 'package:fire_login/utils/colors/colormanager.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconly/iconly.dart';
 import 'package:page_transition/page_transition.dart'; 
@@ -40,8 +40,9 @@ class _SeeAllState extends State<SeeAll> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    // ignore: unused_local_variable
     final FirebaseAuth _auth = FirebaseAuth.instance;
-    final doctor = FirebaseFirestore.instance.collection('doctor');
+    FirebaseFirestore.instance.collection('doctor');
     MediaQueryData mediaQuery = MediaQuery.of(context);
 
     return SafeArea(

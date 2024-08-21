@@ -5,18 +5,18 @@ import 'package:fire_login/screens/home/seeall/seeall.dart';
 import 'package:fire_login/screens/home/seeall/seeallwidget/allhorizontal.dart';
 import 'package:fire_login/screens/home/widgets/doctortype.dart';
 import 'package:fire_login/screens/home/widgets/headerprofile/headerprfile.dart';
+import 'package:fire_login/screens/message/gemini.dart';
 import 'package:fire_login/screens/search/saech.dart';
 import 'package:fire_login/utils/colors/colormanager.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconly/iconly.dart';
+import 'package:lottie/lottie.dart';
 import 'package:page_transition/page_transition.dart';
 
 class Home extends StatelessWidget {
   Home({Key? key}) : super(key: key);
-
-  final TextEditingController _searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -84,6 +84,23 @@ class Home extends StatelessWidget {
                                     color: Colormanager.grayText,
                                   ),
                                 ),
+                                Spacer(),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.of(context).push(PageTransition(
+                                        child: GeminiAi(),
+                                        type: PageTransitionType.fade));
+                                  },
+                                  child: Container(
+                                    width: 30,
+                                    height: 30,
+                                    child: Transform.scale(
+                                      scale: 1.3,
+                                      child:
+                                          Lottie.asset('assets/lottie/ai.json'),
+                                    ),
+                                  ),
+                                ),
                               ],
                             ),
                           ),
@@ -141,7 +158,8 @@ class Home extends StatelessWidget {
     );
   }
 
-  Widget _buildDoctorSpecialities(BuildContext context, MediaQueryData mediaQuery) {
+  Widget _buildDoctorSpecialities(
+      BuildContext context, MediaQueryData mediaQuery) {
     return Column(
       children: [
         Padding(
@@ -150,13 +168,23 @@ class Home extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               _buildAnimatedDoctorTypeItem(
-                  context, HomeDepartment(department: 'General'), IconlyBold.home, 'General'),
+                  context,
+                  HomeDepartment(department: 'General'),
+                  IconlyBold.home,
+                  'General'),
               _buildAnimatedDoctorTypeItem(
-                  context, HomeDepartment(department: 'Dentist'), FontAwesomeIcons.tooth, 'Dentist'),
-              _buildAnimatedDoctorTypeItem(context, HomeDepartment(department: 'Nephrology'), null, 'Nephrolo..',
+                  context,
+                  HomeDepartment(department: 'Dentist'),
+                  FontAwesomeIcons.tooth,
+                  'Dentist'),
+              _buildAnimatedDoctorTypeItem(context,
+                  HomeDepartment(department: 'Nephrology'), null, 'Nephrolo..',
                   imagePath: 'assets/images/nephrology.png'),
               _buildAnimatedDoctorTypeItem(
-                  context, HomeDepartment(department: 'Neurology'), FontAwesomeIcons.brain, 'Neurol..'),
+                  context,
+                  HomeDepartment(department: 'Neurology'),
+                  FontAwesomeIcons.brain,
+                  'Neurol..'),
             ],
           ),
         ),
@@ -165,13 +193,21 @@ class Home extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _buildAnimatedDoctorTypeItem(context, HomeDepartment(department: 'Nutrition'), null, 'Nutrition',
+              _buildAnimatedDoctorTypeItem(context,
+                  HomeDepartment(department: 'Nutrition'), null, 'Nutrition',
                   imagePath: 'assets/images/Nutrition.png'),
               _buildAnimatedDoctorTypeItem(
-                  context, HomeDepartment(department: 'Pediatrics'), FontAwesomeIcons.baby, 'Pediatri..'),
+                  context,
+                  HomeDepartment(department: 'Pediatrics'),
+                  FontAwesomeIcons.baby,
+                  'Pediatri..'),
               _buildAnimatedDoctorTypeItem(
-                  context, HomeDepartment(department: 'Cardiologists'), Icons.remove_red_eye, 'Cardiol..'),
-              _buildAnimatedDoctorTypeItem(context, SeeAll(), Icons.more_horiz, 'More'),
+                  context,
+                  HomeDepartment(department: 'Cardiologists'),
+                  Icons.remove_red_eye,
+                  'Cardiol..'),
+              _buildAnimatedDoctorTypeItem(
+                  context, SeeAll(), Icons.more_horiz, 'More'),
             ],
           ),
         ),
@@ -207,7 +243,7 @@ class Home extends StatelessWidget {
               : null,
           text: text,
         ),
-      ), 
+      ),
     );
   }
-} 
+}

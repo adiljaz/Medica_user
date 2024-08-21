@@ -1,7 +1,7 @@
 import 'package:fire_login/blocs/auth/auth_bloc.dart';
 import 'package:fire_login/screens/bottomnav/home.dart';
 import 'package:fire_login/screens/introScreens/welcome.dart';
-import 'package:fire_login/utils/colors/colormanager.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -19,7 +19,7 @@ class SplashScreen extends StatelessWidget {
 
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
-        // TODO: implement listener
+        
 
       if(state is Authenticated){
         Navigator.of(context).pushReplacement(MaterialPageRoute(  builder: (context)=> Bottomnav(), )); // home

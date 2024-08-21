@@ -18,6 +18,7 @@ class AllDoctors extends StatefulWidget {
 
 class _AllDoctorsState extends State<AllDoctors> {
   late FavoriteBloc favoriteBloc;
+  // ignore: unused_field
   late FirebaseAuth _auth;
   late CollectionReference doctorCollection;
 

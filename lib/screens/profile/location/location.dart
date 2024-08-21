@@ -4,7 +4,7 @@ import 'package:fire_login/blocs/location/location_event.dart';
 import 'package:fire_login/blocs/location/location_state.dart';
 import 'package:fire_login/screens/profile/location/widget/profiletextformfield.dart';
 import 'package:fire_login/utils/colors/colormanager.dart';
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

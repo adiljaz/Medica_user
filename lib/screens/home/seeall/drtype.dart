@@ -17,7 +17,7 @@ class Drtype extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MediaQueryData mediaQuery = MediaQuery.of(context);
+    MediaQuery.of(context);
     return Container(
       height: height,
       width: width,

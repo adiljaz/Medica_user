@@ -4,7 +4,7 @@ import 'package:fire_login/screens/bottomnav/home.dart';
 import 'package:fire_login/models/user_model.dart';
 import 'package:fire_login/blocs/Google/google_auth_bloc.dart';
 import 'package:fire_login/screens/authentication/login/login_view.dart';
-import 'package:fire_login/screens/profile/addrofile.dart';
+
 import 'package:fire_login/widgets/textformfield/textformfield.dart';
 import 'package:fire_login/utils/colors/colormanager.dart';
 import 'package:flutter/material.dart';

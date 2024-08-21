@@ -170,6 +170,7 @@ class _ChatPageState extends State<ChatPage> {
                       if (data == null || data.isEmpty) {
                         return SizedBox.shrink();
                       }
+                      
 
                       var isCurrentUser = data['senderId'] == FirebaseAuth.instance.currentUser!.uid;
                       var messageType = data['type'];

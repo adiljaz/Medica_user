@@ -1,5 +1,4 @@
-import 'package:fire_login/utils/colors/colormanager.dart';
-import 'package:flutter/foundation.dart';
+
 import 'package:flutter/material.dart';
 
 class DetailsRound extends StatelessWidget {

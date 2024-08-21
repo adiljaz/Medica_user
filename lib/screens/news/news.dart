@@ -298,5 +298,5 @@ class NewsCard extends StatelessWidget {
         ),
       ),
     );
-  }
+  } 
 } 

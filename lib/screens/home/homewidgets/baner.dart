@@ -1,5 +1,5 @@
 import 'package:fire_login/screens/home/seeall/seeall.dart';
-import 'package:fire_login/screens/home/seeall/seeallwidget/alldoctors.dart';
+
 import 'package:fire_login/utils/colors/colormanager.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -109,10 +109,10 @@ class BannerImage extends StatelessWidget {
             top: screenHeight * 0.16,
             child: ElevatedButton(
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(
+                backgroundColor: WidgetStateProperty.all(
                   Colormanager.whiteContainer,
                 ),
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(18.0),
                   ),

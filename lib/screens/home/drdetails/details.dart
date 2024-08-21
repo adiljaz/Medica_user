@@ -4,7 +4,7 @@ import 'package:fire_login/screens/home/booking/booking.dart';
 import 'package:fire_login/screens/home/drdetails/seeallreview/avgrating.dart';
 import 'package:fire_login/screens/home/drdetails/seeallreview/seeall.dart';
 import 'package:fire_login/screens/home/drdetails/seeallreview/usercount.dart';
-import 'package:fire_login/screens/home/reviews/model/reviewmodel.dart';
+
 import 'package:fire_login/screens/home/reviews/review.dart';
 import 'package:fire_login/screens/message/chat.dart';
 import 'package:fire_login/utils/colors/colormanager.dart';
@@ -15,7 +15,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconly/iconly.dart';
-import 'package:image_picker/image_picker.dart';
+
 import 'package:intl/intl.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:shimmer/shimmer.dart';
@@ -52,6 +52,7 @@ class DrDetails extends StatefulWidget {
 
 class _DrDetailsState extends State<DrDetails> {
   late FavoriteBloc favoriteBloc;
+  // ignore: unused_field
   late FirebaseAuth _auth =FirebaseAuth.instance;  
   late CollectionReference doctorCollection;
   @override
@@ -314,7 +315,7 @@ class _DrDetailsState extends State<DrDetails> {
 
                                         final reviews =
                                             snapshot.data?.docs ?? [];
-                                        final totalReviews = reviews.length;
+                                    
                                         int doctorReviewsCount = 0;
 
                                         // Count the number of reviews for this specific doctor
@@ -566,7 +567,7 @@ class _DrDetailsState extends State<DrDetails> {
   }
 
   Widget _buildReviewsList() {
-    MediaQueryData mediaQuery = MediaQuery.of(context);
+    MediaQuery.of(context);
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
           .collection('doctor')
